@@ -1,0 +1,54 @@
+@CHARSET "UTF-8";
+
+#left {
+	border-left: 2px solid #333
+}
+
+#top {
+	border-top: 2px solid #333
+}
+
+#right {
+	border-right: 2px solid #333
+}
+
+#bottom {
+	border-bottom: 2px solid #333
+}
+
+#all {
+	border: 4px double;
+	#333
+}
+
+/* border:0px*/
+input {
+	border-bottom: 1px dotted #333;
+	border-top: 0px;
+	border-right: 0px;
+	border-left: 0px;
+}
+
+table {
+	width : 100%;
+	border-top: 2px solid #5B7CE5;
+	border-spacing: 0px;
+}
+
+th {
+	background-color: #FCFCFC;
+	border-bottom: 1px solid #F0F0F0;
+	font-size: 20px;
+	color: #838383;
+	font-weight: bold;
+}
+
+tr:HOVER {
+	background-color: #E9E8F6
+}
+
+td {
+	border-bottom: 1px solid #F0F0F0;
+	font-size: 15px;
+	height: 25px
+}

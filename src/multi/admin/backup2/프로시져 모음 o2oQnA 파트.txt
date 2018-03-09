@@ -1,0 +1,66 @@
+DELETE FROM o2oqnat;
+INSERT INTO o2oqnat ( o2o_title, o2o_content, o2o_email, o2o_type, o2o_phone, the_time, re_o2o_content ) VALUES( '첫번째 질문', '궁금해요', 'remd@naver.com', '회원', '010', NOW() , '');
+INSERT INTO o2oqnat ( o2o_title, o2o_content, o2o_email, o2o_type, o2o_phone, the_time, re_o2o_content ) VALUES( '첫번째 질문', '궁금해요', 'remd@naver.com', '회원', '010', NOW(), '문의 사항 보았고 해결했습니다.');
+
+################################################################
+
+	DROP PROCEDURE IF EXISTS p_admin_o2oQnA_add;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_o2oQnA_add(
+		IN v_o2o_title TEXT,
+		IN v_o2o_content TEXT,
+		IN v_o2o_email TEXT,
+		IN v_o2o_type TEXT,
+		IN v_o2o_phone TEXT
+	)
+	BEGIN
+		INSERT INTO o2oqnat (o2o_title, o2o_content, o2o_email, o2o_type, o2o_phone, the_time, re_o2o_content ) VALUES( v_o2o_title, v_o2o_content, v_o2o_email,
+ 	v_o2o_type, v_o2o_phone, NOW(), '' );
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_o2oQnA_findAll_noRe;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_o2oQnA_findAll_noRe()
+	BEGIN
+		SELECT * FROM o2oqnat WHERE re_o2o_content = '' ORDER BY o2o_no DESC;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_o2oQnA_findAll_Re;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_o2oQnA_findAll_Re()
+	BEGIN
+		SELECT * FROM o2oqnat WHERE re_o2o_content != '' ORDER BY o2o_no DESC;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_o2oQnA_checkOne;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_o2oQnA_checkOne(
+		IN v_o2o_no INT
+	)
+	BEGIN
+		SELECT * FROM o2oqnat WHERE o2o_no = v_o2o_no;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_writeConsult;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_writeConsult(
+		IN v_o2o_no INT,
+		IN v_re_o2o_content TEXT
+	)
+	BEGIN
+		UPDATE o2oqnat SET re_o2o_content = v_re_o2o_content WHERE o2o_no = v_o2o_no;
+	END$$
+	DELIMITER ;
+	

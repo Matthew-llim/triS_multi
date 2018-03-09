@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="myclub">
+
+	<select id="sysdate" resultType="java.lang.String">
+		SELECT NOW()
+	</select>
+	
+	<resultMap type="main.vo.ClubVO" id="RM_p_myclub_find" >
+      <result property="club_no"            column="club_no"         jdbcType="INTEGER"/>
+      <result property="user_id"            column="user_id"          jdbcType="VARCHAR"/>
+      <result property="club_name"        column="club_name"         jdbcType="VARCHAR"/>
+      <result property="club_content"       column="club_content"      jdbcType="VARCHAR"/>
+      <result property="club_thumb_img"   column="club_thumb_img"      jdbcType="VARCHAR"/>
+      <result property="max_member"       column="max_member"         jdbcType="INTEGER"/>
+      <result property="create_time"      column="create_time"      jdbcType="VARCHAR"/>
+      <result property="l_category_no"      column="l_category_no"      jdbcType="INTEGER"/>
+      <result property="c_category_no"      column="c_category_no"      jdbcType="INTEGER"/>
+   </resultMap>
+	
+	<!-- 클럽찾기 -->
+	<select id="p_myclub_find" resultMap="RM_p_myclub_find" parameterType="java.lang.String">
+		{call p_myclub_find(#{user_id})}
+	</select>
+	
+	<!-- 클럽찾기 페이징 -->
+	<select id="mypage_search_club" parameterType="multi.mypage.vo.Mypage_searchVO" resultType="main.vo.ClubVO">
+		SELECT distinct(c.club_no), c.user_id, c.club_name, c.club_title,c.club_content,c.club_thumb_img,c.max_member,c.l_category_no, c.c_category_no
+		FROM clubt c, user_clubt u
+		WHERE (c.club_no = u.club_no AND u.user_id = #{user_id} AND 0=0) OR c.user_id = #{user_id}
+		<if test="start_no !=null">
+			ORDER BY user_id ASC LIMIT #{start_no},10
+		</if>
+	</select>	
+</mapper>
+
+
+
+
+

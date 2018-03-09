@@ -1,0 +1,106 @@
+DELETE FROM usert; 
+SELECT * FROM usert;
+INSERT INTO usert Values('user', '405-240', '881001', '8888888', '1234', '이양재', 'M', '01055246469',
+'coolGuy', 'remd@naver.com' , 1,'test' );
+INSERT INTO usert Values('seller_request', '405-240', '881001', '8888888', '1234', '이양재', 'M', '01055246469',
+'coolGuy', 'remd@naver.com' , 1,'test' );
+INSERT INTO usert Values('seller', '405-240', '881001', '8888888', '1234', '이양재', 'M', '01055246469',
+'coolGuy', 'remd@naver.com' , 2,'test' );
+INSERT INTO usert Values('imseller', '405-240', '881001', '8888888', '1234', '이양재', 'M', '01055246469',
+'coolGuy', 'remd@naver.com' , 2,'test' );
+
+INSERT INTO usert Values('admin', '405-240', '881001', '8888888', '1234', '이양재', 'M', '01055246469',
+'coolGuy',  'remd@naver.com' , 3 ,'test');
+
+################################################################
+################################################################
+	DROP PROCEDURE IF EXISTS p_admin_user_findAll;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_user_findAll()
+	BEGIN
+		SELECT * FROM usert WHERE grade = 1;
+	END$$
+	DELIMITER ;
+	
+################################################################
+
+	DROP PROCEDURE IF EXISTS p_admin_user_findUser;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_user_findUser(
+		IN v_user_id VARCHAR(50)
+	)
+	BEGIN
+		SELECT * FROM usert WHERE user_id = v_user_id;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_user_DelUser;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_user_DelUser(
+		IN v_user_id VARCHAR(50),
+		IN v_user_name VARCHAR(50),
+		IN v_email VARCHAR(50),
+		IN v_subject TEXT,
+		IN v_mail_content TEXT
+	)
+	BEGIN
+			INSERT INTO user_del_emailt VALUES ( default, v_user_id, v_user_name, v_email, v_subject, v_mail_content, NOW() );
+			DELETE FROM club_boardt WHERE user_id = v_user_id;
+			DELETE FROM bookingt WHERE user_id = v_user_id;
+			DELETE FROM community_board_replet WHERE user_id = v_user_id;
+			DELETE FROM community_qnat WHERE user_id = v_user_id;
+			DELETE FROM club_board_replet WHERE user_id = v_user_id;
+			DELETE FROM community_board_recomtt WHERE user_id = v_user_id;
+			DELETE FROM community_qna_replet WHERE user_id = v_user_id;
+			DELETE FROM community_qna_reple_recomt WHERE user_id = v_user_id;
+			DELETE FROM user_clubt WHERE user_id = v_user_id;
+			DELETE FROM club_noticet WHERE user_id = v_user_id;
+			DELETE FROM community_boardt WHERE user_id = v_user_id;
+			DELETE FROM club_notice_replet WHERE user_id = v_user_id;
+			DELETE FROM clubt WHERE user_id = v_user_id;
+			DELETE FROM club_applyt WHERE user_id = v_user_id;
+			DELETE FROM hostt WHERE user_id = v_user_id;
+			DELETE FROM hostapplyt WHERE user_id = v_user_id;
+			DELETE FROM space_qnat WHERE user_id = v_user_id;
+			DELETE FROM space_qna_replet WHERE user_id = v_user_id;
+			DELETE FROM reviewt WHERE user_id = v_user_id;
+			DELETE FROM review_replet WHERE user_id = v_user_id;
+			DELETE FROM bookmarkt WHERE user_id = v_user_id;
+			DELETE FROM usert WHERE user_id = v_user_id;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_user_modifyUser;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_user_modifyUser(
+		IN v_user_id VARCHAR(50),
+		IN v_user_name VARCHAR(50),
+		IN v_phone VARCHAR(50),
+		IN v_nickname VARCHAR(50),
+		IN v_zipcode VARCHAR(50),
+		IN v_zipdetail VARCHAR(50),
+		IN v_email VARCHAR(50)
+	)
+	BEGIN
+		UPDATE usert SET user_name = v_user_name, phone=v_phone, 
+		nickname=v_nickname, zipcode = v_zipcode, zipdetail = v_zipdetail, email = v_email WHERE user_id = v_user_id;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_list_removed_users;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_list_removed_users()
+	BEGIN
+		SELECT * FROM user_del_emailt ORDER BY writing_no DESC;
+	END$$
+	DELIMITER ;
+	
+	
+	
+	

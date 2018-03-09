@@ -1,0 +1,33 @@
+#proc_bookmark
+
+DROP PROCEDURE IF EXISTS p_bookmark_findall;
+DELIMITER $$
+
+CREATE PROCEDURE p_bookmark_findall(
+    IN v_user_id VARCHAR(20)
+)
+BEGIN
+   select s.space_no,s.space_title, s.space_thumb_img
+    from bookmarkt b ,spacet s
+    where b.user_id = v_user_id and b.space_no = s.space_no;
+
+END$$
+
+
+DELIMITER ;
+
+
+##############################################
+
+DROP PROCEDURE IF EXISTS p_bookmark_del;
+DELIMITER $$
+
+CREATE PROCEDURE p_bookmark_del(
+    IN v_space_no INT(11)
+)
+BEGIN
+    DELETE FROM bookmarkT where space_no = v_space_no;
+END$$
+
+DELIMITER ;
+

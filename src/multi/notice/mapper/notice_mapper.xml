@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="notice">
+
+	<select id="sysdate" resultType="java.lang.String">
+		SELECT NOW()
+	</select>
+
+	<resultMap id="RM_noticeText" type="multi.notice.vo.NoticeVO">
+		<result property="notice_no" column="notice_no" jdbcType="INTEGER"/>
+		<result property="notice_title" column="notice_title" jdbcType="VARCHAR"/>
+		<result property="notice_content" column="notice_content" jdbcType="VARCHAR"/>
+		<result property="the_time" column="the_time" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<!--
+	DROP PROCEDURE IF EXISTS p_notice_FindAllTexts;
+	DELIMITER $$
+	CREATE PROCEDURE p_notice_FindAllTexts()
+	BEGIN
+		SELECT * FROM NoticeT ORDER BY notice_no DESC;
+	END$$
+	DELIMITER ;
+	-->
+	<select id="p_notice_FindAllTexts" statementType="CALLABLE" resultMap="RM_noticeText">
+		{call p_notice_FindAllTexts()}
+	</select>
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_notice_FindText;
+	DELIMITER $$
+	CREATE PROCEDURE p_notice_FindText(
+		IN v_notice_no INT
+	)
+	BEGIN
+		SELECT * FROM NoticeT WHERE notice_no = v_notice_no;
+	END$$
+	DELIMITER ;
+	-->
+	
+	<parameterMap id="PM_p_notice_FindText" type="multi.notice.vo.NoticeVO">
+		<parameter property="notice_no" mode="IN" jdbcType="INTEGER"/>
+	</parameterMap>
+	
+	<select id="p_notice_FindText" statementType="CALLABLE"
+		resultMap="RM_noticeText" parameterMap="PM_p_notice_FindText">
+		{call p_notice_FindText(?)}
+	</select>
+</mapper>
+<!--
+
+-->

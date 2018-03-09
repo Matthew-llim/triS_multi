@@ -1,0 +1,44 @@
+#proc_myhost
+
+DROP PROCEDURE IF EXISTS p_ckhost;
+DELIMITER $$
+
+CREATE PROCEDURE p_ckhost(
+    IN v_user_id VARCHAR(20)
+)
+BEGIN
+    SELECT count(*) from hostt where user_id = v_user_id;
+END$$
+
+DELIMITER ;
+
+
+################################
+DROP PROCEDURE IF EXISTS p_addhostapply;
+DELIMITER $$
+CREATE PROCEDURE p_addhostapply(
+    IN v_user_id VARCHAR(20),
+    IN v_crn VARCHAR(13),
+    IN v_host_name VARCHAR(20),
+    IN v_host_account VARCHAR(20),
+    IN v_account_name VARCHAR(200)
+)
+BEGIN
+    INSERT INTO hostapplyT values(default,v_user_id,v_account_name,v_crn,v_host_name,v_host_account,null);
+END$$
+DELIMITER ;
+
+
+####################################
+
+DROP PROCEDURE IF EXISTS p_crn_overlap;
+DELIMITER $$
+CREATE PROCEDURE p_crn_overlap(
+    IN v_crn VARCHAR(20)
+)
+BEGIN
+    SELECT COUNT(*) FROM hostapplyt where crn = v_crn;
+END$$
+DELIMITER ;
+
+

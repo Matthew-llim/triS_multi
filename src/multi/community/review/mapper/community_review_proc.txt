@@ -1,0 +1,7 @@
+	DROP PROCEDURE IF EXISTS p_comm_boardreviewFindAllTexts;
+	DELIMITER $$
+	CREATE PROCEDURE p_comm_boardreviewFindAllTexts()
+	BEGIN
+		SELECT * FROM reviewt ORDER BY review_no DESC;
+	END$$
+	DELIMITER ;

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="myhost">
+
+	<select id="sysdate" resultType="java.lang.String">
+		SELECT NOW()
+	</select>
+	
+	<!-- 판매자 여부확인 -->
+	<select id="p_ckhost" parameterType="java.lang.String" resultType="java.lang.Integer">
+		{call p_ckhost(#{user_id})}
+	</select>
+	
+	<parameterMap type="main.vo.HostApplyVO" id="PM_p_addhost">
+		<parameter property="user_id" mode="IN"/>
+		<parameter property="crn" mode="IN"/>
+		<parameter property="host_name" mode="IN"/>
+		<parameter property="host_account" mode="IN"/>
+		<parameter property="account_name" mode="IN"/>
+	</parameterMap>
+	
+	
+	<!-- 판매자 추가 -->
+	<insert id="p_addhost" parameterMap="PM_p_addhost">
+		{call p_addhostapply(?,?,?,?,?)}
+	</insert>
+	
+	<resultMap type="main.vo.SpaceVO" id="RM_myspace_findall">
+		<result property="space_no" column="space_no"/>
+		<result property="space_title" column="space_title"/>
+		<result property="crn" column="crn"/>
+		<result property="space_thumb_img" column="space_thumb_img"/>
+	</resultMap>
+	
+	<!-- 판매자가 갖고있는 공간찾기 -->
+	<select id="p_findspaceBycrn"  parameterType="java.lang.String" resultMap="RM_myspace_findall">
+		{call p_findspaceBycrn(#{user_id})}
+	</select>
+	
+	<!-- 판매자가 갖고있는 공간찾기 페이징 -->
+	<select id="mypage_search_host"  parameterType="multi.mypage.vo.Mypage_searchVO" resultType="main.vo.SpaceVO">
+		SELECT distinct(s.space_no),s.space_title,s.space_thumb_img,s.crn
+    	FROM spacet s, hostt h
+    	WHERE h.user_id = #{user_id} and h.crn = s.crn AND 0=0
+		<if test="start_no !=null">
+			ORDER BY h.user_id ASC LIMIT #{start_no},10
+		</if>
+	</select>
+	
+	<select id="p_crn_overlap" parameterType="java.lang.String" resultType="java.lang.Integer">
+		{call p_crn_overlap(#{crn})}
+	</select>
+
+</mapper>
+
+
+
+
+

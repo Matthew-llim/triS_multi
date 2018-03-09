@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mypage_qna">
+
+
+<!-- **************** multi.mypage.qna **************** -->
+
+   <resultMap id="RM_qna_userinfo" type="main.vo.UserVO">
+      <result property="user_id" column="user_id" jdbcType="VARCHAR"/>
+      <result property="ssn1" column="ssn1" jdbcType="VARCHAR"/>
+      <result property="ssn2" column="ssn2" jdbcType="VARCHAR"/>     
+      <result property="passwd" column="passwd" jdbcType="VARCHAR"/>
+      <result property="user_name" column="user_name" jdbcType="VARCHAR"/>
+      <result property="gender" column="gender" jdbcType="VARCHAR"/>      
+      <result property="phone" column="phone" jdbcType="VARCHAR"/>      
+      <result property="nickname" column="nickname" jdbcType="VARCHAR"/>      
+      <result property="zipcode" column="zipcode" jdbcType="VARCHAR"/>            
+      <result property="email" column="email" jdbcType="VARCHAR"/>     
+      <result property="grade" column="grade" jdbcType="INTEGER"/>          
+   </resultMap>
+
+   
+   <select id="mypage_qnaFindUserInfo" resultMap="RM_qna_userinfo">
+		SELECT * from usert where user_id = #{user_id};
+	</select>
+	
+	
+   <resultMap id="RM_qna_qnainfo" type="main.vo.Space_qnaVO">
+      <result property="space_qna_no" column="space_qna_no" jdbcType="INTEGER"/>       
+      <result property="space_no" column="space_no" jdbcType="INTEGER"/>
+      <result property="user_id" column="user_id" jdbcType="VARCHAR"/>     
+      <result property="space_qna_content" column="space_qna_content" jdbcType="VARCHAR"/>
+      <result property="space_qna_title" column="space_qna_title" jdbcType="VARCHAR"/>
+      <result property="the_time" column="the_time" jdbcType="VARCHAR"/>            
+   </resultMap>
+	
+	<select id="mypage_qna_qnaInfo" resultMap="RM_qna_qnainfo">
+		SELECT * from space_qnat where user_id = #{user_id};
+	</select>
+	
+   <resultMap id="RM_qna_qna_repleinfo" type="main.vo.Space_qna_repleVO">
+      <result property="space_qna_reple_no" column="space_qna_reple_no" jdbcType="INTEGER"/>  
+      <result property="space_qna_no" column="space_qna_no" jdbcType="INTEGER"/>       
+      <result property="space_no" column="space_no" jdbcType="INTEGER"/>
+      <result property="space_qna_reple_content" column="space_qna_reple_content" jdbcType="VARCHAR"/>
+      <result property="space_qna_reple_title" column="space_qna_reple_title" jdbcType="VARCHAR"/>
+      <result property="the_time" column="the_time" jdbcType="VARCHAR"/>            
+      <result property="user_id" column="user_id" jdbcType="VARCHAR"/>     
+   </resultMap>
+	
+	<select id="mypage_qna_qna_repleInfo" resultMap="RM_qna_qna_repleinfo">
+		SELECT * from space_qna_replet where space_qna_no = #{space_qna_no};
+	</select>
+	
+	<select id="mypage_qna_byqnano" resultMap="RM_qna_qnainfo">
+		select * from space_qnat where space_qna_no = #{space_qna_no};
+	</select>
+
+   <select id="mypage_search_QnA" parameterType="multi.mypage.vo.Mypage_searchVO" resultType="main.vo.Space_qnaVO">
+   		SELECT * FROM space_qnat where user_id = #{user_id} AND 0=0
+   		<if test="start_no !=null">
+   			ORDER BY user_id ASC LIMIT #{start_no},10
+   		</if>
+   </select>
+   
+   <delete id="del_space_qna" parameterType="java.lang.String">
+   		delete from space_qnat where space_qna_no = #{space_qna_no};
+   </delete>
+   
+   
+</mapper>

@@ -1,0 +1,52 @@
+################################################################
+	DROP PROCEDURE IF EXISTS p_admin_host_space_check;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_host_space_check(
+		IN v_crn VARCHAR(50)
+	)
+	BEGIN
+		SELECT * FROM SpaceT WHERE crn = v_crn;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_remove_Space;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_remove_Space(
+		IN v_space_no INT
+	)
+	BEGIN
+		DECLARE exit handler FOR SQLEXCEPTION
+		BEGIN
+			ROLLBACK;
+			SIGNAL SQLSTATE '45000';
+		END;
+		START TRANSACTION;
+			DELETE FROM BookingT WHERE space_no = v_space_no;
+			DELETE FROM Space_QnAT WHERE space_no = v_space_no;
+			DELETE FROM Space_QnA_RepleT WHERE space_no = v_space_no;
+			DELETE FROM ImageT WHERE space_no = v_space_no;
+			DELETE FROM ReviewT WHERE space_no = v_space_no;
+			DELETE FROM BookmarkT WHERE space_no = v_space_no;
+			DELETE FROM BookingT WHERE space_no = v_space_no;
+			DELETE FROM SpaceT WHERE space_no = v_space_no;
+		COMMIT;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_space_crn_check;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_space_crn_check(
+		IN v_crn VARCHAR(50)
+	)
+	BEGIN
+		SELECT * FROM HostT WHERE crn = v_crn;
+	END$$
+	DELIMITER ;
+	
+	
+	
+	

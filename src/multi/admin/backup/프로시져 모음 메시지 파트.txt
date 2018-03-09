@@ -1,0 +1,36 @@
+	DROP PROCEDURE IF EXISTS p_admin_message_write;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_message_write(
+		IN v_send_user_id VARCHAR(50),
+		IN v_receive_user_id VARCHAR(50),
+		IN v_msg_content TEXT
+	)
+	BEGIN
+		INSERT INTO MessageT VALUES ( default, v_send_user_id, v_receive_user_id, 
+			v_msg_content, NOW(), 0 );
+	END$$
+	DELIMITER ;
+	
+################################################################
+
+	DROP PROCEDURE IF EXISTS p_admin_get_Allmessage;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_get_Allmessage()
+	BEGIN
+		SELECT * FROM MessageT WHERE receive_user_id = 'admin' GROUP BY the_time DESC;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_to_Allmessage;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_to_Allmessage()
+	BEGIN
+		SELECT * FROM MessageT WHERE send_user_id = 'admin' GROUP BY the_time DESC;
+	END$$
+	DELIMITER ;
+	
+	
+	
+	

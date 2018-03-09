@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mypage_message">
+
+
+<!-- **************** multi.mypage.message **************** -->
+
+   <resultMap id="RM_message" type="main.vo.MessageVO">
+      <result property="msg_no" column="msg_no" jdbcType="INTEGER"/>    
+      <result property="send_user_id" column="send_user_id" jdbcType="VARCHAR"/>     
+      <result property="receive_user_id" column="receive_user_id" jdbcType="VARCHAR"/>     
+	  <result property="msg_content" column="msg_content" jdbcType="VARCHAR"/>
+	  <result property="the_time" column="the_time" jdbcType="VARCHAR" />
+	  <result property="view_count" column="view_count" jdbcType="INTEGER"/>          
+   </resultMap>
+
+   <select id="mypage_message_findReceiveMessage" resultMap="RM_message">
+		SELECT * from messaget where receive_user_id = #{user_id};
+	</select>
+
+   <select id="mypage_message_readReceiveMessage" resultMap="RM_message">
+		SELECT * from messaget where msg_no = #{msg_no};
+	</select>
+
+   <select id="mypage_message_findSendMessage" resultMap="RM_message">
+		SELECT * from messaget where send_user_id = #{user_id};
+	</select>
+	
+   <select id="mypage_message_readSendMessage" resultMap="RM_message">
+		SELECT * from messaget where msg_no = #{msg_no};
+	</select>
+
+
+<!-- **************** multi.mypage.message.find_userclubInfo **************** -->
+   <resultMap id="RM_userclub" type="main.vo.User_clubVO">
+      <result property="club_no" column="club_no" jdbcType="INTEGER"/>    
+      <result property="user_id" column="user_id" jdbcType="VARCHAR"/>          
+   </resultMap>
+   
+ 	<resultMap id="RM_club_findAll" type="main.vo.ClubVO">
+      <result property="club_no"            column="club_no"         jdbcType="INTEGER"/>
+      <result property="user_id"            column="user_id"          jdbcType="VARCHAR"/>
+      <result property="club_name"        column="club_name"         jdbcType="VARCHAR"/>
+      <result property="club_content"       column="club_content"      jdbcType="VARCHAR"/>
+      <result property="club_thumb_img"   column="club_thumb_img"      jdbcType="VARCHAR"/>
+      <result property="max_member"       column="max_member"         jdbcType="INTEGER"/>
+      <result property="create_time"      column="create_time"      jdbcType="VARCHAR"/>
+      <result property="l_category_no"      column="l_category_no"      jdbcType="INTEGER"/>
+      <result property="c_category_no"      column="c_category_no"      jdbcType="INTEGER"/>
+      <result property="user_count"      column="user_count"         jdbcType="INTEGER"/>
+   	</resultMap>
+   
+  
+   <select id="mypage_message_findUserClub" resultMap="RM_club_findAll">
+		SELECT * from clubt c , user_clubt ut where c.club_no = ut.club_no AND ut.user_id = #{user_id};
+	</select>
+	
+   <select id="mypage_message_findUserClubMember" resultMap="RM_userclub">
+		SELECT * from user_clubt where club_no = #{club_no};
+	</select>
+	
+	<insert id="mypage_message_SendMessage" parameterType="main.vo.MessageVO">
+		INSERT into messaget values (default,#{send_user_id},#{receive_user_id},
+			#{msg_content},now(),0);
+	</insert>
+   
+   <select id="mypage_search_receive_msg" parameterType="multi.mypage.vo.Mypage_searchVO" resultType="main.vo.MessageVO">
+   		SELECT * from messaget where receive_user_id = #{user_id} AND 0=0
+   		<if test="start_no !=null">
+   			ORDER BY receive_user_id ASC LIMIT #{start_no},10
+   		</if>
+   </select>
+   
+   <select id="mypage_search_send_msg" parameterType="multi.mypage.vo.Mypage_searchVO" resultType="main.vo.MessageVO">
+   		SELECT * from messaget where send_user_id = #{user_id} AND 0=0
+   		<if test="start_no !=null">
+   			ORDER BY send_user_id ASC LIMIT #{start_no},10
+   		</if>
+   </select>
+   
+   <delete id="mypage_del_msg" parameterType="java.lang.String">
+   		DELETE FROM messaget where msg_no = #{msg_no}
+   </delete>
+   
+   
+</mapper>
+<!--
+
+-->

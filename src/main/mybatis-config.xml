@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+
+
+   <!-- 여기에 자기꺼 추가해주세요 이런식으로!! <mappers> <mapper resource="multi/temp/mapper/mapper.xml" 
+      /> </mappers> -->
+
+   <mappers>
+      <mapper resource="multi/space/mapper/space_procedure_mapper.xml" />
+      <mapper resource="multi/space/mapper/booking_mapper.xml" />
+      <mapper resource="multi/space/mapper/space_QnA_procedure_mapper.xml" />
+      <mapper resource="multi/space/mapper/space_QnA_Reple_procedure_mapper.xml" />
+      <mapper resource="multi/space/mapper/review_procedure_mapper.xml" />
+      <mapper resource="multi/space/mapper/user_procedure_mapper.xml"/>
+      <mapper resource="multi/space/mapper/host_procedure_mapper.xml"/>
+      <mapper resource="multi/space/mapper/bookmark_procedure_mapper.xml"/>
+      
+      <mapper resource="multi/home/userjoin/mapper/userjoin_mapper.xml" />
+      <mapper resource="multi/mypage/myinfo/mapper/myinfo_mapper.xml" />
+      <mapper resource="multi/mypage/mybookmark/mapper/bookmark_mapper.xml" />
+      <mapper resource="multi/mypage/myreview/mapper/mp_review_mapper.xml" />
+      <mapper resource="multi/mypage/myclub/mapper/myclub_mapper.xml" />
+      <mapper resource="multi/mypage/myhost/mapper/myhost_mapper.xml" />
+
+      <!-- 김소영 -->
+      <mapper resource="multi/faq/mapper/faq_mapper.xml" />
+      <mapper resource="multi/o2oQnA/mapper/o2oQnA_mapper.xml" />
+      <mapper resource="multi/community/board/mapper/community_board_mapper.xml" />
+      <mapper resource="multi/community/review/mapper/community_board_review_mapper.xml" />
+      <!-- 김소영 -->
+
+      <!-- 조우열 -->
+      <mapper resource="multi/notice/mapper/notice_mapper.xml" />
+      <mapper resource="multi/community/qna/mapper/community_qna_mapper.xml" />
+      <!-- 조우열 -->
+
+      <!-- 허빛찬샘 -->
+      <mapper resource="multi/club/mapper/club_mapper.xml" />
+      <mapper resource="multi/club/mapper/club_mapper_board.xml" />
+      <mapper resource="multi/club/mapper/club_mapper_notice.xml" />
+      <!-- 허빛찬샘 -->
+
+
+      <!-- 이양재 -->
+      <mapper resource="multi/admin/mapper/admin_user_mapper.xml" />
+      <mapper resource="multi/admin/mapper/admin_host_mapper.xml" />
+      <mapper resource="multi/admin/mapper/admin_notice_mapper.xml" />
+      <mapper resource="multi/admin/mapper/admin_faq_mapper.xml" />
+      <mapper resource="multi/admin/mapper/admin_o2oQnA_mapper.xml" />
+      <mapper resource="multi/admin/mapper/admin_space_mapper.xml" />
+      <mapper resource="multi/admin/mapper/admin_clubs_mapper.xml" />
+      <mapper resource="multi/admin/mapper/admin_message_mapper.xml" /> 
+      <mapper resource="multi/admin/mapper/admin_event_mapper.xml" /> 
+      <mapper resource="multi/admin/mapper/admin_community_freeboard_mapper.xml" />
+      <mapper resource="multi/admin/mapper/admin_community_qna_mapper.xml" />
+      <mapper resource="multi/admin/mapper/admin_community_review_mapper.xml" /> 
+      <!-- 이양재 -->
+
+      <!-- 안수진 -->
+        <mapper resource="multi/home/login/mapper/home_login_mapper.xml" />
+         <mapper resource="multi/mypage/booking/mapper/mypage_booking_mapper.xml" />
+         <mapper resource="multi/mypage/qna/mapper/mypage_qna_mapper.xml" />
+         <mapper resource="multi/mypage/message/mapper/mypage_message_mapper.xml" />
+         <mapper resource="multi/mypage/myinfo/mapper/mypage_myinfo_sujin_mapper.xml" />
+         
+         <mapper resource="multi/home/login/mapper/home_login_mapper_proc.xml" />
+         <mapper resource="multi/mypage/booking/mapper/mypage_booking_mapper_proc.xml" />
+         <mapper resource="multi/mypage/qna/mapper/mypage_qna_mapper_proc.xml" />
+         <mapper resource="multi/mypage/message/mapper/mypage_message_mapper_proc.xml" />
+         <mapper resource="multi/mypage/myinfo/mapper/mypage_myinfo_sujin_mapper_proc.xml" />   
+      <!-- 안수진 -->
+      
+      <!-- 배승현 -->
+      <mapper resource="multi/event/mapper/event_mapper.xml"/>
+      <!-- 배승현 -->
+   </mappers>
+
+
+</configuration>

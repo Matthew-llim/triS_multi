@@ -1,0 +1,58 @@
+#home_login_proc
+DROP PROCEDURE IF EXISTS p_home_login;
+DELIMITER $$
+CREATE PROCEDURE p_home_login(
+	IN v_user_id VARCHAR(20),
+	IN v_user_passwd VARCHAR(20)
+)
+BEGIN
+	SELECT * from usert where user_id = v_user_id AND passwd = v_user_passwd;
+END$$
+DELIMITER ;
+
+
+
+#home_login_find_user_info_proc
+DROP PROCEDURE IF EXISTS p_home_login_find_user_info;
+DELIMITER $$
+CREATE PROCEDURE p_home_login_find_user_info(
+	IN v_user_id VARCHAR(20)
+)
+BEGIN
+	SELECT * from usert where user_id = v_user_id;
+END$$
+DELIMITER ;
+	
+	
+	
+#home_login_find_user_id_proc
+DROP PROCEDURE IF EXISTS p_home_login_find_user_id;
+DELIMITER $$
+CREATE PROCEDURE p_home_login_find_user_id(
+	IN v_user_name VARCHAR(10),
+	IN v_ssn1 char(6),
+	IN v_ssn2 char(7)
+	
+)
+BEGIN
+	SELECT * from usert where user_name = v_user_name AND ssn1 = v_ssn1 AND ssn2 = v_ssn2;
+END$$
+DELIMITER ;
+
+	
+	
+#home_login_find_passwd_proc
+DROP PROCEDURE IF EXISTS p_home_login_find_passwd;
+DELIMITER $$
+CREATE PROCEDURE p_home_login_find_passwd(
+	IN v_user_name VARCHAR(10),
+	IN v_ssn1 char(6),
+	IN v_ssn2 char(7),
+	IN v_user_id VARCHAR(20)
+)
+BEGIN
+	SELECT * from usert where user_name = v_user_name AND ssn1 = v_ssn1 AND ssn2 = v_ssn2 AND user_id = v_user_id;
+END$$
+DELIMITER ;
+
+

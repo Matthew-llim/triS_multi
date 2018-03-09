@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="admin_message">
+	<!-- 메시지 부분 -->
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_message_write;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_message_write(
+		IN v_send_user_id VARCHAR(50),
+		IN v_receive_user_id VARCHAR(50),
+		IN v_msg_content TEXT
+	)
+	BEGIN
+		INSERT INTO messaget VALUES ( default, v_send_user_id, v_receive_user_id, 
+			v_msg_content, NOW(), 0 );
+	END$$
+	DELIMITER ;
+	-->
+	<parameterMap id="PM_p_admin_message_write" type="main.vo.MessageVO" >
+		<parameter property="send_user_id" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="receive_user_id" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="msg_content" mode="IN" jdbcType="VARCHAR"/>
+	</parameterMap>
+	<update id="p_admin_message_write" statementType="CALLABLE"
+		parameterType = "main.vo.MessageVO"
+		parameterMap = "PM_p_admin_message_write">
+		{call p_admin_message_write(?,?,?)}
+	</update>
+	
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_get_Allmessage;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_get_Allmessage()
+	BEGIN
+		SELECT * FROM messaget WHERE receive_user_id = 'admin' GROUP BY the_time DESC;
+	END$$
+	DELIMITER ;
+	-->
+	<resultMap id="RM_p_admin_get_Allmessage" type="main.vo.MessageVO" >
+		<result property="msg_no" column="msg_no" jdbcType="INTEGER" />
+		<result property="send_user_id" column="send_user_id" jdbcType="VARCHAR" />
+		<result property="receive_user_id" column="receive_user_id" jdbcType="VARCHAR" />
+		<result property="msg_content" column="msg_content" jdbcType="VARCHAR" />
+		<result property="the_time" column="the_time" jdbcType="VARCHAR" />
+		<result property="view_count" column="view_count" jdbcType="INTEGER" />
+	</resultMap>
+	<select id="p_admin_get_Allmessage" statementType="CALLABLE" resultMap="RM_p_admin_get_Allmessage">
+		{call p_admin_get_Allmessage()}
+	</select>
+	
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_to_Allmessage;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_to_Allmessage()
+	BEGIN
+		SELECT * FROM messaget WHERE send_user_id = 'admin' GROUP BY the_time DESC;
+	END$$
+	DELIMITER ;
+	-->
+	<resultMap id="RM_p_admin_to_Allmessage" type="main.vo.MessageVO" >
+		<result property="msg_no" column="msg_no" jdbcType="INTEGER" />
+		<result property="send_user_id" column="send_user_id" jdbcType="VARCHAR" />
+		<result property="receive_user_id" column="receive_user_id" jdbcType="VARCHAR" />
+		<result property="msg_content" column="msg_content" jdbcType="VARCHAR" />
+		<result property="the_time" column="the_time" jdbcType="VARCHAR" />
+		<result property="view_count" column="view_count" jdbcType="INTEGER" />
+	</resultMap>
+	<select id="p_admin_to_Allmessage" statementType="CALLABLE" resultMap="RM_p_admin_to_Allmessage">
+		{call p_admin_to_Allmessage()}
+	</select>
+	
+	
+	<select id="admin_search_All" parameterType="multi.admin.vo.Admin_searchVO"
+		resultType="main.vo.MessageVO">
+
+	SELECT * FROM messaget WHERE send_user_id = 'admin'
+	<if test="search_option == 1">
+	AND receive_user_id like '%${search_content}%'
+	</if>
+	<if test="search_option == 2">
+	AND msg_content like '%${search_content}%'
+	</if>
+	<if test="search_option == 3">
+	AND the_time like '%${search_content}%'
+	</if>
+	<if test="start_no != null">
+		ORDER BY msg_no DESC LIMIT #{start_no},10
+	</if>
+
+</select>
+	
+</mapper>
+

@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="admin_o2oQnA">
+	<!-- 1:1 문의 부분 -->
+	<select id="sysdate" resultType="java.lang.String">
+		SELECT NOW()
+	</select>
+
+	<!-- 
+	DROP PROCEDURE IF EXISTS p_admin_o2oQnA_add;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_o2oQnA_add(
+		IN v_o2o_title TEXT,
+		IN v_o2o_content TEXT,
+		IN v_o2o_email TEXT,
+		IN v_o2o_type TEXT,
+		IN v_o2o_phone TEXT
+	)
+	BEGIN
+		INSERT INTO o2oqnat (o2o_title, o2o_content, o2o_email, o2o_type, o2o_phone, the_time, re_o2o_content ) VALUES( v_o2o_title, v_o2o_content, v_o2o_email,
+ 	v_o2o_type, v_o2o_phone, NOW(), '' );
+	END$$
+	DELIMITER ;
+	-->
+	<parameterMap id="PM_p_admin_o2oQnA_add" type="main.vo.O2OQnAVO" >
+		<parameter property="o2o_title" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="o2o_content" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="o2o_email" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="o2o_type" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="o2o_phone" mode="IN" jdbcType="VARCHAR"/>
+	</parameterMap>
+	<insert id="p_admin_o2oQnA_add" statementType="CALLABLE"
+		parameterType = "main.vo.O2OQnAVO"
+		parameterMap = "PM_p_admin_o2oQnA_add">
+		{call p_admin_o2oQnA_add(?,?,?,?,?)}
+	</insert>
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_o2oQnA_findAll_noRe;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_o2oQnA_findAll_noRe()
+	BEGIN
+		SELECT * FROM o2oqnat WHERE re_o2o_content = '' ORDER BY o2o_no DESC;
+	END$$
+	DELIMITER ;
+	-->
+	<resultMap id="RM_p_admin_o2oQnA_findAll_noRe" type="main.vo.O2OQnAVO" >
+		<result property="o2o_no" column="o2o_no" jdbcType="INTEGER" />
+		<result property="o2o_title" column="o2o_title" jdbcType="VARCHAR" />
+		<result property="o2o_content" column="o2o_content" jdbcType="VARCHAR" />
+		<result property="o2o_email" column="o2o_email" jdbcType="VARCHAR" />
+		<result property="o2o_type" column="o2o_type" jdbcType="VARCHAR" />
+		<result property="o2o_phone" column="o2o_phone" jdbcType="VARCHAR" />
+		<result property="the_time" column="the_time" jdbcType="VARCHAR" />
+		<result property="re_o2o_content" column="re_o2o_content" jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="p_admin_o2oQnA_findAll_noRe" statementType="CALLABLE" 
+		resultMap="RM_p_admin_o2oQnA_findAll_noRe">
+		{call p_admin_o2oQnA_findAll_noRe()}
+	</select>
+	
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_o2oQnA_findAll_Re;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_o2oQnA_findAll_Re()
+	BEGIN
+		SELECT * FROM o2oqnat WHERE re_o2o_content = '' ORDER BY o2o_no DESC;
+	END$$
+	DELIMITER ;
+	-->
+	<resultMap id="RM_p_admin_o2oQnA_findAll_Re" type="main.vo.O2OQnAVO" >
+		<result property="o2o_no" column="o2o_no" jdbcType="INTEGER" />
+		<result property="o2o_title" column="o2o_title" jdbcType="VARCHAR" />
+		<result property="o2o_content" column="o2o_content" jdbcType="VARCHAR" />
+		<result property="o2o_email" column="o2o_email" jdbcType="VARCHAR" />
+		<result property="o2o_type" column="o2o_type" jdbcType="VARCHAR" />
+		<result property="o2o_phone" column="o2o_phone" jdbcType="VARCHAR" />
+		<result property="the_time" column="the_time" jdbcType="VARCHAR" />
+		<result property="re_o2o_content" column="re_o2o_content" jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="p_admin_o2oQnA_findAll_Re" statementType="CALLABLE" resultMap="RM_p_admin_o2oQnA_findAll_Re">
+		{call p_admin_o2oQnA_findAll_Re()}
+	</select>
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_o2oQnA_checkOne;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_o2oQnA_checkOne(
+		IN v_o2o_no INT
+	)
+	BEGIN
+		SELECT * FROM o2oqnat WHERE o2o_no = v_o2o_no;
+	END$$
+	DELIMITER ;
+	-->
+	<parameterMap id="PM_p_admin_o2oQnA_checkOne" type="main.vo.O2OQnAVO">
+		<parameter property="o2o_no" mode="IN" jdbcType="INTEGER" />
+	</parameterMap>
+	<resultMap id="RM_p_admin_o2oQnA_checkOne" type="main.vo.O2OQnAVO" >
+		<result property="o2o_no" column="o2o_no" jdbcType="INTEGER" />
+		<result property="o2o_title" column="o2o_title" jdbcType="VARCHAR" />
+		<result property="o2o_content" column="o2o_content" jdbcType="VARCHAR" />
+		<result property="o2o_email" column="o2o_email" jdbcType="VARCHAR" />
+		<result property="o2o_type" column="o2o_type" jdbcType="VARCHAR" />
+		<result property="o2o_phone" column="o2o_phone" jdbcType="VARCHAR" />
+		<result property="the_time" column="the_time" jdbcType="VARCHAR" />
+		<result property="re_o2o_content" column="re_o2o_content" jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="p_admin_o2oQnA_checkOne" statementType="CALLABLE" 
+		resultMap="RM_p_admin_o2oQnA_checkOne"
+		parameterMap="PM_p_admin_o2oQnA_checkOne">
+		{call p_admin_o2oQnA_checkOne(?)}
+	</select>
+	
+	
+	<!-- 
+	DROP PROCEDURE IF EXISTS p_admin_writeConsult;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_writeConsult(
+		IN v_o2o_no INT,
+		IN v_re_o2o_content TEXT
+	)
+	BEGIN
+		UPDATE o2oqnat SET re_o2o_content = v_re_o2o_content WHERE o2o_no = v_o2o_no;
+	END$$
+	DELIMITER ;
+	-->
+	<parameterMap id="PM_p_admin_writeConsult" type="main.vo.O2OQnAVO" >
+		<parameter property="o2o_no" mode="IN" jdbcType="INTEGER" />
+		<parameter property="re_o2o_content" mode="IN" jdbcType="VARCHAR"/>
+	</parameterMap>
+	<update id="p_admin_writeConsult" statementType="CALLABLE"
+		parameterType = "main.vo.O2OQnAVO"
+		parameterMap = "PM_p_admin_writeConsult">
+		{call p_admin_writeConsult(?,?)}
+	</update>
+	
+	<select id="admin_search_All" parameterType="multi.admin.vo.Admin_searchVO"
+		resultType="main.vo.O2OQnAVO">
+
+	SELECT * FROM o2oqnat WHERE re_o2o_content = ''
+	<if test="search_option == 1">
+	AND o2o_title like '%${search_content}%'
+	</if>
+	<if test="search_option == 2">
+	AND o2o_content like '%${search_content}%'
+	</if>
+	<if test="search_option == 3">
+	AND o2o_title like '%${search_content}%'
+	OR o2o_content like '%${search_content}%'
+	</if>
+	<if test="search_option == 4">
+	AND o2o_email like '%${search_content}%'
+	</if>
+	<if test="search_option == 5">
+	AND o2o_type like '%${search_content}%'
+	</if>
+	<if test="search_option == 6">
+	AND o2o_phone like '%${search_content}%'
+	</if>
+	<if test="search_option == 7">
+	AND the_time like '%${search_content}%'
+	</if>
+	<if test="start_no != null">
+		ORDER BY o2o_no DESC LIMIT #{start_no},10
+	</if>
+
+	</select>
+	
+	<select id="admin_search_All2" parameterType="multi.admin.vo.Admin_searchVO"
+		resultType="main.vo.O2OQnAVO">
+
+	SELECT * FROM o2oqnat WHERE re_o2o_content != ''
+	<if test="search_option == 1">
+	AND o2o_title like '%${search_content}%'
+	</if>
+	<if test="search_option == 2">
+	AND o2o_content like '%${search_content}%'
+	</if>
+	<if test="search_option == 3">
+	AND o2o_title like '%${search_content}%'
+	OR o2o_content like '%${search_content}%'
+	</if>
+	<if test="search_option == 4">
+	AND o2o_email like '%${search_content}%'
+	</if>
+	<if test="search_option == 5">
+	AND o2o_type like '%${search_content}%'
+	</if>
+	<if test="search_option == 6">
+	AND o2o_phone like '%${search_content}%'
+	</if>
+	<if test="search_option == 7">
+	AND the_time like '%${search_content}%'
+	</if>
+	<if test="search_option == 8">
+	AND re_o2o_content like '%${search_content}%'
+	</if>
+	<if test="start_no != null">
+		ORDER BY o2o_no DESC LIMIT #{start_no},10
+	</if>
+
+	</select>
+	
+</mapper>
+

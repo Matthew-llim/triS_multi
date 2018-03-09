@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="admin_host">
+
+	<!-- 판매자 부분 -->
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_host_findAll;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_host_findAll()
+	BEGIN
+		SELECT * FROM hostt WHERE user_id IN ( SELECT user_id FROM usert WHERE grade='2');
+	END$$
+	DELIMITER ;
+	CALL p_admin_host_findAll();
+	-->
+	<resultMap id="RM_p_admin_host_findAll" type="main.vo.HostVO" >
+		<result property="crn" column="crn" jdbcType="VARCHAR" />
+		<result property="user_id" column="user_id" jdbcType="VARCHAR" />
+		<result property="host_name" column="host_name" jdbcType="VARCHAR" />
+		<result property="host_account" column="host_account" jdbcType="VARCHAR" />
+		<result property="account_name" column="account_name" jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="p_admin_host_findAll" statementType="CALLABLE" resultMap="RM_p_admin_host_findAll">
+		{call p_admin_host_findAll()}
+	</select>
+	
+	
+	<!-- 
+	DROP PROCEDURE IF EXISTS p_admin_host_request_findAll;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_host_request_findAll()
+	BEGIN
+		SELECT * FROM hostapplyt;
+	END$$
+	DELIMITER ;
+	-->
+	<resultMap id="RM_p_admin_host_request_findAll" type="main.vo.HostApplyVO" >
+		<result property="host_apply_no" column="host_apply_no" jdbcType="INTEGER" />
+		<result property="crn" column="crn" jdbcType="VARCHAR" />
+		<result property="user_id" column="user_id" jdbcType="VARCHAR" />
+		<result property="host_name" column="host_name" jdbcType="VARCHAR" />
+		<result property="host_account" column="host_account" jdbcType="VARCHAR" />
+		<result property="account_name" column="account_name" jdbcType="VARCHAR" />
+		<result property="etc" column="etc" jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="p_admin_host_request_findAll" statementType="CALLABLE" resultMap="RM_p_admin_host_request_findAll">
+		{call p_admin_host_request_findAll()}
+	</select>
+	
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_host_one_person_check;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_host_one_person_check(
+		IN v_crn VARCHAR(50)
+	)
+	BEGIN
+		SELECT * FROM hostapplyt WHERE crn = v_crn;
+	END$$
+	DELIMITER ;
+	CALL p_admin_host_one_person_check('444-44-44444');
+	-->
+	<parameterMap id="PM_p_admin_host_one_person_check" type="main.vo.HostApplyVO" >
+		<parameter property="crn" mode="IN" jdbcType="VARCHAR"/>
+	</parameterMap>
+	<resultMap id="RM_p_admin_host_one_person_check" type="main.vo.HostApplyVO" >
+		<result property="host_apply_no" column="host_apply_no" jdbcType="INTEGER" />
+		<result property="crn" column="crn" jdbcType="VARCHAR" />
+		<result property="user_id" column="user_id" jdbcType="VARCHAR" />
+		<result property="host_name" column="host_name" jdbcType="VARCHAR" />
+		<result property="host_account" column="host_account" jdbcType="VARCHAR" />
+		<result property="account_name" column="account_name" jdbcType="VARCHAR" />
+		<result property="etc" column="etc" jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="p_admin_host_one_person_check" statementType="CALLABLE" 
+		resultMap="RM_p_admin_host_one_person_check"
+		parameterMap="PM_p_admin_host_one_person_check">
+		{call p_admin_host_one_person_check(?)}
+	</select>
+
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_host_user_accept;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_host_user_accept(
+		IN v_crn VARCHAR(50),
+		IN v_account_name VARCHAR(7),
+		IN v_user_id VARCHAR(50),
+		IN v_host_name VARCHAR(50),
+		IN v_host_account VARCHAR(50)
+	)
+	BEGIN
+		DECLARE exit handler FOR SQLEXCEPTION
+		BEGIN
+			ROLLBACK;
+			SIGNAL SQLSTATE '45000';
+		END;
+		START TRANSACTION;
+			DELETE FROM hostapplyt WHERE user_id = v_user_id AND crn = v_crn;
+			INSERT INTO hostt VALUES ( v_crn, v_account_name, v_user_id, v_host_name, v_host_account );
+			UPDATE usert SET grade='2' WHERE user_id = v_user_id;
+		COMMIT;
+	END$$
+	DELIMITER ;
+	-->
+	<parameterMap id="PM_p_admin_host_user_accept" type="main.vo.HostApplyVO" >
+		<parameter property="crn" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="account_name" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="user_id" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="host_name" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="host_account" mode="IN" jdbcType="VARCHAR"/>
+	</parameterMap>
+	<update id="p_admin_host_user_accept" statementType="CALLABLE"
+		parameterType = "main.vo.HostApplyVO"
+		parameterMap = "PM_p_admin_host_user_accept">
+		{call p_admin_host_user_accept(?,?,?,?,?)}
+	</update>
+	
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_host_user_refuse;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_host_user_refuse(
+		IN v_host_apply_no INT,
+		IN v_etc VARCHAR(50)
+	)
+	BEGIN
+		UPDATE hostapplyt SET etc = v_etc WHERE host_apply_no = v_host_apply_no;
+	END$$
+	DELIMITER ;
+	-->
+	<parameterMap id="PM_p_admin_host_user_refuse" type="main.vo.HostApplyVO" >
+		<parameter property="host_apply_no" mode="IN" jdbcType="INTEGER"/>
+		<parameter property="etc" mode="IN" jdbcType="VARCHAR"/>
+	</parameterMap>
+	<update id="p_admin_host_user_refuse" statementType="CALLABLE"
+		parameterType = "main.vo.HostApplyVO"
+		parameterMap = "PM_p_admin_host_user_refuse">
+		{call p_admin_host_user_refuse(?,?)}
+	</update>
+	
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_host_user_remove_request;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_host_user_remove_request(
+		IN v_host_apply_no VARCHAR(50)
+	)
+	BEGIN	
+		DELETE FROM hostapplyt WHERE host_apply_no = v_host_apply_no;
+	END$$
+	DELIMITER ;
+	-->
+	<parameterMap id="PM_p_admin_host_user_remove_request" type="main.vo.HostApplyVO" >
+		<parameter property="host_apply_no" mode="IN" jdbcType="VARCHAR"/>
+	</parameterMap>
+	<delete id="p_admin_host_user_remove_request" statementType="CALLABLE"
+		parameterType = "main.vo.HostApplyVO"
+		parameterMap = "PM_p_admin_host_user_remove_request">
+		{call p_admin_host_user_remove_request(?)}
+	</delete>
+	
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_host_user_downgrade;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_host_user_downgrade(
+		IN v_crn VARCHAR(50),
+		IN v_user_id VARCHAR(50),
+		IN v_send_user_id VARCHAR(50),
+		IN v_receive_user_id VARCHAR(50),
+		IN v_msg_content TEXT
+	)
+	BEGIN	
+		DECLARE exit handler FOR SQLEXCEPTION
+		BEGIN
+			ROLLBACK;
+			SIGNAL SQLSTATE '45000';
+		END;
+		START TRANSACTION;
+			DELETE FROM hostt WHERE crn = v_crn;
+			UPDATE usert SET grade=1 WHERE user_id = v_user_id;
+			INSERT INTO MessageT VALUES ( default, v_send_user_id, v_receive_user_id, v_msg_content, NOW(), 0 );
+		COMMIT;
+	END$$
+	DELIMITER ;
+	-->
+	<parameterMap id="PM_p_admin_host_user_downgrade" type="multi.admin.vo.Admin_Host_DowngradeVO" >
+		<parameter property="crn" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="user_id" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="send_user_id" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="receive_user_id" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="msg_content" mode="IN" jdbcType="VARCHAR"/>
+	</parameterMap>
+	<update id="p_admin_host_user_downgrade" statementType="CALLABLE"
+		parameterType = "main.vo.HostVO"
+		parameterMap = "PM_p_admin_host_user_downgrade">
+		{call p_admin_host_user_downgrade(?,?,?,?,?)}
+	</update>
+	
+	
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_host_user_remove;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_host_user_remove(
+		IN v_crn VARCHAR(50),
+		IN v_user_id VARCHAR(50)
+	)
+	BEGIN	
+		DECLARE exit handler FOR SQLEXCEPTION
+		BEGIN
+			ROLLBACK;
+			SIGNAL SQLSTATE '45000';
+		END;
+		START TRANSACTION;
+			DELETE FROM hostt WHERE crn = v_crn;
+			DELETE FROM usert WHERE user_id = v_user_id;
+		COMMIT;
+	END$$
+	DELIMITER ;
+	CALL p_admin_host_user_remove('222-22-22222','imseller');
+	-->
+	<parameterMap id="PM_p_admin_host_user_remove" type="main.vo.HostVO" >
+		<parameter property="crn" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="user_id" mode="IN" jdbcType="VARCHAR"/>
+	</parameterMap>
+	<delete id="p_admin_host_user_remove" statementType="CALLABLE"
+		parameterType = "main.vo.HostVO"
+		parameterMap = "PM_p_admin_host_user_remove">
+		{call p_admin_host_user_remove(?,?)}
+	</delete>
+	
+	
+	
+	
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_host_user_findUserInfo;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_host_user_findUserInfo(
+		IN v_user_id VARCHAR(50)
+	)
+	BEGIN
+		SELECT * FROM usert WHERE user_id = v_user_id;
+	END$$
+	DELIMITER ;
+	CALL p_admin_host_user_findUserInfo('seller');
+	-->
+	<parameterMap id="PM_p_admin_host_user_findUserInfo" type="main.vo.HostVO" >
+		<parameter property="user_id" mode="IN" jdbcType="VARCHAR"/>
+	</parameterMap>
+	<resultMap id="RM_p_admin_host_user_findUserInfo" type="main.vo.UserVO" >
+		<result property="user_id" column="user_id" jdbcType="VARCHAR" />
+		<result property="ssn1" column="ssn1" jdbcType="VARCHAR" />
+		<result property="ssn2" column="ssn2" jdbcType="VARCHAR" />
+		<result property="passwd" column="passwd" jdbcType="VARCHAR" />
+		<result property="user_name" column="user_name" jdbcType="VARCHAR" />
+		<result property="gender" column="gender" jdbcType="VARCHAR" />
+		<result property="phone" column="phone" jdbcType="VARCHAR" />
+		<result property="nickname" column="nickname" jdbcType="VARCHAR" />
+		<result property="account_name" column="account_name" jdbcType="VARCHAR" />
+		<result property="email" column="email" jdbcType="VARCHAR" />
+		<result property="grade" column="grade" jdbcType="INTEGER" />
+	</resultMap>
+	<select id="p_admin_host_user_findUserInfo" statementType="CALLABLE" 
+		resultMap="RM_p_admin_host_user_findUserInfo"
+		parameterMap="PM_p_admin_host_user_findUserInfo">
+		{call p_admin_host_user_findUserInfo(?)}
+	</select>
+	
+	<select id="admin_search_host_user" parameterType="multi.admin.vo.Admin_searchVO" 
+		resultType="main.vo.HostVO">
+		SELECT * FROM hostt WHERE 0=0
+		<if test="search_option == 1">
+		AND crn like '%${search_content}%'
+		</if>
+		<if test="search_option == 2">
+		AND user_id like '%${search_content}%'
+		</if>
+		<if test="search_option == 3">
+		AND host_name like '%${search_content}%'
+		</if>
+		<if test="search_option == 4">
+		AND host_account like '%${search_content}%'
+		</if>
+		<if test="search_option == 5">
+		AND account_name like '%${search_content}%'
+		</if>
+		<if test="start_no != null">
+			ORDER BY crn DESC LIMIT #{start_no},10
+		</if>
+	</select>
+	
+	<select id="admin_search_host_request_user" parameterType="multi.admin.vo.Admin_searchVO" 
+		resultType="main.vo.HostApplyVO">
+		SELECT * FROM hostapplyt WHERE 0=0
+		<if test="search_option == 1">
+		AND crn like '%${search_content}%'
+		</if>
+		<if test="search_option == 2">
+		AND user_id like '%${search_content}%'
+		</if>
+		<if test="search_option == 3">
+		AND host_name like '%${search_content}%'
+		</if>
+		<if test="search_option == 4">
+		AND host_account like '%${search_content}%'
+		</if>
+		<if test="search_option == 5">
+		AND account_name like '%${search_content}%'
+		</if>
+		<if test="search_option == 6">
+		AND etc like '%${search_content}%'
+		</if>
+		<if test="start_no != null">
+			ORDER BY crn DESC LIMIT #{start_no},10
+		</if>
+	</select>
+	
+</mapper>
+
+
+
+
+
+

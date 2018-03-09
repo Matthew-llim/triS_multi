@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="bookmark">
+
+	<insert id="add_bookmark" parameterType="main.vo.BookmarkVO">
+		INSERT INTO BookmarkT VALUES (#{user_id},#{space_no})
+	</insert>
+
+	<select id="find_bookmark" parameterType="main.vo.BookmarkVO" resultType="main.vo.BookmarkVO">
+		SELECT * FROM BookmarkT WHERE user_id=#{user_id} AND space_no=#{space_no}
+	</select>
+	
+	<delete id="del_bookmark" parameterType="main.vo.BookmarkVO">
+		DELETE FROM BookmarkT WHERE user_id=#{user_id} AND space_no=#{space_no}
+	</delete>
+</mapper>
+
+
+
+
+
+

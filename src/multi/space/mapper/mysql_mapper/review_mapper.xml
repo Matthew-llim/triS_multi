@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="review">
+	
+	<insert id="add_review" parameterType="main.vo.ReviewVO">
+		{call p_add_review(#{space_no},#{user_id},#{review_title},#{review_content},#{review_score},#{review_img})}
+	</insert>
+	
+	<!-- 
+	<insert id="add_review" parameterType="main.vo.ReviewVO">
+		INSERT INTO ReviewT VALUES (default,#{space_no},#{user_id},#{review_title},
+		#{review_content},NOW(),#{review_score},#{review_img})
+	</insert>
+	 -->
+	 
+	<select id="find_review_by_space_no" parameterType="multi.space.vo.Review_searchVO" resultType="main.vo.ReviewVO">
+		SELECT * FROM ReviewT WHERE space_no=#{space_no}
+		<if test="start_no != null">
+			ORDER BY review_no ASC LIMIT #{start_no},5
+		</if>
+	</select>
+	
+	<delete id="del_review_by_review_no" parameterType="main.vo.ReviewVO">
+		{call p_del_review_by_review_no(#{review_no})}
+	</delete>
+	
+	<!-- 
+	<delete id="del_review_by_review_no" parameterType="main.vo.ReviewVO">
+		DELETE FROM ReviewT WHERE review_no=#{review_no}
+	</delete>
+	 -->
+	 
+	<select id="find_review_by_review_no" parameterType="main.vo.ReviewVO" resultType="main.vo.ReviewVO">
+		{call p_find_review_by_review_no(#{review_no})}
+	</select>
+	
+	<!-- 
+	<select id="find_review_by_review_no" parameterType="main.vo.ReviewVO" resultType="main.vo.ReviewVO">
+		SELECT * FROM ReviewT WHERE review_no=#{review_no}
+	</select>
+	 -->
+	
+
+</mapper>
+
+
+
+
+
+

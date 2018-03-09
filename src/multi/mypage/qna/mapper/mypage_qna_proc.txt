@@ -1,0 +1,67 @@
+#mypage_qna_find_user_info_proc
+DROP PROCEDURE IF EXISTS p_mypage_qna_find_user_info;
+DELIMITER $$
+CREATE PROCEDURE p_mypage_qna_find_user_info(
+	IN v_user_id VARCHAR(20)
+)
+BEGIN
+	SELECT * from usert where user_id = v_user_id;
+END$$
+DELIMITER ;
+DELIMITER ;
+	
+	
+	
+#mypage_qna_qna_info_proc
+DROP PROCEDURE IF EXISTS p_mypage_qna_qna_info;
+DELIMITER $$
+CREATE PROCEDURE p_mypage_qna_qna_info(
+	IN v_user_id VARCHAR(20)
+)
+BEGIN
+	SELECT * from space_qnat where user_id = v_user_id;
+END$$
+DELIMITER ;
+DELIMITER ;
+	
+	
+	
+#mypage_qna_qna_reple_info_proc
+DROP PROCEDURE IF EXISTS p_mypage_qna_qna_reple_info;
+DELIMITER $$
+CREATE PROCEDURE p_mypage_qna_qna_reple_info(
+	IN v_space_qna_no INT(11)
+)
+BEGIN
+	SELECT * from space_qna_replet where space_qna_no = v_space_qna_no;
+END$$
+DELIMITER ;
+DELIMITER ;
+
+
+	
+#mypage_qna_qna_info_byqnano_proc
+DROP PROCEDURE IF EXISTS p_mypage_qna_qna_info_byqnano;
+DELIMITER $$
+CREATE PROCEDURE p_mypage_qna_qna_info_byqnano(
+	IN v_space_qna_no INT(11)
+)
+BEGIN
+	select * from space_qnat where space_qna_no = v_space_qna_no;
+END$$
+DELIMITER ;
+DELIMITER ;
+
+
+		
+#mypage_qna_del_space_qna_proc
+DROP PROCEDURE IF EXISTS p_mypage_qna_del_space_qna;
+DELIMITER $$
+CREATE PROCEDURE p_mypage_qna_del_space_qna(
+	IN v_space_qna_no INT(11)
+)
+BEGIN
+	delete from space_qnat where space_qna_no = v_space_qna_no;
+END$$
+DELIMITER ;
+DELIMITER ;

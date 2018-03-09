@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="admin_space">
+	
+	<!-- 공간 부분 -->
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_host_space_check;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_host_space_check(
+		IN v_crn VARCHAR(50)
+	)
+	BEGIN
+		SELECT * FROM spacet WHERE crn = v_crn;
+	END$$
+	DELIMITER ;
+	-->
+	<parameterMap id="PM_p_admin_host_space_check" type="main.vo.SpaceVO" >
+		<parameter property="crn" mode="IN" jdbcType="INTEGER"/>
+	</parameterMap>
+	<resultMap id="RM_p_admin_host_space_check" type="main.vo.SpaceVO" >
+		<result property="space_no" column="space_no" jdbcType="INTEGER" />
+		<result property="crn" column="crn" jdbcType="VARCHAR" />
+		<result property="space_title" column="space_title" jdbcType="VARCHAR" />
+		<result property="space_content" column="space_content" jdbcType="VARCHAR" />
+		<result property="space_thumb_img" column="space_thumb_img" jdbcType="VARCHAR" />
+		<result property="open_time" column="open_time" jdbcType="VARCHAR" />
+		<result property="close_time" column="close_time" jdbcType="VARCHAR" />
+		<result property="price" column="price" jdbcType="INTEGER" />
+		<result property="max_people" column="max_people" jdbcType="INTEGER" />
+		<result property="min_people" column="min_people" jdbcType="INTEGER" />
+		<result property="space_call" column="space_call" jdbcType="VARCHAR" />
+		<result property="zipcode" column="zipcode" jdbcType="VARCHAR" />
+		<result property="s_category_no" column="s_category_no" jdbcType="INTEGER" />
+		<result property="l_category_no" column="l_category_no" jdbcType="INTEGER" />
+		<result property="the_time" column="the_time" jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="p_admin_host_space_check" statementType="CALLABLE" 
+		resultMap="RM_p_admin_host_space_check"
+		parameterMap="PM_p_admin_host_space_check">
+		{call p_admin_host_space_check(?)}
+	</select>
+	
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_remove_Space;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_remove_Space(
+		IN v_space_no INT
+	)
+	BEGIN	
+			DELETE FROM bookingt WHERE space_no = v_space_no;
+			DELETE FROM space_qnat WHERE space_no = v_space_no;
+			DELETE FROM space_qna_RepleT WHERE space_no = v_space_no;
+			DELETE FROM imaget WHERE space_no = v_space_no;
+			DELETE FROM reviewt WHERE space_no = v_space_no;
+			DELETE FROM bookmarkt WHERE space_no = v_space_no;
+			DELETE FROM bookingt WHERE space_no = v_space_no;
+			DELETE FROM spacet WHERE space_no = v_space_no;
+	END$$
+	DELIMITER ;
+	-->
+	<parameterMap id="PM_p_admin_remove_Space" type="main.vo.SpaceVO" >
+		<parameter property="space_no" mode="IN" jdbcType="INTEGER"/>
+	</parameterMap>
+	<delete id="p_admin_remove_Space" statementType="CALLABLE"
+		parameterType = "main.vo.SpaceVO"
+		parameterMap = "PM_p_admin_remove_Space">
+		{call p_admin_remove_Space(?)}
+	</delete>
+	
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_space_crn_check;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_space_crn_check(
+		IN v_crn VARCHAR(50)
+	)
+	BEGIN
+		SELECT * FROM hostt WHERE crn = v_crn;
+	END$$
+	DELIMITER ;
+	-->
+	<parameterMap id="PM_p_admin_space_crn_check" type="main.vo.HostVO" >
+		<parameter property="crn" mode="IN" jdbcType="VARCHAR"/>
+	</parameterMap>
+	<resultMap id="RM_p_admin_space_crn_check" type="main.vo.HostVO" >
+		<result property="crn" column="crn" jdbcType="VARCHAR" />
+		<result property="user_id" column="user_id" jdbcType="VARCHAR" />
+		<result property="host_name" column="host_name" jdbcType="VARCHAR" />
+		<result property="host_account" column="host_account" jdbcType="VARCHAR" />
+		<result property="account_name" column="account_name" jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="p_admin_space_crn_check" statementType="CALLABLE" 
+		resultMap="RM_p_admin_space_crn_check"
+		parameterMap="PM_p_admin_space_crn_check">
+		{call p_admin_space_crn_check(?)}
+	</select>
+	
+	
+	<select id="admin_space_search" parameterType="multi.admin.vo.Admin_searchVO"
+		resultType="main.vo.SpaceVO">
+		SELECT * FROM spacet WHERE 0=0
+		<if test="start_no != null">
+			ORDER BY space_no DESC LIMIT #{start_no},10
+		</if>
+	</select>
+	
+	
+	<resultMap id="RM_admin_spaces" type="main.vo.SpaceVO" >
+		<result property="space_no" column="space_no" jdbcType="INTEGER" />
+		<result property="crn" column="crn" jdbcType="VARCHAR" />
+		<result property="space_title" column="space_title" jdbcType="VARCHAR" />
+		<result property="space_content" column="space_content" jdbcType="VARCHAR" />
+		<result property="space_thumb_img" column="space_thumb_img" jdbcType="VARCHAR" />
+		<result property="open_time" column="open_time" jdbcType="VARCHAR" />
+		<result property="close_time" column="close_time" jdbcType="VARCHAR" />
+		<result property="price" column="price" jdbcType="INTEGER" />
+		<result property="max_people" column="max_people" jdbcType="INTEGER" />
+		<result property="min_people" column="min_people" jdbcType="INTEGER" />
+		<result property="space_call" column="space_call" jdbcType="VARCHAR" />
+		<result property="zipcode" column="zipcode" jdbcType="VARCHAR" />
+		<result property="s_category_no" column="s_category_no" jdbcType="INTEGER" />
+		<result property="l_category_no" column="l_category_no" jdbcType="INTEGER" />
+		<result property="the_time" column="the_time" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="admin_space_search_All" resultMap="RM_admin_spaces" 
+		parameterType="multi.admin.vo.Admin_search2VO">
+		SELECT * FROM spacet 
+		<where>
+			<foreach item="vo" collection="list" separator="AND">
+				<choose>
+					<when test="vo.option=='crn'">
+						crn = #{vo.content}
+					</when>
+					<when test="vo.option=='space_title'">
+						space_title like '%${vo.content}%'
+					</when>
+					<when test="vo.option=='space_content'">
+						space_content like '%${vo.content}%'
+					</when>
+					<when test="vo.option=='open_time'">
+						open_time like '%${vo.content}%'
+					</when>
+					<when test="vo.option=='close_time'">
+						close_time like '%${vo.content}%'
+					</when>
+					<when test="vo.option=='price'">
+						price like '%${vo.content}%'
+					</when>
+					<when test="vo.option=='max_people'">
+						max_people like '%${vo.content}%'
+					</when>
+					<when test="vo.option=='min_people'">
+						min_people like '%${vo.content}%'
+					</when>
+					<when test="vo.option=='space_call'">
+						space_call like '%${vo.content}%'
+					</when>
+					<when test="vo.option=='zipcode'">
+						zipcode like '%${vo.content}%'
+					</when>
+					<when test="vo.option=='s_category_no'">
+						s_category_no like '%${vo.content}%'
+					</when>
+					<when test="vo.option=='l_category_no'">
+						l_category_no like '%${vo.content}%'
+					</when>
+					<when test="vo.option=='the_time'">
+						the_time like '%${vo.content}%'
+					</when>
+				</choose>
+			</foreach>
+		</where>
+		
+		<foreach item="vo" collection="list">
+			<choose>
+				<when test="vo.option2==''">
+					
+				</when>
+				<when test="vo.option2=='d_desc'">
+					ORDER BY space_no DESC
+				</when>
+				<when test="vo.option2=='d_asc'">
+					ORDER BY space_no ASC
+				</when>
+				<when test="vo.option2=='p_desc'">
+					ORDER BY price DESC
+				</when>
+				<when test="vo.option2=='p_asc'">
+					ORDER BY price ASC
+				</when>
+			</choose>
+		</foreach>
+		
+	</select>
+	
+	<select id="admin_search_All_specific_host" parameterType="multi.admin.vo.Admin_searchVO"
+		resultType="main.vo.SpaceVO">
+
+	SELECT * FROM spacet WHERE crn = #{crn} AND 0 = 0
+	<if test="search_option == 1">
+	AND crn like '%${search_content}%'
+	</if>
+	<if test="search_option == 2">
+	AND space_title like '%${search_content}%'
+	</if>
+	<if test="search_option == 3">
+	AND space_content like '%${search_content}%'
+	</if>
+	<if test="search_option == 4">
+	AND open_time like '%${search_content}%'
+	</if>
+	<if test="search_option == 5">
+	AND close_time like '%${search_content}%'
+	</if>
+	<if test="search_option == 6">
+	AND price like '%${search_content}%'
+	</if>
+	<if test="search_option == 7">
+	AND max_people like '%${search_content}%'
+	</if>
+	<if test="search_option == 8">
+	AND min_people like '%${search_content}%'
+	</if>
+	<if test="search_option == 9">
+	AND space_call like '%${search_content}%'
+	</if>
+	<if test="search_option == 10">
+	AND zipcode like '%${search_content}%'
+	</if>
+	<if test="search_option == 11">
+	AND s_category_no like '%${search_content}%'
+	</if>
+	<if test="search_option == 12">
+	AND l_category_no like '%${search_content}%'
+	</if>
+	<if test="search_option == 13">
+	AND the_time like '%${search_content}%'
+	</if>
+	<if test="start_no != null">
+		ORDER BY space_no DESC LIMIT #{start_no},10
+	</if>
+
+</select>
+</mapper>

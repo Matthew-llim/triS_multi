@@ -1,0 +1,44 @@
+#proc_userjoin
+
+DROP PROCEDURE IF EXISTS p_userJoin_add;
+DELIMITER $$
+
+CREATE PROCEDURE p_userJoin_add(
+    IN v_user_id VARCHAR(20),
+    IN v_zipcode varchar(20),
+    IN v_ssn1 CHAR(6),
+    IN v_ssn2 char(7),
+    IN v_passwd varchar(20),
+    IN v_user_name varchar(10),
+    IN v_gender char(1),
+    IN v_phone varchar(11),
+    IN v_nickname varchar(20),
+    IN v_email varchar(50),
+    IN v_grade int(11),
+    IN v_zipdetail varchar(20)
+
+)
+BEGIN
+    INSERT INTO USERT VALUES(v_user_id,v_zipcode,v_ssn1,v_ssn2,v_passwd,v_user_name,v_gender,v_phone,v_nickname,v_email,v_grade,v_zipdetail);
+END$$
+
+DELIMITER ;
+
+
+###########################################
+
+
+DROP PROCEDURE IF EXISTS p_overlap;
+DELIMITER $$
+
+CREATE PROCEDURE p_overlap(
+    IN v_user_id VARCHAR(20)
+)
+BEGIN
+    SELECT COUNT(*) FROM userT where user_id = v_user_id;
+END$$
+
+DELIMITER ;
+
+
+

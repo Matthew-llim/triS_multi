@@ -1,0 +1,128 @@
+DELETE FROM hostt;
+SELECT * FROM hostt;
+INSERT INTO hostt Values('111-11-11111', '405-240', 'seller', '이양재', 'Korean bank' );
+INSERT INTO hostt Values('222-22-22222', '405-240', 'imseller', '이양재', 'Korean bank' );
+INSERT INTO hostapplyt Values(default,'seller_request', '405-240','333-33-33333', '이양재', 'Korean bank', 'ing');
+INSERT INTO hostapplyt Values(default,'user', '405-240', '444-44-44444',  '이양재', 'Korean bank', 'ing');
+################################################################
+################################################################
+	DROP PROCEDURE IF EXISTS p_admin_host_findAll;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_host_findAll()
+	BEGIN
+		SELECT * FROM hostt WHERE user_id IN ( SELECT user_id FROM usert WHERE grade='2');
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_host_request_findAll;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_host_request_findAll()
+	BEGIN
+		SELECT * FROM hostapplyt;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_host_one_person_check;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_host_one_person_check(
+		IN v_crn VARCHAR(50)
+	)
+	BEGIN
+		SELECT * FROM hostapplyt WHERE crn = v_crn;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_host_user_accept;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_host_user_accept(
+		IN v_crn VARCHAR(50),
+		IN v_zipcode VARCHAR(7),
+		IN v_user_id VARCHAR(50),
+		IN v_host_name VARCHAR(50),
+		IN v_host_account VARCHAR(50)
+	)
+	BEGIN
+			DELETE FROM hostapplyt WHERE user_id = v_user_id;
+			INSERT INTO hostt VALUES ( v_crn, v_zipcode, v_user_id, v_host_name, v_host_account );
+			UPDATE usert SET grade='2' WHERE user_id = v_user_id;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_host_user_refuse;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_host_user_refuse(
+		IN v_host_apply_no INT,
+		IN v_etc VARCHAR(50)
+	)
+	BEGIN
+		UPDATE hostapplyt SET etc = v_etc WHERE host_apply_no = v_host_apply_no;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_host_user_remove_request;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_host_user_remove_request(
+		IN v_host_apply_no VARCHAR(50)
+	)
+	BEGIN	
+		DELETE FROM hostapplyt WHERE host_apply_no = v_host_apply_no;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_host_user_downgrade;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_host_user_downgrade(
+		IN v_crn VARCHAR(50),
+		IN v_user_id VARCHAR(50),
+		IN v_send_user_id VARCHAR(50),
+		IN v_receive_user_id VARCHAR(50),
+		IN v_msg_content TEXT
+	)
+	BEGIN	
+			DELETE FROM hostt WHERE crn = v_crn;
+			UPDATE usert SET grade=1 WHERE user_id = v_user_id;
+			INSERT INTO messaget VALUES ( default, v_send_user_id, v_receive_user_id, v_msg_content, NOW(), 0 );
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_host_user_remove;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_host_user_remove(
+		IN v_crn VARCHAR(50),
+		IN v_user_id VARCHAR(50)
+	)
+	BEGIN	
+			DELETE FROM hostt WHERE crn = v_crn;
+			DELETE FROM usert WHERE user_id = v_user_id;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_host_user_findUserInfo;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_host_user_findUserInfo(
+		IN v_user_id VARCHAR(50)
+	)
+	BEGIN
+		SELECT * FROM usert WHERE user_id = v_user_id;
+	END$$
+	DELIMITER ;
+	
+	
+	
+	

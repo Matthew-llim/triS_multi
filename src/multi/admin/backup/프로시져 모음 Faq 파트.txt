@@ -1,0 +1,62 @@
+	DROP PROCEDURE IF EXISTS p_admin_faq_FindAllTexts;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_faq_FindAllTexts()
+	BEGIN
+		SELECT * FROM faqT ORDER BY faq_no DESC;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_faq_readFaq;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_faq_readFaq(
+		IN v_faq_no INT
+		)
+	BEGIN
+		SELECT * FROM FaqT WHERE faq_no = v_faq_no;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_faq_modifyFaq;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_faq_modifyFaq(
+		IN v_faq_no INT,
+		IN v_faq_title TEXT,
+		IN v_faq_content TEXT
+		)
+	BEGIN
+		UPDATE faqT SET faq_title = v_faq_title, faq_content = v_faq_content  WHERE faq_no = v_faq_no;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_faq_delFaq;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_faq_delFaq(
+		IN v_faq_no INT
+		)
+	BEGIN
+		DELETE FROM FaqT WHERE faq_no = v_faq_no;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_faq_addFaq;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_faq_addFaq(
+		IN v_faq_title TEXT,
+		IN v_faq_content TEXT
+		)
+	BEGIN
+		INSERT INTO FaqT VALUES(default,v_faq_title, v_faq_content );
+	END$$
+	DELIMITER ;
+	
+	
+	
+	

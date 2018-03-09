@@ -1,0 +1,22 @@
+#mypage_booking_info_proc
+DROP PROCEDURE IF EXISTS p_mypage_booking_info;
+DELIMITER $$
+CREATE PROCEDURE p_mypage_booking_info(
+	IN v_user_id VARCHAR(20)
+)
+BEGIN
+	SELECT * from bookingt where user_id = v_user_id;
+END$$
+DELIMITER ;
+
+#mypage_booking_find_user_info_proc
+
+DROP PROCEDURE IF EXISTS p_mypage_booking_find_user_info;
+DELIMITER $$
+CREATE PROCEDURE p_mypage_booking_find_user_info(
+	IN v_user_id VARCHAR(20)
+)
+BEGIN
+	SELECT * from usert where user_id = v_user_id;
+END$$
+DELIMITER ;

@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="admin_free_board">
+
+	
+<!-- ***************************자유게시판*************************** -->
+<!--  
+
+community_boardt
+CREATE TABLE community_boardt
+(
+    `com_board_no`       INT            NOT NULL    AUTO_INCREMENT, 
+    `com_board_title`    TEXT           NULL, 
+    `com_board_content`  TEXT           NULL, 
+    `the_time`           VARCHAR(45)    NULL, 
+    `user_id`            VARCHAR(20)    NULL, 
+    `view_count`         INT            NULL, 
+    `recom_count`        INT            NULL, 
+    PRIMARY KEY (com_board_no)
+);
+
+insert into community_boardt values(default,"멀티스페이스좋아요","짱짱맨",now(),"joy",1,1);
+insert into community_boardt values(default,"새해에는","좋은일이생겨요",now(),"kungfu",1,1);
+insert into community_boardt values(default,"치킨","먹고싶다",now(),"kfc",1,1);
+
+community_board_recomtt
+CREATE TABLE community_board_recomtt
+(
+    `user_id`       VARCHAR(20)    NOT NULL, 
+    `com_board_no`  INT            NOT NULL, 
+    PRIMARY KEY (user_id)
+);
+
+-->
+
+<!-- 
+프로시져 p_admin_comm_boardFindAllTexts  
+	DROP PROCEDURE IF EXISTS p_admin_comm_boardFindAllTexts;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_boardFindAllTexts()
+	BEGIN
+		SELECT * FROM community_boardt ORDER BY com_board_no DESC;
+	END$$
+	DELIMITER ;
+	
+-->
+
+<resultMap type="main.vo.Community_boardVO" id="RM_admin_Community_board">
+<result property="com_board_no" column="com_board_no" jdbcType="INTEGER"/>
+<result property="com_board_title" column="com_board_title" jdbcType="VARCHAR"/>
+<result property="com_board_content" column="com_board_content" jdbcType="VARCHAR"/>
+<result property="the_time" column="the_time" jdbcType="VARCHAR"/>
+<result property="user_id" column="user_id" jdbcType="VARCHAR"/>
+<result property="view_count" column="view_count" jdbcType="INTEGER"/>
+<result property="recom_count" column="recom_count" jdbcType="INTEGER"/>
+</resultMap>
+
+<select id="p_admin_comm_boardFindAllTexts" statementType="CALLABLE" resultMap="RM_admin_Community_board">
+	{call p_admin_comm_boardFindAllTexts()}
+</select>
+
+
+<!-- 프로시져 p_admin_comm_boardAdd
+
+DROP PROCEDURE IF EXISTS p_admin_comm_boardAdd;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_boardAdd(
+		IN v_com_board_no INT(11),
+		IN v_com_board_title VARCHAR(45),
+		IN v_com_board_content TEXT,
+		IN v_user_id  VARCHAR(20),
+		IN v_view_count INT,
+		IN v_recom_count INT
+
+	)
+	BEGIN
+		INSERT INTO community_boardt VALUES(default,
+			v_user_id, v_com_board_title,v_com_board_content,NOW(),0,0);
+	END$$
+	DELIMITER ;
+	
+
+
+-->
+ 		<parameterMap id="PM_p_admin_comm_boardAdd" type="main.vo.Community_boardVO">
+		<parameter property="com_board_no"   mode="IN" jdbcType="INTEGER"/>
+		<parameter property="com_board_title" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="com_board_content" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="user_id"  mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="view_count"  mode="IN" jdbcType="INTEGER"/>
+		<parameter property="recom_count"  mode="IN" jdbcType="INTEGER"/>
+	</parameterMap>
+	
+	<insert id="p_admin_comm_boardAdd" statementType="CALLABLE" 
+		parameterMap="PM_p_admin_comm_boardAdd">
+		{call p_admin_comm_boardAdd(?,?,?,?,?,?)}
+	</insert>
+
+
+<!-- 프로시져  p_admin_comm_boardFindText
+
+	DROP PROCEDURE IF EXISTS p_admin_comm_boardFindText;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_boardFindText(
+		IN v_com_board_no INT(11)
+	)
+	BEGIN
+		SELECT * FROM community_boardt WHERE com_board_no = v_com_board_no;
+	END$$
+	DELIMITER ;
+	
+-->
+	
+	<parameterMap id="PM_p_admin_comm_boardFindText" type="main.vo.Community_boardVO">
+		<parameter property="com_board_no" mode="IN" jdbcType="INTEGER"/>
+	</parameterMap>
+	
+	<select id="p_admin_comm_boardFindText" statementType="CALLABLE"
+		resultMap="RM_admin_Community_board" parameterMap="PM_p_admin_comm_boardFindText">
+		{call p_admin_comm_boardFindText(?)}
+	</select>
+
+
+<!-- 프로시져 p_admin_comm_boardMod
+	DROP PROCEDURE IF EXISTS p_admin_comm_boardMod;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_boardMod(
+		IN v_com_board_no INT(11),
+		IN v_com_board_title VARCHAR(45),
+		IN v_com_board_content TEXT
+	)
+	BEGIN
+		update community_boardt set com_board_content = v_com_board_content , com_board_title=v_com_board_title where com_board_no = v_com_board_no;
+	END$$
+	DELIMITER ;
+	
+-->
+
+	<parameterMap id="PM_p_admin_comm_boardMod" type="main.vo.Community_boardVO">
+		<parameter property="com_board_no" mode="IN" jdbcType="INTEGER"/>
+		<parameter property="com_board_title" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="com_board_content" mode="IN" jdbcType="VARCHAR"/>
+	</parameterMap>
+
+	<update id="p_admin_comm_boardMod" statementType="CALLABLE"
+		parameterMap="PM_p_admin_comm_boardMod">
+		{call p_admin_comm_boardMod(?,?,?)}
+	</update>
+
+<!--  프로시져 p_admin_comm_boardDelByPK
+
+DROP PROCEDURE IF EXISTS p_admin_comm_boardDelByPK;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_boardDelByPK(
+			IN v_com_board_no INT(11)
+	)
+	BEGIN
+		DELETE FROM community_boardt WHERE com_board_no = v_com_board_no;
+	END$$
+	DELIMITER ;
+	
+	-->
+	<parameterMap id="PM_p_admin_comm_boardDelByPK" type="main.vo.Community_boardVO">
+		<parameter property="com_board_no" mode="IN" jdbcType="INTEGER"/>
+	</parameterMap>
+
+	<delete id="p_admin_comm_boardDelByPK" statementType="CALLABLE"
+		parameterMap="PM_p_admin_comm_boardDelByPK">
+		{call p_admin_comm_boardDelByPK(?)}	
+	</delete>
+
+
+
+<!-- 글추천
+	DROP PROCEDURE IF EXISTS p_admin_comm_boardIncRecomLogic;
+	DELIMITER $$
+
+	CREATE PROCEDURE p_admin_comm_boardIncRecomLogic(
+		IN v_user_id  VARCHAR(20),
+		IN v_com_board_no INT(11),
+		OUT v_recom INT
+	)
+	BEGIN
+		DECLARE v_count INT;
+		
+		SELECT COUNT(*) INTO v_count FROM community_board_recomtt
+			WHERE user_id = v_user_id AND com_board_no = v_com_board_no;
+		IF v_count = 0 THEN
+				INSERT INTO community_board_recomtt VALUES ( v_user_id, v_com_board_no );
+				UPDATE community_boardt SET recom_count = recom_count + 1 
+					WHERE com_board_no = v_com_board_no;
+				SELECT recom_count INTO v_recom FROM community_boardt
+					WHERE com_board_no = v_com_board_no; 
+		ELSE
+			SET v_recom = -1;
+		END IF;
+	END$$
+	DELIMITER ;
+	
+	CALL p_admin_comm_boardIncRecomLogic('admin',17,@R);
+	SELECT @R;
+
+	CALL p_admin_comm_boardIncRecomLogic('root',4,@R);
+	SELECT @R;
+	
+	-->
+	<parameterMap id="PM_p_admin_comm_boardIncRecomLogic" type="main.vo.Community_boardVO">
+		<parameter property="user_id" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="com_board_no" mode="IN" jdbcType="INTEGER"/>
+		<parameter property="recom_count" mode="OUT" jdbcType="INTEGER"/>
+	</parameterMap>
+	
+	<update id="p_admin_comm_boardIncRecomLogic" statementType="CALLABLE"
+		parameterMap="PM_p_admin_comm_boardIncRecomLogic">
+		{call p_admin_comm_boardIncRecomLogic(?,?,?)}
+	</update>
+	
+   
+<!--  프로시져 p_admin_comm_boardIncViewLogic
+
+	DROP PROCEDURE IF EXISTS p_admin_comm_boardIncViewLogic;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_boardIncViewLogic(
+		IN v_com_board_no INT(11)
+	)
+	BEGIN
+		update community_boardt set view_count = view_count+1 where com_board_no=v_com_board_no;
+	END$$
+	DELIMITER ;
+	
+
+
+-->   
+   	
+   	<parameterMap id="PM_p_admin_comm_boardIncViewLogic" type="main.vo.Community_boardVO">
+   		<parameter property="com_board_no" mode="IN" jdbcType="INTEGER" />
+   	</parameterMap>
+   	
+   	<update id="p_admin_comm_boardIncViewLogic" statementType="CALLABLE" parameterMap="PM_p_admin_comm_boardIncViewLogic">
+   	{call p_admin_comm_boardIncViewLogic(?)}
+   	</update>
+	
+	
+<!-- ***************************자유게시판리플*************************** -->
+
+<!-- 프로시져 p_admin_comm_boardrepleAdd
+	DROP PROCEDURE IF EXISTS p_admin_comm_boardrepleAdd;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_boardrepleAdd(
+	
+		IN v_com_board_reple_content TEXT,
+		IN v_com_board_no INT,
+		IN v_user_id  VARCHAR(20)
+
+	)
+	BEGIN
+		INSERT INTO community_board_replet VALUES(default,
+			v_user_id, v_com_board_no, v_com_board_reple_content, NOW());
+	END$$
+	DELIMITER ;
+	
+
+
+ -->
+ 
+ 	<parameterMap id="PM_p_admin_comm_boardrepleAdd" type="main.vo.Community_board_repleVO">
+
+		<parameter property="com_board_reple_content" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="com_board_no" mode="IN" jdbcType="INTEGER"/>
+		<parameter property="user_id"  mode="IN" jdbcType="VARCHAR"/>
+	</parameterMap>
+	
+	<insert id="p_admin_comm_boardrepleAdd" statementType="CALLABLE" 
+		parameterMap="PM_p_admin_comm_boardrepleAdd">
+		{call p_admin_comm_boardrepleAdd(?,?,?)}
+	</insert>
+ 
+ <!-- 프로시져   p_admin_comm_boardrepleMod
+	DROP PROCEDURE IF EXISTS p_admin_comm_boardrepleMod;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_boardrepleMod(
+	
+		IN v_com_board_reple_no INT(11),
+		IN v_com_board_reple_content TEXT
+	)
+	BEGIN
+		update community_board_replet set com_board_reple_content = v_com_board_reple_content where com_board_reple_no = v_com_board_reple_no;
+	END$$
+	DELIMITER ;
+	
+   -->
+   <parameterMap id="PM_p_admin_comm_boardrepleMod" type="main.vo.Community_board_repleVO">
+		<parameter property="com_board_reple_no" mode="IN" jdbcType="INTEGER"/>
+		<parameter property="com_board_reple_content" mode="IN" jdbcType="VARCHAR"/>
+		
+	</parameterMap>
+
+	<update id="p_admin_comm_boradrepleMod" statementType="CALLABLE"
+		parameterMap="PM_p_admin_comm_boardrepleMod">
+		{call p_admin_comm_boardrepleMod(?,?)}
+	</update>
+   
+   
+<!-- 프로시져   p_admin_comm_boardrepleDel
+	
+	DROP PROCEDURE IF EXISTS p_admin_comm_boardrepleDel;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_boardrepleDel(
+	
+		IN v_com_board_reple_no INT(11),
+		IN v_com_board_no INT(11)
+		
+
+	)
+	BEGIN
+		DELETE FROM community_board_replet WHERE com_board_reple_no = v_com_board_reple_no and com_board_no =  v_com_board_no;
+	END$$
+	DELIMITER ;
+	
+ -->  
+   	<parameterMap id="PM_p_admin_comm_boardrepleDel" type="main.vo.Community_board_repleVO">
+		<parameter property="com_board_reple_no" mode="IN" jdbcType="INTEGER"/>
+		<parameter property="com_board_no" mode="IN" jdbcType="INTEGER"/>
+	</parameterMap>
+
+	<delete id="p_admin_comm_boardrepleDel" parameterMap="PM_p_admin_comm_boardrepleDel" statementType="CALLABLE">
+		{call p_admin_comm_boardrepleDel(?,?)}	
+	</delete>
+
+   
+   
+   
+   
+<!-- 
+	DROP PROCEDURE IF EXISTS p_admin_comm_boradrepleFindAllTexts;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_boradrepleFindAllTexts(
+	IN v_com_board_no INT(11)
+	)
+	BEGIN
+		SELECT * FROM community_board_replet where com_board_no =  v_com_board_no;
+	END$$
+	DELIMITER ;
+	
+-->
+
+<resultMap type="main.vo.Community_board_repleVO" id="RM_Community_repleboard">
+<result property="com_board_reple_no" column="com_board_reple_no" jdbcType="INTEGER"/>
+<result property="com_board_reple_content" column="com_board_reple_content" jdbcType="VARCHAR"/>
+<result property="the_time" column="the_time" jdbcType="VARCHAR"/>
+<result property="com_board_no" column="com_board_no" jdbcType="INTEGER"/>
+<result property="user_id" column="user_id" jdbcType="VARCHAR"/>
+</resultMap>
+
+<parameterMap id="PM_p_admin_comm_boradrepleFindAllTexts" type="main.vo.Community_board_repleVO">
+		<parameter property="com_board_no" mode="IN" jdbcType="INTEGER"/>
+	</parameterMap>
+
+<select id="p_admin_comm_boradrepleFindAllTexts" statementType="CALLABLE" resultMap="RM_Community_repleboard" 
+parameterMap ="PM_p_admin_comm_boradrepleFindAllTexts">
+	{call p_admin_comm_boradrepleFindAllTexts(?)}
+</select>
+
+
+<!-- freeboard search -->
+<select id="admin_freeboard_search" parameterType="multi.admin.vo.Admin_searchVO"
+		resultType="main.vo.Community_boardVO">
+	SELECT * FROM community_boardt WHERE 0 = 0
+	<if test="search_option == 1">
+	AND com_board_title like '%${search_content}%'
+	</if>
+	<if test="search_option == 2">
+	AND com_board_content like '%${search_content}%'
+	</if>
+	<if test="search_option == 3">
+	AND com_board_title like '%${search_content}%'
+	OR com_board_content like '%${search_content}%'
+	</if>
+	<if test="search_option == 4">
+	AND user_id like '%${search_content}%'
+	</if>
+	<if test="start_no != null">
+		ORDER BY com_board_no DESC LIMIT #{start_no},10
+	</if>
+</select>
+
+   
+</mapper>
+

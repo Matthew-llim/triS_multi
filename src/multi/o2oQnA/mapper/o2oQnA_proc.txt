@@ -1,0 +1,17 @@
+DROP PROCEDURE IF EXISTS p_o2oQnA_addo2oQnA;
+	DELIMITER $$
+	CREATE PROCEDURE p_o2oQnA_addo2oQnA(
+		IN v_o2o_no INT(11),
+		IN v_o2o_title VARCHAR(45),
+		IN v_o2o_content VARCHAR(200),
+		IN v_o2o_email VARCHAR(50),
+		IN v_o2o_type  VARCHAR(45),
+		IN v_o2o_phone VARCHAR(11),
+		IN v_re_o2o_content VARCHAR(200)
+
+	)
+	BEGIN
+		INSERT INTO O2OQnAT VALUES(default,
+			v_o2o_title,v_o2o_content,v_o2o_email,v_o2o_type,v_o2o_phone,NOW(),v_re_o2o_content);
+	END$$
+	DELIMITER ;

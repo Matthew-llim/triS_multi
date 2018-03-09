@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+	<script type="text/javascript" src="common.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="./Resources/css/bootstrap.css"> 
+	<link rel="stylesheet" type="text/css" href="./Resources/css/responsive.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	
+	<style type="text/css">
+	@import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
+	
+	.table_zip td.zip_td{
+		width : 70px;
+	}
+
+</style>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$("#btnfind").on("click",function(){
+				var dong = $("#postcode").val();
+				
+				if(dong!=""){
+					ajaxGet("findzipcode.do?dong="+dong,function(rt){
+						var ziplist = eval("("+rt+")");
+						var html = "<table class='table table-bordered'>";
+						for(var z = 0 ; z <ziplist.data.length ; z++ ){
+							var fullAddr = ziplist.data[z].sido +"," + ziplist.data[z].gugun + "," + ziplist.data[z].dong + "," + ziplist.data[z].bunji;
+							fullAddr = fullAddr.replace(" ",",");
+							var zonecode = ziplist.data[z].zipcode;
+							html += "<tr>"
+							html += "<td>" + ziplist.data[z].zipcode +"</td>";
+							html += "<td>" + ziplist.data[z].sido +"</td>";
+							html += "<td>" + ziplist.data[z].gugun +"</td>";
+							html += "<td><a href='#'  addr ="+fullAddr+" zonecode ="+zonecode+" id='zz' class='qwe'>" + ziplist.data[z].dong +"<a></td>";
+							html += "<td>" + ziplist.data[z].bunji +"</td>";
+							html += "</tr>";
+						}
+						html += "</table>";
+						$("#dv").html(html);
+						
+						$(".qwe").on("click",function(){
+							var addr = $(this).attr("addr");
+							var zonecode = $(this).attr("zonecode");
+							var parent = opener.window.document.frm;
+							parent.addr1.value = addr;
+							parent.zipcode.value = zonecode;
+							self.close();
+						});
+						
+					});
+				}
+			});
+			
+		});
+		
+	</script>
+</head>
+<body>
+<div id="wrap" class="zip_wrap ">
+		<table class="table_zip">
+			<tr>
+				<th colspan="2">우편번호 검색</th>
+			</tr>
+			<tr>
+				<td class="zip_td">주소검색 :</td>
+				<td><input type="text" id="postcode" name="dong" placeholder="동주소">
+					<input type="submit" value="우편번호 찾기" id="btnfind" class="btn btn-primary"><br></td>
+			</tr>
+		</table>
+		<br/><br/><br/>
+		<div id="dv"></div>
+	</div>
+</body>
+</html>

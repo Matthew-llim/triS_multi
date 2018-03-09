@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="admin_faq">
+	<!-- FAQ 부분 -->
+	<!-- 
+	DROP PROCEDURE IF EXISTS p_admin_faq_FindAllTexts;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_faq_FindAllTexts()
+	BEGIN
+		SELECT * FROM faqt ORDER BY faq_no DESC;
+	END$$
+	DELIMITER ;
+	-->
+ 	<resultMap id="RM_p_admin_faq_FindAllTexts" type="main.vo.FaqVO">
+		<result property="faq_no" column="faq_no" jdbcType="INTEGER" />
+		<result property="faq_title" column="faq_title" jdbcType="VARCHAR" />
+		<result property="faq_content" column="faq_content" jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="p_admin_faq_FindAllTexts" statementType="CALLABLE" resultMap="RM_p_admin_faq_FindAllTexts">
+		{call p_admin_faq_FindAllTexts()}
+	</select>
+
+
+	<!-- 
+	DROP PROCEDURE IF EXISTS p_admin_faq_readFaq;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_faq_readFaq(
+		IN v_faq_no INT
+		)
+	BEGIN
+		SELECT * FROM faqt WHERE faq_no = v_faq_no;
+	END$$
+	DELIMITER ;
+	CALL p_admin_faq_readFaq(1);
+	-->
+	<parameterMap id="PM_p_admin_faq_readFaq" type="main.vo.FaqVO" >
+		<parameter property="faq_no" mode="IN" jdbcType="INTEGER" />
+	</parameterMap >
+	<resultMap id="RM_p_admin_faq_readFaq" type="main.vo.FaqVO">
+		<result property="faq_no" column="faq_no" jdbcType="INTEGER" />
+		<result property="faq_title" column="faq_title" jdbcType="VARCHAR" />
+		<result property="faq_content" column="faq_content" jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="p_admin_faq_readFaq" statementType="CALLABLE" 
+		resultMap="RM_p_admin_faq_readFaq"
+		parameterMap="PM_p_admin_faq_readFaq">
+		{call p_admin_faq_readFaq(?)}
+	</select>
+
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_faq_modifyFaq;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_faq_modifyFaq(
+		IN v_faq_no INT,
+		IN v_faq_title TEXT,
+		IN v_faq_content TEXT
+		)
+	BEGIN
+		UPDATE faqt SET faq_title = v_faq_title, faq_content = v_faq_content  WHERE faq_no = v_faq_no;
+	END$$
+	DELIMITER ;
+	CALL p_admin_faq_modifyFaq (1,'tt','good');
+	-->
+	<parameterMap id="PM_p_admin_faq_modifyFaq" type="main.vo.FaqVO" >
+		<parameter property="faq_no" mode="IN" jdbcType="INTEGER"/>
+		<parameter property="faq_title" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="faq_content" mode="IN" jdbcType="VARCHAR"/>
+	</parameterMap>
+	<update id="p_admin_faq_modifyFaq" statementType="CALLABLE"
+		parameterType = "main.vo.FaqVO"
+		parameterMap = "PM_p_admin_faq_modifyFaq">
+		{call p_admin_faq_modifyFaq(?,?,?)}
+	</update>
+	
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_faq_delFaq;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_faq_delFaq(
+		IN v_faq_no INT
+		)
+	BEGIN
+		DELETE FROM faqt WHERE faq_no = v_faq_no;
+	END$$
+	DELIMITER ;
+	CALL p_admin_faq_delFaq (1);
+	-->
+	<parameterMap id="PM_p_admin_faq_delFaqq" type="main.vo.FaqVO" >
+		<parameter property="faq_no" mode="IN" jdbcType="INTEGER"/>
+	</parameterMap>
+	<delete id="p_admin_faq_delFaq" statementType="CALLABLE"
+		parameterType = "main.vo.FaqVO"
+		parameterMap = "PM_p_admin_faq_delFaqq">
+		{call p_admin_faq_delFaq(?)}
+	</delete>
+	
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_faq_addFaq;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_faq_addFaq(
+		IN v_faq_title TEXT,
+		IN v_faq_content TEXT
+		)
+	BEGIN
+		INSERT INTO faqt VALUES(default,v_faq_title, v_faq_content );
+	END$$
+	DELIMITER ;
+	CALL p_admin_faq_addFaq ( 'test2', 'nice' );
+	-->
+	<parameterMap id="PM_p_admin_faq_addFaq" type="main.vo.FaqVO" >
+		<parameter property="faq_title" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="faq_content" mode="IN" jdbcType="VARCHAR"/>
+	</parameterMap>
+	<insert id="p_admin_faq_addFaq" statementType="CALLABLE"
+		parameterType = "main.vo.FaqVO"
+		parameterMap = "PM_p_admin_faq_addFaq">
+		{call p_admin_faq_addFaq(?,?)}
+	</insert>
+	
+	<select id="admin_search_All" parameterType="multi.admin.vo.Admin_searchVO"
+		resultType="main.vo.FaqVO">
+
+	SELECT * FROM faqt WHERE 0 = 0
+	<if test="search_option == 1">
+	AND faq_title like '%${search_content}%'
+	</if>
+	<if test="search_option == 2">
+	AND faq_content like '%${search_content}%'
+	</if>
+	<if test="search_option == 3">
+	AND faq_title like '%${search_content}%'
+	OR faq_content like '%${search_content}%'
+	</if>
+	<if test="start_no != null">
+		ORDER BY faq_no DESC LIMIT #{start_no},10
+	</if>
+
+</select>
+</mapper>
+

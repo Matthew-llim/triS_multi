@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="space_qna_reple_proc">
+
+	<insert id="add_spaceQnA_Reple" parameterType="main.vo.Space_qna_repleVO">
+		{call p_add_space_QnA_Reple(#{space_qna_no},#{space_no},#{space_qna_reple_content},#{user_id})}
+	</insert>
+	
+	<!-- 
+	<insert id="add_spaceQnA_Reple" parameterType="main.vo.Space_qna_repleVO">
+		INSERT INTO Space_QnA_RepleT VALUES (default,#{space_qna_no},#{space_no},#{space_qna_reple_title}
+		,#{space_qna_reple_content},NOW(),#{user_id})
+	</insert>
+	 -->
+	
+	<select id="find_space_QnA_Reple_by_space_qna_no" parameterType="main.vo.Space_qna_repleVO" resultType="main.vo.Space_qna_repleVO">
+		{call p_find_space_QnA_Reple_by_space_qna_no(#{space_qna_no})}
+	</select>
+	
+	<!-- 
+	<select id="find_space_QnA_Reple_by_space_qna_no" parameterType="main.vo.Space_qna_repleVO" resultType="main.vo.Space_qna_repleVO">
+		SELECT * FROM Space_QnA_RepleT WHERE space_qna_no=#{space_qna_no}
+	</select>
+	 -->
+	
+	<delete id="delete_spaceQnA_by_space_qna_no" parameterType="main.vo.Space_qnaVO">
+		{call p_delete_spaceQnA_ny_space_qna_no(#{space_qna_no})}
+	</delete>
+	
+	<!-- 
+	<delete id="delete_spaceQnA_by_space_qna_no" parameterType="main.vo.Space_qnaVO">
+		DELETE FROM Space_QnA_RepleT WHERE space_qna_no=#{space_qna_no}
+	</delete>
+	 -->
+	
+</mapper>
+
+
+
+
+
+

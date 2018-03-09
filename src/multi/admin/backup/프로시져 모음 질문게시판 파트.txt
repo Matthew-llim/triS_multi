@@ -1,0 +1,173 @@
+################################################################
+################################################################
+	DROP PROCEDURE IF EXISTS p_admin_comm_qnaFindAllTexts;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_qnaFindAllTexts()
+	BEGIN
+		SELECT * FROM Community_QnAT ORDER BY com_qna_no DESC;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_comm_qnaFindText;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_qnaFindText(
+		IN v_com_qna_no INT
+	)
+	BEGIN
+		SELECT * FROM Community_QnAT WHERE com_qna_no = v_com_qna_no;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_comm_qnaAddText;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_qnaAddText(
+		IN v_user_id VARCHAR(45),
+		IN v_com_qna_content TEXT,
+		IN v_com_qna_title VARCHAR(45)
+	)
+	BEGIN
+		INSERT INTO Community_QnAT VALUES(default, v_user_id, 
+			v_com_qna_title, v_com_qna_content, NOW(),0);
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_comm_modQna;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_modQna(
+		IN v_com_qna_no INT,
+		IN v_com_qna_title VARCHAR(45),
+		IN v_com_qna_content TEXT
+	)
+	BEGIN
+		update Community_QnAT set com_qna_title=v_com_qna_title, com_qna_content=v_com_qna_content where com_qna_no=v_com_qna_no;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_comm_DelQna;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_DelQna(
+		IN v_com_qna_no INT
+	)
+	BEGIN
+		DELETE FROM Community_QnAT WHERE com_qna_no = v_com_qna_no;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_comm_modView;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_modView(
+		IN v_com_qna_no INT
+	)
+	BEGIN
+		update Community_QnAT set view_count=view_count+1 where com_qna_no=v_com_qna_no;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_comm_qnaAddReple;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_qnaAddReple(
+		IN v_user_id VARCHAR(20),
+		IN v_com_qna_no INT,
+		IN v_com_qna_reple_content TEXT
+	)
+	BEGIN
+		INSERT INTO Community_QnA_RepleT VALUES(default,v_com_qna_no, v_user_id,
+			v_com_qna_reple_content, NOW(),0);
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_comm_qnaFindAllReple;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_qnaFindAllReple(
+		IN v_com_qna_no INT
+	)
+	BEGIN
+		SELECT * FROM Community_QnA_RepleT WHERE com_qna_no = v_com_qna_no;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_comm_qnaDelReple;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_qnaDelReple(
+		IN v_com_qna_reple_no INT
+	)
+	BEGIN
+		DELETE FROM Community_QnA_RepleT WHERE com_qna_reple_no = v_com_qna_reple_no;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_comm_modQnaReple;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_modQnaReple(
+		IN v_com_qna_reple_no INT,
+		IN v_com_qna_reple_content TEXT
+	)
+	BEGIN
+		update Community_QnA_RepleT set com_qna_reple_content=v_com_qna_reple_content where com_qna_reple_no=v_com_qna_reple_no;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_comm_qnaincRecom;
+	DELIMITER $$
+
+   CREATE PROCEDURE p_admin_comm_qnaincRecom(
+      IN v_com_qna_reple_no INT,
+      IN v_user_id  VARCHAR(20),
+      OUT v_recom INT
+   )
+   BEGIN
+      DECLARE v_count INT;
+      
+      DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+      BEGIN
+         ROLLBACK;
+         SIGNAL SQLSTATE '45000';
+      END;
+      
+      SELECT COUNT(*) INTO v_count FROM Community_QnA_Reple_RecomT
+         WHERE user_id = v_user_id AND com_qna_reple_no = v_com_qna_reple_no;
+		 
+      IF v_count = 0 THEN
+        START TRANSACTION;
+            INSERT INTO Community_QnA_Reple_RecomT VALUES ( v_user_id, v_com_qna_reple_no );
+            UPDATE Community_QnA_RepleT SET recom_count = recom_count + 1 
+               WHERE com_qna_reple_no = v_com_qna_reple_no;
+            SELECT recom_count INTO v_recom FROM Community_QnA_RepleT
+               WHERE com_qna_reple_no = v_com_qna_reple_no; 
+			  
+         COMMIT;
+      ELSEIF v_count = 1 THEN
+		START TRANSACTION;
+			DELETE FROM Community_QnA_Reple_RecomT where user_id=v_user_id and com_qna_reple_no=v_com_qna_reple_no;
+            UPDATE Community_QnA_RepleT SET recom_count = recom_count - 1 
+               WHERE com_qna_reple_no = v_com_qna_reple_no;
+            SELECT recom_count INTO v_recom FROM Community_QnA_RepleT
+               WHERE com_qna_reple_no = v_com_qna_reple_no; 
+		COMMIT;
+      END IF;
+   END$$
+   DELIMITER ;
+   
+   
+   
+   

@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="community">
+
+	<resultMap id="RM_qnaText" type="multi.community.qna.vo.Community_qnaVO">
+		<result property="com_qna_no" column="com_qna_no" jdbcType="INTEGER"/>
+		<result property="user_id" column="user_id" jdbcType="VARCHAR"/>
+		<result property="com_qna_title" column="com_qna_title" jdbcType="VARCHAR"/>
+		<result property="com_qna_content" column="com_qna_content" jdbcType="VARCHAR"/>
+		<result property="the_time" column="the_time" jdbcType="VARCHAR"/>
+		<result property="view_count" column="view_count" jdbcType="INTEGER"/>
+	</resultMap>
+
+	<!--
+	DROP PROCEDURE IF EXISTS p_comm_qnaFindAllTexts;
+	DELIMITER $$
+	CREATE PROCEDURE p_comm_qnaFindAllTexts()
+	BEGIN
+		SELECT * FROM Community_QnAT ORDER BY com_qna_no DESC;
+	END$$
+	DELIMITER ;
+	-->
+	<select id="p_comm_qnaFindAllTexts" statementType="CALLABLE" resultMap="RM_qnaText">
+		{call p_comm_qnaFindAllTexts()}
+	</select>
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_comm_qnaFindText;
+	DELIMITER $$
+	CREATE PROCEDURE p_comm_qnaFindText(
+		IN v_com_qna_no INT
+	)
+	BEGIN
+		SELECT * FROM Community_QnAT WHERE com_qna_no = v_com_qna_no;
+	END$$
+	DELIMITER ;
+	-->
+	
+	<parameterMap id="p_comm_qnaFindText" type="multi.community.qna.vo.Community_qnaVO">
+		<parameter property="com_qna_no" mode="IN" jdbcType="INTEGER"/>
+	</parameterMap>
+	
+	<select id="p_comm_qnaFindText" statementType="CALLABLE"
+		resultMap="RM_qnaText" parameterMap="p_comm_qnaFindText">
+		{call p_comm_qnaFindText(?)}
+	</select>
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_comm_qnaAddText;
+	DELIMITER $$
+	CREATE PROCEDURE p_comm_qnaAddText(
+		IN v_user_id VARCHAR(45),
+		IN v_com_qna_title VARCHAR(45),
+		IN v_com_qna_content TEXT
+	)
+	BEGIN
+		INSERT INTO Community_QnAT VALUES(default,v_user_id,
+		v_com_qna_title,v_com_qna_content,NOW(),0);
+	END$$
+	DELIMITER ;
+	-->
+	
+	<parameterMap id="PM_p_comm_qnaAddText" type="multi.community.qna.vo.Community_qnaVO">
+		<parameter property="user_id"   mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="com_qna_title"   mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="com_qna_content" mode="IN" jdbcType="VARCHAR"/>
+	</parameterMap>
+	
+	<insert id="p_comm_qnaAddText" statementType="CALLABLE" 
+		parameterMap="PM_p_comm_qnaAddText">
+		{call p_comm_qnaAddText(?,?,?)}
+	</insert>
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_comm_modQna;
+	DELIMITER $$
+	CREATE PROCEDURE p_comm_modQna(
+		IN v_com_qna_no INT,
+		IN v_com_qna_title VARCHAR(45),
+		IN v_com_qna_content TEXT
+	)
+	BEGIN
+		update Community_QnAT set com_qna_title=v_com_qna_title, com_qna_content=v_com_qna_content where com_qna_no=v_com_qna_no;
+	END$$
+	DELIMITER ;
+	-->
+	
+	<parameterMap id="p_comm_modQna" type="multi.community.qna.vo.Community_qnaVO">
+		<parameter property="com_qna_no"   mode="IN" jdbcType="INTEGER"/>
+		<parameter property="com_qna_title"   mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="com_qna_content" mode="IN" jdbcType="VARCHAR"/>
+	</parameterMap>
+	
+	<insert id="p_comm_modQna" statementType="CALLABLE" 
+		parameterMap="p_comm_modQna">
+		{call p_comm_modQna(?,?,?)}
+	</insert>
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_comm_DelQna;
+	DELIMITER $$
+	CREATE PROCEDURE p_comm_DelQna(
+		IN v_com_qna_no INT
+	)
+	BEGIN
+		DELETE FROM Community_QnAT WHERE com_qna_no = v_com_qna_no;
+	END$$
+	DELIMITER ;
+	-->
+	
+	<parameterMap id="PM_p_comm_DelQna" type="multi.community.qna.vo.Community_qnaVO">
+		<parameter property="com_qna_no" mode="IN" jdbcType="INTEGER"/>
+	</parameterMap>
+
+	<delete id="p_comm_DelQna" statementType="CALLABLE"
+		parameterMap="PM_p_comm_DelQna">
+		{call p_comm_DelQna(?)}
+	</delete>
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_comm_modView;
+	DELIMITER $$
+	CREATE PROCEDURE p_comm_modView(
+		IN v_com_qna_no INT
+	)
+	BEGIN
+		update Community_QnAT set view_count=view_count+1 where com_qna_no=v_com_qna_no;
+	END$$
+	DELIMITER ;
+	-->
+	
+	<parameterMap id="p_comm_modView" type="multi.community.qna.vo.Community_qnaVO">
+		<parameter property="com_qna_no"   mode="IN" jdbcType="INTEGER"/>
+	</parameterMap>
+	
+	<insert id="p_comm_modView" statementType="CALLABLE" 
+		parameterMap="p_comm_modView">
+		{call p_comm_modView(?)}
+	</insert>
+	
+	
+	<!-- aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 아래부터는 리플에대한 매퍼 aaaaaaaaaaaaaaaaaaaaaaa -->
+	
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_comm_qnaAddReple;
+	DELIMITER $$
+	CREATE PROCEDURE p_comm_qnaAddReple(
+		IN v_com_qna_no INT,
+		IN v_user_id VARCHAR(20),
+		IN v_com_qna_reple_content TEXT
+	)
+	BEGIN
+		INSERT INTO Community_QnA_RepleT VALUES(default,v_com_qna_no,v_user_id,
+			v_com_qna_reple_content, NOW(),0);
+	END$$
+	DELIMITER ;
+	-->
+	
+	<parameterMap id="PM_p_comm_qnaAddReple" type="multi.community.qna.vo.Community_qna_repleVO">
+		<parameter property="com_qna_no" mode="IN" jdbcType="INTEGER"/>
+		<parameter property="user_id" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="com_qna_reple_content" mode="IN" jdbcType="VARCHAR"/>
+	</parameterMap>
+	
+	<insert id="p_comm_qnaAddReple" statementType="CALLABLE" 
+		parameterMap="PM_p_comm_qnaAddReple">
+		{call p_comm_qnaAddReple(?,?,?)}
+	</insert>
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_comm_qnaFindAllReple;
+	DELIMITER $$
+	CREATE PROCEDURE p_comm_qnaFindAllReple(
+		IN v_com_qna_no INT
+	)
+	BEGIN
+		SELECT * FROM Community_QnA_RepleT WHERE com_qna_no = v_com_qna_no ORDER BY recom_count desc;
+	END$$
+	DELIMITER ;
+	-->
+	
+	<resultMap id="RM_qnaReple" type="multi.community.qna.vo.Community_qna_repleVO">
+		<result property="com_qna_reple_no" column="com_qna_reple_no" jdbcType="INTEGER"/>
+		<result property="com_qna_no" column="com_qna_no" jdbcType="INTEGER"/>
+		<result property="user_id" column="user_id" jdbcType="VARCHAR"/>
+		<result property="com_qna_reple_content" column="com_qna_reple_content" jdbcType="VARCHAR"/>
+		<result property="the_time" column="the_time" jdbcType="VARCHAR"/>
+		<result property="recom_count" column="recom_count" jdbcType="INTEGER"/>
+	</resultMap>
+	
+	<parameterMap id="PM_p_comm_qnaFindAllReple" type="multi.community.qna.vo.Community_qna_repleVO">
+		<parameter property="com_qna_no" mode="IN" jdbcType="INTEGER"/>
+	</parameterMap>
+	
+	<select id="p_comm_qnaFindAllReple" statementType="CALLABLE"
+		resultMap="RM_qnaReple" parameterMap="PM_p_comm_qnaFindAllReple">
+		{call p_comm_qnaFindAllReple(?)}
+	</select>
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_comm_qnaDelReple;
+	DELIMITER $$
+	CREATE PROCEDURE p_comm_qnaDelReple(
+		IN v_com_qna_reple_no INT
+	)
+	BEGIN
+		DELETE FROM Community_QnA_RepleT WHERE com_qna_reple_no = v_com_qna_reple_no;
+	END$$
+	DELIMITER ;
+	-->
+	
+	<parameterMap id="p_comm_qnaDelReple" type="multi.community.qna.vo.Community_qna_repleVO">
+		<parameter property="com_qna_reple_no" mode="IN" jdbcType="INTEGER"/>
+	</parameterMap>
+
+	<delete id="p_comm_qnaDelReple" statementType="CALLABLE"
+		parameterMap="p_comm_qnaDelReple">
+		{call p_comm_qnaDelReple(?)}
+	</delete>
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_comm_modQnaReple;
+	DELIMITER $$
+	CREATE PROCEDURE p_comm_modQnaReple(
+		IN v_com_qna_reple_no INT,
+		IN v_com_qna_reple_content TEXT
+	)
+	BEGIN
+		update Community_QnA_RepleT set com_qna_reple_content=v_com_qna_reple_content where com_qna_reple_no=v_com_qna_reple_no;
+	END$$
+	DELIMITER ;
+	-->
+	
+	<parameterMap id="p_comm_modQnaReple" type="multi.community.qna.vo.Community_qna_repleVO">
+		<parameter property="com_qna_reple_no"   mode="IN" jdbcType="INTEGER"/>
+		<parameter property="com_qna_reple_content" mode="IN" jdbcType="VARCHAR"/>
+	</parameterMap>
+	
+	<insert id="p_comm_modQnaReple" statementType="CALLABLE" 
+		parameterMap="p_comm_modQnaReple">
+		{call p_comm_modQnaReple(?,?)}
+	</insert>
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_comm_qnaincRecom;
+	DELIMITER $$
+
+   CREATE PROCEDURE p_comm_qnaincRecom(
+      IN v_com_qna_reple_no INT,
+      IN v_user_id  VARCHAR(20),
+      OUT v_recom INT
+   )
+   BEGIN
+      DECLARE v_count INT;
+      
+      DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+      BEGIN
+         ROLLBACK;
+         SIGNAL SQLSTATE '45000';
+      END;
+      
+      SELECT COUNT(*) INTO v_count FROM Community_QnA_Reple_RecomT
+         WHERE user_id = v_user_id AND com_qna_reple_no = v_com_qna_reple_no;
+      IF v_count = 0 THEN
+         START TRANSACTION;
+            INSERT INTO Community_QnA_Reple_RecomT VALUES ( v_user_id, v_com_qna_reple_no );
+            UPDATE Community_QnA_RepleT SET recom_count = recom_count + 1 
+               WHERE com_qna_reple_no = v_com_qna_reple_no;
+            SELECT recom_count INTO v_recom FROM Community_QnA_RepleT
+               WHERE com_qna_reple_no = v_com_qna_reple_no; 
+         COMMIT;
+      ELSE
+         SET v_recom = -1;
+      END IF;
+   END$$
+   DELIMITER ;
+   
+   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@아래 프로시져로 교체@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+   DROP PROCEDURE IF EXISTS p_comm_qnaincRecom;
+	DELIMITER $$
+
+   CREATE PROCEDURE p_comm_qnaincRecom(
+      IN v_user_id  VARCHAR(20),
+      IN v_com_qna_reple_no INT,
+      OUT v_recom INT
+   )
+   BEGIN
+      DECLARE v_count INT;
+      
+      DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+      BEGIN
+         ROLLBACK;
+         SIGNAL SQLSTATE '45000';
+      END;
+      
+      SELECT COUNT(*) INTO v_count FROM Community_QnA_Reple_RecomT
+         WHERE user_id = v_user_id AND com_qna_reple_no = v_com_qna_reple_no;
+		 
+      IF v_count = 0 THEN
+        START TRANSACTION;
+            INSERT INTO Community_QnA_Reple_RecomT VALUES ( v_user_id, v_com_qna_reple_no );
+            UPDATE Community_QnA_RepleT SET recom_count = recom_count + 1 
+               WHERE com_qna_reple_no = v_com_qna_reple_no;
+            SELECT recom_count INTO v_recom FROM Community_QnA_RepleT
+               WHERE com_qna_reple_no = v_com_qna_reple_no; 
+			  
+         COMMIT;
+      ELSEIF v_count = 1 THEN
+		START TRANSACTION;
+			DELETE FROM Community_QnA_Reple_RecomT where user_id=v_user_id and com_qna_reple_no=v_com_qna_reple_no;
+            UPDATE Community_QnA_RepleT SET recom_count = recom_count - 1 
+               WHERE com_qna_reple_no = v_com_qna_reple_no;
+            SELECT recom_count INTO v_recom FROM Community_QnA_RepleT
+               WHERE com_qna_reple_no = v_com_qna_reple_no;
+             
+		COMMIT;
+      END IF;
+   END$$
+   DELIMITER ;
+   -->
+   
+   <parameterMap id="PM_p_comm_qnaincRecom" type="multi.community.qna.vo.Community_qna_repleVO">
+      <parameter property="user_id" mode="IN" jdbcType="VARCHAR"/>
+      <parameter property="com_qna_reple_no" mode="IN" jdbcType="INTEGER"/>
+      <parameter property="recom_count" mode="OUT" jdbcType="INTEGER"/>
+   </parameterMap>
+   
+   <update id="p_comm_qnaincRecom" statementType="CALLABLE"
+      parameterMap="PM_p_comm_qnaincRecom">
+      {call p_comm_qnaincRecom(?,?,?)}
+   </update>
+	
+	<!--@@@@@@@검색@@@@@@@ -->
+	<select id="comm_qna_search" parameterType="multi.community.qna.vo.Community_qna_searchVO" resultType="multi.community.qna.vo.Community_qnaVO">
+
+		SELECT * FROM community_qnat WHERE 0 = 0
+		<if test="comm_search_option ==1">
+			AND com_qna_title like '%${comm_search_content}%'
+		</if>
+		<if test="comm_search_option == 2">
+			AND com_qna_content like'%${comm_search_content}%'
+		</if>
+		<if test="comm_search_option == 3">
+			AND com_qna_title like '%${comm_search_content}%'
+			OR com_qna_content like '%${comm_search_content}%'
+		</if>
+		<if test="comm_search_option == 4">
+			AND user_id = #{comm_search_content}
+		</if>
+		<if test="start!=null">
+			ORDER BY com_qna_no DESC LIMIT #{start},10
+		</if>
+		<if test="start==null">
+			ORDER BY com_qna_no DESC
+		</if>
+		
+	</select>
+	
+	<!--@@@@@@@@@@@@내가쓴글 보기-@@@@@@@@@@@ -->
+	<!-- 프로시져 p_comm_qna_findmytext 
+	
+	DROP PROCEDURE IF EXISTS p_comm_qna_findmytext;
+	DELIMITER $$
+	CREATE PROCEDURE p_comm_qna_findmytext(
+	IN v_user_id  VARCHAR(20)
+	)
+	BEGIN
+		SELECT * FROM Community_qnaT where user_id =  v_user_id;
+	END$$
+	DELIMITER ;
+	-->
+
+	<select id="p_comm_qna_findmytext" statementType="CALLABLE"
+		resultMap="RM_qnaText" parameterType="java.lang.String">
+		{call p_comm_qna_findmytext(#{user_id})}
+	</select>
+</mapper>
+<!--
+
+-->

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="community_review">
+	<select id="sysdate" resultType="java.lang.String">
+		SELECT NOW()
+	</select>
+	
+<!-- 후기 프로시져 p_comm_boardreviewFindAllTexts  
+
+
+CREATE TABLE ReviewT
+(
+    `review_no`       INT             NOT NULL    AUTO_INCREMENT, 
+    `space_no`        INT             NULL, 
+    `user_id`         VARCHAR(20)     NULL, 
+    `review_title`    VARCHAR(45)     NULL, 
+    `review_content`  TEXT            NULL, 
+    `the_time`        DATETIME        NULL, 
+    `review_score`    DOUBLE          NULL, 
+    `review_img`      VARCHAR(100)    NULL, 
+    PRIMARY KEY (review_no)
+);
+
+
+	DROP PROCEDURE IF EXISTS p_comm_boardreviewFindAllTexts;
+	DELIMITER $$
+	CREATE PROCEDURE p_comm_boardreviewFindAllTexts()
+	BEGIN
+		SELECT * FROM ReviewT ORDER BY review_no DESC;
+	END$$
+	DELIMITER ;
+
+
+ -->
+<resultMap type="main.vo.ReviewVO" id="RM_Review">
+<result property="review_no" column="review_no" jdbcType="INTEGER"/>
+<result property="user_id" column="user_id" jdbcType="VARCHAR"/>
+<result property="space_no" column="space_no" jdbcType="INTEGER"/>
+<result property="review_title" column="review_title" jdbcType="VARCHAR"/>
+<result property="review_content" column="review_content" jdbcType="VARCHAR"/>
+<result property="the_time" column="the_time" jdbcType="VARCHAR"/>
+<result property="review_score" column="review_score" jdbcType="DOUBLE"/>
+<result property="review_img" column="review_img" jdbcType="VARCHAR"/>
+</resultMap>
+
+<select id="p_comm_boardreviewFindAllTexts" parameterType="hashmap" resultMap="RM_Review">
+	SELECT * FROM reviewt WHERE 0=0 
+	<if test="start!=null">
+		ORDER BY review_no DESC LIMIT #{start},10
+	</if>
+	<if test="start==null">
+		ORDER BY review_no DESC;
+	</if>
+</select>
+
+
+
+</mapper>
+

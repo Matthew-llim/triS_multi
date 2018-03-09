@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="faq">
+
+	<select id="sysdate" resultType="java.lang.String">
+		SELECT NOW()
+	</select>
+
+<!-- 
+프로시져 pfindAllTexts 김소영
+
+	DROP PROCEDURE IF EXISTS p_faq_FindAllTexts;
+	DELIMITER $$
+	CREATE PROCEDURE p_faq_FindAllTexts()
+	BEGIN
+		SELECT * FROM faqT ORDER BY faq_no DESC;
+	END$$
+	DELIMITER ;
+-->
+
+ 	<resultMap id="RM_Text" type="main.vo.FaqVO">
+		<result property="faq_no" column="faq_no" jdbcType="INTEGER" />
+		<result property="faq_title" column="faq_title" jdbcType="VARCHAR" />
+		<result property="faq_content" column="faq_content" jdbcType="VARCHAR" />
+	</resultMap>
+
+
+	<select id="p_faq_FindAllTexts" statementType="CALLABLE" resultMap="RM_Text">
+		{call p_faq_FindAllTexts()}
+	</select>
+
+
+
+
+
+
+
+
+</mapper>
+

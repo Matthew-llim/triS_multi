@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="myinfo">
+
+	<select id="sysdate" resultType="java.lang.String">
+		SELECT NOW()
+	</select>
+	
+	<parameterMap type="main.vo.UserVO" id="PM_ckpass">
+		<parameter property="user_id" mode="IN"/>
+		<parameter property="passwd" mode="IN"/>
+	</parameterMap>
+	
+	<!-- 회원정보수정 비밀번호확인 -->
+	<select id="p_mypage_ckpass" parameterMap="PM_ckpass" resultType="java.lang.Integer" statementType="CALLABLE">
+		{call p_mypage_ckpass(?,?)}
+	</select>
+	
+	
+	<resultMap type="main.vo.UserVO" id="RM_find_user">
+		<result property="user_id" column="user_id"/>
+		<result property="ssn1" column="ssn1"/>
+		<result property="ssn2" column="ssn2"/>
+		<result property="passwd" column="passwd"/>
+		<result property="user_name" column="user_name"/>
+		<result property="gender" column="gender"/>
+		<result property="phone" column="phone"/>
+		<result property="nickname" column="nickname"/>
+		<result property="email" column="email"/>
+		<result property="zipcode" column="zipcode"/>
+		<result property="zipdetail" column="zipdetail"/>
+ 	</resultMap>
+	
+	<!-- 회원정보갖고오기 -->
+	<select id="p_mypage_find_user" parameterType="java.lang.String" resultMap="RM_find_user"  statementType="CALLABLE">
+		{call p_mypage_find_user(#{user_id})}
+	</select>
+	
+	<parameterMap type="main.vo.UserVO" id="PM_mypage_mod_user">
+		<parameter property="user_id" mode="IN"/>
+		<parameter property="passwd" mode="IN"/>
+		<parameter property="nickname" mode="IN"/>
+		<parameter property="phone" mode="IN"/>
+		<parameter property="email" mode="IN"/>
+		<parameter property="zipcode" mode="IN"/>
+		<parameter property="zipdetail" mode="IN"/>
+	</parameterMap>
+	
+	<!-- 회원정보수정 -->
+	<update id="p_mypage_mod_user" parameterMap="PM_mypage_mod_user">
+		{call p_mypage_mod_user(?,?,?,?,?,?,?)}
+	</update>
+	
+	<!-- 회원탈퇴 -->
+	<delete id="p_mypage_del_user" parameterType="java.lang.String" statementType="CALLABLE">
+		{call p_mypage_del_user(#{user_id})}
+	</delete>
+	
+	
+	<!-- zipcode 가져오기 -->
+	
+ 	<resultMap type="main.vo.ZipcodeVO" id="RM_zipcode_find">
+		<result property="sido" column="sido"/>
+		<result property="gugun" column="gugun"/>
+		<result property="dong" column="dong"/>
+		<result property="bunji" column="bunji"/>
+	</resultMap>
+	
+	<select id="zipcode_find" resultMap="RM_zipcode_find" parameterType="java.lang.String">
+		{call p_user_zipcode_find(#{zipcode})}
+	</select>  
+	
+	
+</mapper>
+
+
+
+
+

@@ -1,0 +1,113 @@
+DELETE FROM UserT; 
+SELECT * FROM UserT;
+INSERT INTO UserT Values('user', '405-240', '881001', '8888888', '1234', '이양재', 'M', '01055246469',
+'coolGuy', 'remd@naver.com' , 1,'test' );
+INSERT INTO UserT Values('seller_request', '405-240', '881001', '8888888', '1234', '이양재', 'M', '01055246469',
+'coolGuy', 'remd@naver.com' , 1,'test' );
+INSERT INTO UserT Values('seller', '405-240', '881001', '8888888', '1234', '이양재', 'M', '01055246469',
+'coolGuy', 'remd@naver.com' , 2,'test' );
+INSERT INTO UserT Values('imseller', '405-240', '881001', '8888888', '1234', '이양재', 'M', '01055246469',
+'coolGuy', 'remd@naver.com' , 2,'test' );
+
+INSERT INTO UserT Values('admin', '405-240', '881001', '8888888', '1234', '이양재', 'M', '01055246469',
+'coolGuy',  'remd@naver.com' , 3 ,'test');
+
+################################################################
+################################################################
+	DROP PROCEDURE IF EXISTS p_admin_user_findAll;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_user_findAll()
+	BEGIN
+		SELECT * FROM UserT WHERE grade = 1;
+	END$$
+	DELIMITER ;
+	
+################################################################
+
+	DROP PROCEDURE IF EXISTS p_admin_user_findUser;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_user_findUser(
+		IN v_user_id VARCHAR(50)
+	)
+	BEGIN
+		SELECT * FROM UserT WHERE user_id = v_user_id;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_user_DelUser;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_user_DelUser(
+		IN v_user_id VARCHAR(50),
+		IN v_user_name VARCHAR(50),
+		IN v_email VARCHAR(50),
+		IN v_subject TEXT,
+		IN v_mail_content TEXT
+	)
+	BEGIN
+		DECLARE exit handler FOR SQLEXCEPTION
+		BEGIN
+			ROLLBACK;
+			SIGNAL SQLSTATE '45000';
+		END;
+		START TRANSACTION;
+			INSERT INTO User_del_emailT VALUES ( default, v_user_id, v_user_name, v_email, v_subject, v_mail_content, NOW() );
+			DELETE FROM Club_BoardT WHERE user_id = v_user_id;
+			DELETE FROM BookingT WHERE user_id = v_user_id;
+			DELETE FROM Community_Board_RepleT WHERE user_id = v_user_id;
+			DELETE FROM Community_QnAT WHERE user_id = v_user_id;
+			DELETE FROM Club_Board_RepleT WHERE user_id = v_user_id;
+			DELETE FROM Community_Board_RecomtT WHERE user_id = v_user_id;
+			DELETE FROM Community_QnA_RepleT WHERE user_id = v_user_id;
+			DELETE FROM Community_QnA_Reple_RecomT WHERE user_id = v_user_id;
+			DELETE FROM User_ClubT WHERE user_id = v_user_id;
+			DELETE FROM Club_NoticeT WHERE user_id = v_user_id;
+			DELETE FROM Community_BoardT WHERE user_id = v_user_id;
+			DELETE FROM Club_Notice_RepleT WHERE user_id = v_user_id;
+			DELETE FROM ClubT WHERE user_id = v_user_id;
+			DELETE FROM Club_applyT WHERE user_id = v_user_id;
+			DELETE FROM HostT WHERE user_id = v_user_id;
+			DELETE FROM HostApplyT WHERE user_id = v_user_id;
+			DELETE FROM Space_QnAT WHERE user_id = v_user_id;
+			DELETE FROM Space_QnA_RepleT WHERE user_id = v_user_id;
+			DELETE FROM ReviewT WHERE user_id = v_user_id;
+			DELETE FROM Review_RepleT WHERE user_id = v_user_id;
+			DELETE FROM BookmarkT WHERE user_id = v_user_id;
+			DELETE FROM UserT WHERE user_id = v_user_id;
+		COMMIT;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_user_modifyUser;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_user_modifyUser(
+		IN v_user_id VARCHAR(50),
+		IN v_user_name VARCHAR(50),
+		IN v_phone VARCHAR(50),
+		IN v_nickname VARCHAR(50),
+		IN v_zipcode VARCHAR(50),
+		IN v_zipdetail VARCHAR(50),
+		IN v_email VARCHAR(50)
+	)
+	BEGIN
+		UPDATE UserT SET user_name = v_user_name, phone=v_phone, 
+		nickname=v_nickname, zipcode = v_zipcode, zipdetail = v_zipdetail, email = v_email WHERE user_id = v_user_id;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_list_removed_users;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_list_removed_users()
+	BEGIN
+		SELECT * FROM User_Del_EmailT ORDER BY writing_no DESC;
+	END$$
+	DELIMITER ;
+	
+	
+	
+	

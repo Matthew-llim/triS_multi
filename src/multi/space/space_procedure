@@ -1,0 +1,578 @@
+#공간 추가
+DROP PROCEDURE IF EXISTS p_add_space;
+DELIMITER $$
+
+CREATE PROCEDURE p_add_space(
+	IN v_l_category_no INT(11),
+	IN v_crn VARCHAR(13),
+	IN v_s_category_no INT(11),
+	IN v_space_title VARCHAR(50),
+	IN v_space_content TEXT,
+	IN v_space_thumb_img VARCHAR(100),
+	IN v_open_time CHAR(2),
+	IN v_close_time CHAR(2),
+	IN v_price INT(11),
+	IN v_max_people INT(11),
+	IN v_min_people INT(11),
+	IN v_space_call VARCHAR(20),
+	IN v_zipcode CHAR(7),
+	IN v_latitude DOUBLE,
+	IN v_longitude DOUBLE
+)
+BEGIN
+	INSERT INTO spacet VALUES(default,v_l_category_no,v_crn,v_s_category_no,v_space_title,
+	v_space_content,v_space_thumb_img,v_open_time,v_close_time,v_price,v_max_people,v_min_people,v_space_call,NOW(),v_zipcode,v_latitude,v_longitude);
+END$$
+
+DELIMITER ;
+
+#공간 이미지 추가
+DROP PROCEDURE IF EXISTS p_add_space_image;
+DELIMITER $$
+
+CREATE PROCEDURE p_add_space_image(
+	IN v_space_no INT(11),
+	IN v_image_one VARCHAR(45),
+	IN v_image_two VARCHAR(45),
+	IN v_image_three VARCHAR(45),
+	IN v_image_four VARCHAR(45),
+	IN v_image_five VARCHAR(45),
+	IN v_image_six VARCHAR(45),
+	IN v_image_seven VARCHAR(45)
+)
+BEGIN
+	INSERT INTO imaget VALUES (default,v_space_no,v_image_one,v_image_two,v_image_three,
+	v_image_four,v_image_five,v_image_six,v_image_seven);
+END$$
+
+DELIMITER ;
+
+
+
+#공간 전체 검색
+DROP PROCEDURE IF EXISTS p_find_space_all;
+DELIMITER $$
+
+CREATE PROCEDURE p_find_space_all(
+)
+BEGIN
+	SELECT * FROM spacet;
+END$$
+
+DELIMITER ;
+
+#space_no로 공간 검색
+DROP PROCEDURE IF EXISTS p_find_space_by_pk;
+DELIMITER $$
+
+CREATE PROCEDURE p_find_space_by_pk(
+	IN v_space_no INT(11)
+)
+BEGIN
+	SELECT * FROM spacet WHERE space_no=v_space_no;
+END$$
+
+DELIMITER ;
+
+#공간에 있는 이미지들 검색
+DROP PROCEDURE IF EXISTS p_find_image_by_space_no;
+DELIMITER $$
+
+CREATE PROCEDURE p_find_image_by_space_no(
+	IN v_space_no INT(11)
+)
+BEGIN
+	SELECT * FROM imaget WHERE space_no=v_space_no;
+END$$
+
+DELIMITER ;
+
+
+#space_no 마지막 번호 검색
+DROP PROCEDURE IF EXISTS p_find_space_no;
+DELIMITER $$
+
+CREATE PROCEDURE p_find_space_no(
+)
+BEGIN 
+	SELECT MAX(space_no) FROM spacet;
+END$$
+
+DELIMITER ;
+
+
+#유저 클럽찾기
+DROP PROCEDURE IF EXISTS p_find_user_club;
+DELIMITER $$
+
+CREATE PROCEDURE p_find_user_club(
+	IN v_user_id VARCHAR(20)
+)
+BEGIN
+	SELECT * FROM clubt WHERE club_no IN (
+	SELECT club_no FROM user_clubt WHERE user_id=v_user_id);
+END$$
+
+DELIMITER ;
+
+#공간의 판매자 찾기
+DROP PROCEDURE IF EXISTS p_find_host_by_space_no;
+DELIMITER $$
+
+CREATE PROCEDURE p_find_host_by_space_no(
+	IN v_space_no INT(11)
+)
+BEGIN
+	SELECT * FROM hostt WHERE crn = (SELECT crn FROM spacet WHERE space_no=v_space_no);
+END$$
+
+DELIMITER ;
+
+#l_category 찾기
+DROP PROCEDURE IF EXISTS p_find_l_category;
+DELIMITER $$
+
+CREATE PROCEDURE p_find_l_category(
+)
+BEGIN
+	SELECT * FROM l_categoryt;
+END$$
+
+DELIMITER ;
+
+#s_category 찾기
+DROP PROCEDURE IF EXISTS p_find_s_category;
+DELIMITER $$
+
+CREATE PROCEDURE p_find_s_category(
+)
+BEGIN
+	SELECT * FROM s_categoryt;
+END$$
+
+DELIMITER ;
+
+#공간의 s_category 찾기
+DROP PROCEDURE IF EXISTS p_find_s_category_by_space_no;
+DELIMITER $$
+
+CREATE PROCEDURE p_find_s_category_by_space_no(
+	IN v_space_no INT(11)
+)
+BEGIN
+	SELECT s_category_name FROM s_categoryt WHERE s_category_no = ( SELECT s_category_no FROM spacet
+	WHERE space_no=v_space_no);
+END$$
+
+DELIMITER ;
+
+#공간의 k_category 찾기
+DROP PROCEDURE IF EXISTS p_find_l_category_by_space_no;
+DELIMITER $$
+
+CREATE PROCEDURE p_find_l_category_by_space_no(
+	IN v_space_no INT(11)
+)
+BEGIN
+	SELECT l_category_name FROM l_categoryt WHERE l_category_no = ( SELECT l_category_no FROM spacet
+	WHERE space_no=v_space_no);
+END$$
+
+DELIMITER ;
+
+#서울 베스트 공간 찾기
+DROP PROCEDURE IF EXISTS find_best_space;
+DELIMITER $$
+
+CREATE PROCEDURE find_best_space(
+)
+BEGIN
+   DROP TEMPORARY TABLE IF EXISTS temp;
+   CREATE TEMPORARY TABLE IF NOT EXISTS temp
+   SELECT count(*) as count,B.space_no
+   FROM bookmarkt AS B, spacet AS S
+   WHERE B.space_no=S.space_no AND S.l_category_no=1
+   group by B.space_no
+   order by count desc limit 0,3;
+   
+   SELECT * FROM spacet AS S,temp AS T WHERE S.space_no=T.space_no;
+END$$
+
+DELIMITER ;
+
+#파티룸 베스트 공간 찾기
+DROP PROCEDURE IF EXISTS find_best_space2;
+DELIMITER $$
+
+CREATE PROCEDURE find_best_space2(
+)
+BEGIN
+   DROP TEMPORARY TABLE IF EXISTS temp2;
+   CREATE TEMPORARY TABLE IF NOT EXISTS temp2
+   SELECT count(*) as count,B.space_no
+   FROM bookmarkt AS B, spacet AS S
+   WHERE B.space_no=S.space_no AND S.s_category_no=3
+   group by B.space_no
+   order by count desc limit 0,3;
+   
+   SELECT * FROM spacet AS S,temp2 AS T WHERE S.space_no=T.space_no;
+END$$
+
+DELIMITER ;
+
+#space_no로 space 삭제
+DROP PROCEDURE IF EXISTS p_del_space_by_space_no;
+DELIMITER $$
+
+CREATE PROCEDURE p_del_space_by_space_no(
+	IN v_space_no INT(11)
+)
+BEGIN
+	DELETE FROM spacet WHERE space_no=v_space_no;
+END$$
+
+DELIMITER ;
+
+#space 수정
+DROP PROCEDURE IF EXISTS p_mod_space;
+DELIMITER $$
+
+CREATE PROCEDURE p_mod_space(
+	IN v_space_title VARCHAR(50),
+	IN v_space_content TEXT,
+	IN v_open_time CHAR(2),
+	IN v_close_time CHAR(2),
+	IN v_price INT(11),
+	IN v_min_people INT(11),
+	IN v_max_people INT(11),
+	IN v_l_category_no INT(11),
+	IN v_s_category_no INT(11),
+	IN v_space_no INT(11)
+)
+BEGIN
+	UPDATE spacet SET space_title=v_space_title, space_content=v_space_content,open_time=v_open_time,
+	close_time=v_close_time,price=v_price,min_people=v_min_people,max_people=v_max_people,l_category_no=v_l_category_no,
+	s_category_no=v_s_category_no WHERE space_no=v_space_no;
+END$$
+
+DELIMITER ;
+
+#space 주소 찾기
+DROP PROCEDURE IF EXISTS p_find_space_addr;
+DELIMITER $$
+
+CREATE PROCEDURE p_find_space_addr(
+	IN v_zipcode CHAR(7)
+)
+BEGIN
+	SELECT * FROM zipcodet WHERE zipcode=v_zipcode;
+END$$
+
+DELIMITER ;
+
+
+#space_qna
+
+#spaec qna 등록
+DROP PROCEDURE IF EXISTS p_add_spaceQnA;
+DELIMITER $$
+
+CREATE PROCEDURE p_add_spaceQnA(
+	IN v_space_no INT(11),
+	IN v_user_id VARCHAR(20),
+	IN v_space_qna_content TEXT,
+	IN v_space_qna_title VARCHAR(45)
+)
+BEGIN
+	INSERT INTO space_qnat VALUES (default,v_user_id,v_space_no,v_space_qna_content,v_space_qna_title,NOW());
+END$$
+
+DELIMITER ;
+
+#space_qna 삭제
+DROP PROCEDURE IF EXISTS p_delete_spaceQnA_by_space_qna_no;
+DELIMITER $$
+
+CREATE PROCEDURE p_delete_spaceQnA_by_space_qna_no(
+	IN v_space_qna_no INT(11)
+)
+BEGIN	
+	DELETE FROM space_qnat WHERE space_qna_no=v_space_qna_no;
+END$$
+
+DELIMITER ;
+
+#space_qna_no으로 space_qna 불러오기
+DROP PROCEDURE IF EXISTS p_find_spaceQnA_by_space_qna_no;
+DELIMITER $$
+
+CREATE PROCEDURE p_find_spaceQnA_by_space_qna_no(
+	IN v_space_qna_no INT(11)
+)
+BEGIN	
+	SELECT * FROM space_qnat WHERE space_qna_no=v_space_qna_no;
+END$$
+
+DELIMITER ;
+	
+#space_qna_no으로 space_qna 불러오기
+DROP PROCEDURE IF EXISTS p_mod_spaceQnA_by_space_qna_no;
+DELIMITER $$
+
+CREATE PROCEDURE p_mod_spaceQnA_by_space_qna_no(
+	IN v_space_qna_title VARCHAR(45),
+	IN v_space_qna_content TEXT,
+	IN v_space_qna_no INT(11)
+)
+BEGIN	
+	UPDATE space_qnat SET space_qna_title=v_space_qna_title, space_qna_content=v_space_qna_content WHERE space_qna_no=v_space_qna_no;
+END$$
+
+DELIMITER ;
+
+#Booking
+
+#예약 추가
+DROP PROCEDURE IF EXISTS p_add_booking;
+DELIMITER $$
+
+CREATE PROCEDURE p_add_booking(
+	IN v_club_no INT(11),
+	IN v_space_no INT(11),
+	IN v_booking_date DATE,
+	IN v_start_time VARCHAR(2),
+	IN v_end_time VARCHAR(2),
+	IN v_booking_people INT(11),
+	IN v_booking_price INT(11),
+	IN v_booking_user_name VARCHAR(20),
+	IN v_booking_phone VARCHAR(11),
+	IN v_booking_email VARCHAR(50),
+	IN v_booking_message VARCHAR(500),
+	IN v_user_id VARCHAR(20)
+)
+BEGIN	
+	INSERT INTO bookingt VALUES (default,52,v_space_no,NOW(),v_booking_date
+	,v_start_time,v_end_time,v_booking_people,v_booking_price,v_booking_user_name,
+	v_booking_phone,v_booking_email,v_booking_message,v_user_id);
+END$$
+
+DELIMITER ;
+
+#날짜별 공간 예약 내역 찾기
+DROP PROCEDURE IF EXISTS p_find_booking_by_space_no_and_booking_date;
+DELIMITER $$
+
+CREATE PROCEDURE p_find_booking_by_space_no_and_booking_date(
+	IN v_space_no INT(11),
+	IN v_booking_date DATE
+)
+BEGIN	
+		SELECT * FROM bookingt WHERE space_no=v_space_no AND booking_date=v_booking_date;
+END$$
+
+DELIMITER ;
+
+#북마크
+
+#북마크 추가
+DROP PROCEDURE IF EXISTS p_add_bookmark;
+DELIMITER $$
+
+CREATE PROCEDURE p_add_bookmark(
+	IN v_user_id VARCHAR(20),
+	IN v_space_no INT(11)
+)
+BEGIN
+	INSERT INTO bookmarkt VALUES (v_user_id,v_space_no);
+END$$
+
+DELIMITER ;
+
+#북마크 있는지 검색
+DROP PROCEDURE IF EXISTS p_find_bookmark;
+DELIMITER $$
+
+CREATE PROCEDURE p_find_bookmark(
+	IN v_user_id VARCHAR(20),
+	IN v_space_no INT(11)
+)
+BEGIN
+	SELECT * FROM bookmarkt WHERE user_id=v_user_id AND space_no=v_space_no;
+END$$
+
+DELIMITER ;
+
+#북마크 삭제
+DROP PROCEDURE IF EXISTS p_del_bookmark;
+DELIMITER $$
+
+CREATE PROCEDURE p_del_bookmark(
+	IN v_user_id VARCHAR(20),
+	IN v_space_no INT(11)
+)
+BEGIN
+	DELETE FROM bookmarkt WHERE user_id=v_user_id AND space_no=v_space_no;
+END$$
+
+DELIMITER ;
+
+
+#space에서 쓰는 host
+#host찾기
+DROP PROCEDURE IF EXISTS p_find_host_by_user_id;
+DELIMITER $$
+
+CREATE PROCEDURE p_find_host_by_user_id(
+	IN v_user_id VARCHAR(20)
+)
+BEGIN
+	SELECT * FROM hostt WHERE user_id=v_user_id;
+END$$
+
+DELIMITER ;
+
+#리뷰
+#리뷰 추가
+DROP PROCEDURE IF EXISTS p_add_review;
+DELIMITER $$
+
+CREATE PROCEDURE p_add_review(
+	IN v_space_no INT(11),
+	IN v_user_id VARCHAR(20),
+	IN v_review_title VARCHAR(45),
+	IN v_review_content TEXT,
+	IN v_review_score DOUBLE,
+	IN v_review_img VARCHAR(100)
+)
+BEGIN
+	INSERT INTO reviewt VALUES (default,v_user_id,v_space_no,v_review_title,
+		v_review_content,NOW(),v_review_score,v_review_img);
+END$$
+
+DELIMITER ;
+
+#review 삭제
+DROP PROCEDURE IF EXISTS p_del_review_by_review_no;
+DELIMITER $$
+
+CREATE PROCEDURE p_del_review_by_review_no(
+	IN v_review_no INT(11)
+)
+BEGIN
+	DELETE FROM reviewt WHERE review_no=v_review_no;
+END$$
+
+DELIMITER ;
+
+#review 찾기
+DROP PROCEDURE IF EXISTS p_find_review_by_review_no;
+DELIMITER $$
+
+CREATE PROCEDURE p_find_review_by_review_no(
+	IN v_review_no INT(11)
+)
+BEGIN
+	SELECT * FROM reviewt WHERE review_no=v_review_no;
+END$$
+
+DELIMITER ;
+
+#qna_repleT
+#QNA답변 달기
+DROP PROCEDURE IF EXISTS p_add_space_QnA_Reple;
+DELIMITER $$
+
+CREATE PROCEDURE p_add_space_QnA_Reple(
+	IN v_space_qna_no INT(11),
+	IN v_space_no INT(11),
+	IN v_space_qna_reple_content TEXT,
+	IN v_user_id VARCHAR(20)
+)
+BEGIN
+	INSERT INTO space_qna_replet VALUES ( default,v_space_qna_no,v_space_qna_reple_content,
+	NOW(),v_space_no,v_user_id);
+END$$
+
+DELIMITER ;
+
+#qna_reple 찾기
+DROP PROCEDURE IF EXISTS p_find_space_QnA_Reple_by_space_qna_no;
+DELIMITER $$
+
+CREATE PROCEDURE p_find_space_QnA_Reple_by_space_qna_no(
+	IN v_space_qna_no INT(11)
+)
+BEGIN
+	SELECT * FROM space_qna_replet WHERE space_qna_no=v_space_qna_no;
+END$$
+
+DELIMITER ;
+
+#qna_reple 삭제
+DROP PROCEDURE IF EXISTS p_delete_spaceQnA_ny_space_qna_no;
+DELIMITER $$
+
+CREATE PROCEDURE p_delete_spaceQnA_ny_space_qna_no(
+	IN v_space_qna_no INT(11)
+)
+BEGIN
+	DELETE FROM space_qna_replet WHERE space_qna_no=v_space_qna_no;
+END$$
+
+DELIMITER ;
+
+
+#space_user
+#space에서 user찾기
+DROP PROCEDURE IF EXISTS p_find_user_by_user_id;
+DELIMITER $$
+
+CREATE PROCEDURE p_find_user_by_user_id(
+	IN v_user_id VARCHAR(20)
+)
+BEGIN
+	SELECT * FROM usert WHERE user_id=v_user_id;
+END$$
+
+DELIMITER ;
+
+
+#Booking
+DROP PROCEDURE IF EXISTS p_add_booking;
+DELIMITER $$
+
+CREATE PROCEDURE p_add_booking(
+	IN v_space_no INT,
+	IN v_booking_date DATETIME,
+	IN v_start_time INT,
+	IN v_end_time INT,
+	IN v_booking_people INT,
+	IN v_booking_price INT,
+	IN v_booking_user_name VARCHAR(20),
+	IN v_booking_phone VARCHAR(11),
+	IN v_booking_email VARCHAR(50),
+	IN v_booking_message VARCHAR(500),
+	IN v_user_id VARCHAR(20),
+	IN v_club_list INT
+)
+BEGIN
+	DECLARE
+		imsi INT;
+	
+	INSERT INTO bookingt VALUES(default,v_space_no,NOW(),v_booking_date,
+	v_start_time,v_end_time,v_booking_people,v_booking_price,
+	v_booking_user_name,v_booking_phone,v_booking_email,
+	v_booking_message,v_user_id);
+	
+	SELECT max(booking_no) INTO imsi FROM bookingt;
+	
+	IF v_club_list = 0  THEN SELECT NOW();
+	ELSE 
+		INSERT INTO booking_clubt VALUES (imsi,v_club_list);
+	END IF;
+	
+END$$
+
+DELIMITER ;
+
+

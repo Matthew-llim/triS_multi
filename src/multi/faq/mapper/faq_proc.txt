@@ -1,0 +1,7 @@
+DROP PROCEDURE IF EXISTS p_faq_FindAllTexts;
+	DELIMITER $$
+	CREATE PROCEDURE p_faq_FindAllTexts()
+	BEGIN
+		SELECT * FROM faqT ORDER BY faq_no DESC;
+	END$$
+	DELIMITER ;

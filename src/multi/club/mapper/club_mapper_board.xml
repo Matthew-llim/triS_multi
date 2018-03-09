@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="club_board">
+
+	<select id="sysdate" resultType="java.lang.String">
+		SELECT NOW()
+	</select>
+
+	<!-- club 커뮤니티 글 등록 시작 -->
+	<update id="club_add_community_board" parameterType="multi.club.vo.Club_boardVO" statementType="CALLABLE">
+		{call p_club_add_community_board(#{c_board_title},#{c_board_content},#{c_board_subject},#{club_no},#{user_id})}
+	</update>
+	<!-- club 커뮤니티 글 등록 끝 -->
+
+	<!-- club 커뮤니티 글 찾기 시작 -->
+	<select id="club_findAll_board" parameterType="multi.club.vo.Club_community_listVO" resultMap="RM_club_findAll_board">
+		SELECT c.c_board_no, c.c_board_title, c.c_board_content, c.c_board_subject, c.the_time, c.club_no
+	     	  ,c.user_id, c.view_count, u.user_name
+	  	  FROM club_boardt AS c,usert AS u
+ 	 	 WHERE c.club_no=#{club_no}
+ 	   	   AND c.user_id=u.user_id
+ 	   	 <if test="start!=null">
+		 	ORDER BY c.c_board_no DESC LIMIT #{start},10
+	     </if>
+	     <if test="start==null">
+		 	ORDER BY c.c_board_no DESC
+	     </if>
+	</select>
+	<resultMap id="RM_club_findAll_board" type="multi.club.vo.Club_boardVO">
+		<result property="c_board_no"	  	column="c_board_no"			jdbcType="INTEGER"/>
+		<result property="c_board_title"	column="c_board_title"		jdbcType="VARCHAR"/>
+		<result property="c_board_content"	column="c_board_content"	jdbcType="VARCHAR"/>
+		<result property="c_board_subject"	column="c_board_subject"	jdbcType="VARCHAR"/>
+		<result property="the_time"			column="the_time"			jdbcType="VARCHAR"/>
+		<result property="club_no"	  		column="club_no"			jdbcType="INTEGER"/>
+		<result property="user_id"	  		column="user_id"			jdbcType="VARCHAR"/>
+		<result property="view_count"	  	column="view_count"			jdbcType="INTEGER"/>
+		<result property="user_name"	  	column="user_name"			jdbcType="VARCHAR"/>
+	</resultMap>
+	<!-- club 커뮤니티 글 찾기 끝 -->
+	
+	<!-- club 커뮤니티 글 detail 찾기 시작 -->
+	<select id="club_find_board" parameterType="multi.club.vo.Club_boardVO" resultMap="RM_club_findAll_board" statementType="CALLABLE">
+		{call p_club_find_board(#{c_board_no})}	
+	</select>
+	<!-- club 커뮤니티 글 detail 찾기 끝 -->
+	
+	<!-- club 커뮤니티 글 수정 시작 -->
+	<update id="club_mod_board_detail" parameterType="multi.club.vo.Club_boardVO" statementType="CALLABLE">
+		{call p_club_mod_board_detail(#{c_board_no},#{c_board_title},#{c_board_content},#{c_board_subject})}
+	</update>
+	<!-- club 커뮤니티 글 수정 끝 -->
+	
+	<!-- club 커뮤니티 글 삭제 시작 -->
+	<update id="club_del_board_detail" parameterType="multi.club.vo.Club_boardVO" statementType="CALLABLE">
+		{call p_club_del_board_detail(#{c_board_no})}
+	</update>
+	<!-- club 커뮤니티 글 삭제 끝 -->
+	
+	<!-- club 커뮤니티 글의 리플 리스트 시작 -->
+	<select id="club_board_reple" parameterType="multi.club.vo.Club_boardVO" resultMap="RM_club_board_reple" statementType="CALLABLE">
+		{call p_club_board_reple(#{c_board_no})}	
+	</select>
+	
+	<resultMap id="RM_club_board_reple" type="multi.club.vo.Club_board_repleVO">
+		<result property="c_board_reple_no"			column="c_board_reple_no"		jdbcType="INTEGER"/>
+		<result property="c_board_reple_content"	column="c_board_reple_content"	jdbcType="VARCHAR"/>
+		<result property="the_time"					column="the_time"				jdbcType="VARCHAR"/>
+		<result property="user_id"					column="user_id"				jdbcType="VARCHAR"/>
+		<result property="c_board_no"				column="c_board_no"				jdbcType="INTEGER"/>
+	</resultMap>
+	<!-- club 커뮤니티 글의 리플 리스트 끝 -->
+
+	<!-- club 커뮤니티 댓글 추가 시작 -->
+	<update id="club_add_board_reple" parameterType="multi.club.vo.Club_board_repleVO" statementType="CALLABLE">
+		{call p_club_add_board_reple(#{c_board_reple_content},#{user_id},#{c_board_no})}
+	</update>
+	<!-- club 커뮤니티 댓글 추가 끝 -->
+	
+	<!-- club 커뮤니티 댓글 삭제 시작 -->
+	<update id="club_del_board_reple" parameterType="multi.club.vo.Club_board_repleVO" statementType="CALLABLE">
+		{call p_club_del_board_reple(#{c_board_reple_no})}
+	</update>
+	<!-- club 커뮤니티 댓글 삭제 끝 -->
+	
+	<!-- club 커뮤니티 댓글 수정 시작 -->
+	<update id="club_mod_board_reple" parameterType="multi.club.vo.Club_board_repleVO" statementType="CALLABLE">
+		{call p_club_mod_board_reple(#{c_board_reple_no},#{c_board_reple_content})}
+	</update>
+	<!-- club 커뮤니티 댓글 수정 끝 -->
+	
+</mapper>

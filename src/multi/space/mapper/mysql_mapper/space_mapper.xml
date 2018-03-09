@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="space">
+	
+	
+		<select id="find_space_all" resultType="main.vo.SpaceVO" statementType="CALLABLE">
+		{call p_find_space_all()}
+	</select>
+	
+	<!-- 
+	<select id="find_space_all" resultType="main.vo.SpaceVO">
+		SELECT * FROM SpaceT
+	</select>
+	 -->
+	
+	
+	<insert id="add_space" parameterType="main.vo.SpaceVO" statementType="CALLABLE">
+		{call p_add_space(#{l_category_no},#{crn},#{s_category_no},'${space_title}','${space_content}','${space_thumb_img}',
+		'${open_time}','${close_time}',${price},${max_people},${min_people},'${space_call}','${zipcode}')}
+	</insert>
+	
+	<!-- 
+	<insert id="add_space" parameterType="main.vo.SpaceVO">
+		INSERT INTO SpaceT VALUES (default,'${crn}','${space_title}','${space_content}','${space_thumb_img}', '${open_time}',
+		'${close_time}',${price},${max_people},${min_people},'${space_call}','${zipcode}',${s_category_no},${l_category_no},NOW())
+	</insert>
+	 -->
+	
+	<select id="find_space_no" resultType="java.lang.Integer" statementType="CALLABLE">
+		{call p_find_space_no()}
+	</select>
+	
+	<!-- 
+	<select id="find_space_no" resultType="java.lang.Integer">
+		SELECT max(space_no) FROM SpaceT
+	</select>
+	 -->
+	 
+	 
+	<insert id="add_space_image" parameterType="multi.space.vo.ImageVO" statementType="CALLABLE">
+		{call p_add_space_image(${space_no},'${image_one}','${image_two}','${image_three}','${image_four}',
+		'${image_five}','${image_six}','${image_seven}')}
+	</insert>
+	
+	<!-- 
+	<insert id="add_space_image" parameterType="multi.space.vo.ImageVO">
+		INSERT INTO ImageT VALUES (default,${space_no},'${image_one}','${image_two}','${image_three}','${image_four}','${image_five}','${image_six}','${image_seven}')
+	</insert>
+	 -->
+	 
+	 <select id="find_space_by_pk" parameterType="main.vo.SpaceVO" resultType="main.vo.SpaceVO">
+		{call p_find_space_by_pk(${space_no})}
+	</select>
+	 
+	<!--  
+	<select id="find_space_by_pk" parameterType="main.vo.SpaceVO" resultType="main.vo.SpaceVO">
+		SELECT * FROM SpaceT WHERE space_no=${space_no}
+	</select>
+	 -->
+	
+	
+	 
+	 <select id="find_image_by_space_no" parameterType="multi.space.vo.ImageVO" resultType="multi.space.vo.ImageVO" statementType="CALLABLE">
+		{call p_find_image_by_space_no(${space_no})}
+	</select>
+	
+	<!-- 
+	<select id="find_image_by_space_no" parameterType="multi.space.vo.ImageVO" resultType="multi.space.vo.ImageVO">
+		SELECT * FROM ImageT WHERE space_no=${space_no}
+	</select>
+	 -->
+	
+	<select id="find_user_club" parameterType="java.lang.String" resultType="main.vo.ClubVO" statementType="CALLABLE">
+		{call p_find_user_club(#{value})}
+	</select>
+	
+	<!-- 
+	<select id="find_user_club" parameterType="java.lang.String" resultType="main.vo.ClubVO">
+		SELECT club_name FROM ClubT WHERE club_no IN (
+		SELECT club_no FROM user_clubt WHERE user_id=#{value})
+	</select>
+	 -->
+	
+	<select id="find_host_by_space_no" parameterType="main.vo.SpaceVO" resultType="main.vo.HostVO" statementType="CALLABLE">
+		{call p_find_host_by_space_no(${space_no})}
+	</select>
+	
+	<!-- 
+	<select id="find_host_by_space_no" parameterType="main.vo.SpaceVO" resultType="main.vo.HostVO">
+		SELECT * FROM HostT WHERE crn = (SELECT crn FROM SpaceT WHERE space_no=${space_no})
+	</select>
+	 -->
+	
+	<select id="find_l_category" resultType="java.util.Map" statementType="CALLABLE">
+		{call p_find_l_category()}
+	</select>
+	
+	<!-- 
+	<select id="find_l_category" resultType="java.util.Map">
+		SELECT * FROM L_categoryT
+	</select>
+	 -->
+	
+	<select id="find_s_category" resultType="java.util.Map" statementType="CALLABLE">
+		{call p_find_s_category()}
+	</select>
+	
+	<!-- 
+	<select id="find_s_category" resultType="java.util.Map">
+		SELECT * FROM S_categoryT
+	</select>
+	 -->
+	
+	
+	<select id="find_s_category_by_space_no" parameterType="main.vo.SpaceVO" resultType="java.lang.String" statementType="CALLABLE">
+		{call p_find_s_category_by_space_no(${space_no})}
+	</select>
+	
+	<!-- 
+	<select id="find_s_category_by_space_no" parameterType="main.vo.SpaceVO" resultType="java.lang.String">
+		SELECT s_category_name FROM S_categoryT WHERE s_category_no = ( SELECT s_category_no FROM SpaceT WHERE space_no=${space_no} )
+	</select>
+	 -->
+	
+	<select id="find_l_category_by_space_no" parameterType="main.vo.SpaceVO" resultType="java.lang.String">
+		{call p_find_l_category_by_space_no(${space_no})}
+	</select>
+	
+	<!-- 
+	<select id="find_l_category_by_space_no" parameterType="main.vo.SpaceVO" resultType="java.lang.String">
+		SELECT l_category_name FROM L_categoryT WHERE l_category_no = ( SELECT l_category_no FROM SpaceT WHERE space_no=${space_no} )
+	</select>
+	 -->
+	
+	<select id="find_best_space" statementType="CALLABLE" resultType="multi.space.vo.Space2VO"> 
+		{call find_best_space()}
+	</select>
+	
+	<select id="find_best_space2" statementType="CALLABLE" resultType="multi.space.vo.Space2VO"> 
+		{call find_best_space2()}
+	</select>
+	
+	<select id="search_space" parameterType="multi.space.vo.Space_searchVO" resultType="main.vo.SpaceVO">
+		SELECT * FROM SpaceT WHERE 0=0
+		<if test="l_category_no != null">
+			AND l_category_no=#{l_category_no}
+		</if>
+		<if test="s_category_no != null">
+			AND s_category_no=#{s_category_no}
+		</if>
+		<if test="search_option == 1">
+			AND space_title like '%${search_content}%'
+		</if>
+		<if test="search_option == 2">
+			AND space_content like '%${search_content}%'
+		</if>
+		<if test="search_option == 3">
+			AND space_title like '%${search_content}%'
+			OR space_content like '%${search_content}%'
+		</if>
+		<if test="start_no != null">
+			ORDER BY space_no ASC LIMIT #{start_no},9
+		</if>
+	</select>
+	
+	<delete id="del_space_by_space_no" parameterType="main.vo.SpaceVO">
+		{call p_del_space_by_space_no(${space_no})}
+	</delete>
+	
+	<!-- 
+	<delete id="del_space_by_space_no" parameterType="main.vo.SpaceVO">
+		DELETE FROM SpaceT WHERE space_no=#{space_no}
+	</delete>
+	 -->
+	
+	<update id="mod_space" parameterType="main.vo.SpaceVO">
+		{call p_mod_space('${space_title}','${space_content}','${open_time}','${close_time}',${price},${min_people},
+		${max_people},${l_category_no},${s_category_no},${space_no})}
+	</update>
+	
+	<!-- 
+	<update id="mod_space" parameterType="main.vo.SpaceVO">
+		UPDATE SpaceT SET space_title='${space_title}',space_content='${space_content}',open_time='${open_time}',
+		close_time='${close_time}',price=${price},min_people=${min_people},max_people=${max_people},l_category_no=${l_category_no},
+		s_category_no=${s_category_no} WHERE space_no=${space_no}
+	</update>
+	 -->
+	
+	<select id="find_space_addr" parameterType="java.lang.String" resultType="main.vo.ZipcodeVO">
+		{call p_find_space_addr(#{zipcode})}
+	</select>
+	
+	<!-- 
+	<select id="find_space_addr" parameterType="java.lang.String" resultType="main.vo.ZipcodeVO">
+		SELECT * FROM ZipcodeT WHERE zipcode=#{zipcode} ORDER BY zipcode LIMIT 0,1
+	</select>
+	 -->
+	
+	
+
+</mapper>
+
+
+
+
+
+
