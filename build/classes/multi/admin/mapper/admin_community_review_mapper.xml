@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="admin_community_review">
+
+
+<!-- 후기 프로시져 p_comm_boardreviewFindAllTexts  
+
+
+CREATE TABLE reviewt
+(
+    `review_no`       INT             NOT NULL    AUTO_INCREMENT, 
+    `space_no`        INT             NULL, 
+    `user_id`         VARCHAR(20)     NULL, 
+    `review_title`    VARCHAR(45)     NULL, 
+    `review_content`  TEXT            NULL, 
+    `the_time`        DATETIME        NULL, 
+    `review_score`    DOUBLE          NULL, 
+    `review_img`      VARCHAR(100)    NULL, 
+    PRIMARY KEY (review_no)
+);
+
+
+	DROP PROCEDURE IF EXISTS p_admin_comm_boardreviewFindAllTexts;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_boardreviewFindAllTexts()
+	BEGIN
+		SELECT * FROM reviewt ORDER BY review_no DESC;
+	END$$
+	DELIMITER ;
+
+
+ -->
+<resultMap type="main.vo.ReviewVO" id="RM_admin_Review">
+<result property="review_no" column="review_no" jdbcType="INTEGER"/>
+<result property="space_no" column="space_no" jdbcType="INTEGER"/>
+<result property="user_id" column="user_id" jdbcType="VARCHAR"/>
+<result property="review_title" column="review_title" jdbcType="VARCHAR"/>
+<result property="review_content" column="review_content" jdbcType="VARCHAR"/>
+<result property="the_time" column="the_time" jdbcType="VARCHAR"/>
+<result property="review_score" column="review_score" jdbcType="DOUBLE"/>
+<result property="review_img" column="review_img" jdbcType="VARCHAR"/>
+</resultMap>
+
+<select id="p_admin_comm_boardreviewFindAllTexts" statementType="CALLABLE" resultMap="RM_admin_Review">
+	{call p_admin_comm_boardreviewFindAllTexts()}
+</select>
+
+<!--
+	DROP PROCEDURE IF EXISTS p_admin_remove_Review;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_remove_Review(
+		IN v_review_no INT,
+		IN v_space_no INT
+	)
+	BEGIN
+		DECLARE exit handler FOR SQLEXCEPTION
+		BEGIN
+			ROLLBACK;
+			SIGNAL SQLSTATE '45000';
+		END;
+		START TRANSACTION;
+			DELETE FROM reviewt WHERE review_no = v_review_no AND space_no = v_space_no;
+		COMMIT;
+	END$$
+	DELIMITER ;
+	-->
+	<parameterMap id="PM_p_admin_remove_Review" type="main.vo.ReviewVO" >
+		<parameter property="review_no" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="space_no" mode="IN" jdbcType="VARCHAR"/>
+	</parameterMap>
+	<delete id="p_admin_remove_Review" statementType="CALLABLE" 
+		parameterMap="PM_p_admin_remove_Review">
+		{call p_admin_remove_Review(?,?)}
+	</delete>
+	
+	<select id="admin_search_All" parameterType="multi.admin.vo.Admin_searchVO"
+		resultType="main.vo.ReviewVO">
+		
+	SELECT * FROM reviewt WHERE 0 = 0
+	<if test="search_option == 1">
+	AND review_title like '%${search_content}%'
+	</if>
+	<if test="search_option == 2">
+	AND review_content like '%${search_content}%'
+	</if>
+	<if test="search_option == 3">
+	AND review_title like '%${search_content}%'
+	OR review_content like '%${search_content}%'
+	</if>
+	<if test="search_option == 4">
+	AND user_id like '%${search_content}%'
+	</if>
+	<if test="start_no != null">
+		ORDER BY review_no DESC LIMIT #{start_no},10
+	</if>
+</select>
+	
+</mapper>
+

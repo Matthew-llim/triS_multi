@@ -1,0 +1,422 @@
+
+CREATE TABLE FAQT
+(
+    `faq_no`       INT            NOT NULL    AUTO_INCREMENT, 
+    `faq_title`    VARCHAR(45)    NULL, 
+    `faq_content`  TEXT           NULL, 
+    PRIMARY KEY (faq_no)
+);
+
+
+CREATE TABLE O2OQnAT
+(
+    `o2o_no`          INT            NOT NULL    AUTO_INCREMENT, 
+    `o2o_title`       VARCHAR(45)    NULL, 
+    `o2o_content`     TEXT           NULL, 
+    `o2o_email`       VARCHAR(50)    NOT NULL, 
+    `o2o_type`        VARCHAR(45)    NULL, 
+    `o2o_phone`       VARCHAR(11)    NULL, 
+    `the_time`        DATETIME       NULL, 
+    `re_o2o_content`  TEXT           NULL, 
+    PRIMARY KEY (o2o_no)
+);
+
+
+#오전 09:40 2018-01-05 `eve_thumb_img` 컬럼 추가
+CREATE TABLE EventT
+(
+    `eve_no`       INT            NOT NULL    AUTO_INCREMENT, 
+    `eve_title`    VARCHAR(45)    NULL, 
+    `eve_content`  TEXT           NULL, 
+    `the_time`     VARCHAR(45)    NULL,
+    `eve_thumb_img`	VARCHAR(45)    NULL,
+    PRIMARY KEY (eve_no)
+);
+
+
+#오전 10:51 2018-01-04 컬럼 추가
+CREATE TABLE Club_BoardT
+(
+    `c_board_no`       INT            NOT NULL    AUTO_INCREMENT, 
+    `c_board_title`    VARCHAR(200)   NULL,
+	`c_board_content`  TEXT   		  NULL, 
+	`c_board_subject`  VARCHAR(15)	  NULL,
+    `the_time`         DATETIME 	  NULL, 
+    `culb_no`          INT            NULL, 
+    `user_id`          VARCHAR(20)    NULL, 
+    `view_count`       INT            NULL, 
+    PRIMARY KEY (c_board_no)
+);
+
+
+#2018-01-03 컬럼 추가 및 변경
+CREATE TABLE BookingT
+(
+    `booking_no`    INT            NOT NULL    AUTO_INCREMENT, 
+    `space_no`      INT            NOT NULL, 
+    `user_id`       VARCHAR(20)    NOT NULL, 
+    `du_time`       DATETIME       NOT NULL, 
+    `booking_date`  DATE           NOT NULL,
+    `start_time`  VARCHAR(2)         NOT NULL,
+    `end_time`    VARCHAR(2)         NOT NULL,
+    `booking_people`  INT          NULL,
+    `booking_price`   INT          NULL, 
+    `club_no`         INT          NULL,
+    `booking_user_name`       VARCHAR(20)  NULL,
+    `booking_phone`   VARCHAR(11) NULL,
+    `booking_email` VARCHAR(50) NULL,
+    `booking_message` VARCHAR(500) NULL,
+    PRIMARY KEY (booking_no)
+);
+
+CREATE TABLE Community_Board_RepleT
+(
+    `com_board_reple_no`       INT            NOT NULL    AUTO_INCREMENT, 
+    `com_board_reple_content`  TEXT           NULL, 
+    `the_time`                 VARCHAR(45)    NULL, 
+    `com_board_no`             INT            NULL, 
+    `user_id`                  VARCHAR(20)    NOT NULL, 
+    PRIMARY KEY (com_board_reple_no)
+);
+
+
+CREATE TABLE Community_QnAT
+(
+    `com_qna_no`       INT            NOT NULL    AUTO_INCREMENT, 
+    `user_id`          VARCHAR(20)    NULL, 
+    `the_time`         VARCHAR(45)    NULL, 
+    `com_qna_content`  TEXT           NULL, 
+    `com_qna_title`    VARCHAR(45)    NULL, 
+    `view_count`       INT            NULL, 
+    PRIMARY KEY (com_qna_no)
+);
+
+#오후 6:27 2018-01-03 컬럼 변경
+CREATE TABLE Club_Board_RepleT
+(
+    `c_board_reple_no`       INT            NOT NULL    AUTO_INCREMENT, 
+    `c_board_reple_content`  TEXT           NULL, 
+    `the_time`               DATETIME   	NULL, 
+    `user_id`                VARCHAR(20)    NULL, 
+	`c_board_no`             INT   			NULL,
+    PRIMARY KEY (c_board_reple_no)
+);
+
+#오전 9:30 2018-01-04 수정
+CREATE TABLE Community_Board_RecomtT
+(
+    `user_id`       VARCHAR(20)    NOT NULL, 
+    `com_board_no`  INT            NOT NULL
+);
+
+CREATE TABLE Community_QnA_RepleT
+(
+    `com_qna_reple_no`       INT            NOT NULL    AUTO_INCREMENT, 
+    `user_id`                VARCHAR(20)    NULL, 
+    `com_qna_no`             INT            NULL, 
+    `com_qna_reple_content`  TEXT           NULL, 
+    `the_time`               VARCHAR(45)    NULL, 
+    `recom_count`            INT            NULL, 
+    PRIMARY KEY (com_qna_reple_no)
+);
+
+#오후 5:44분 2018-01-04 댓글 추천 테이블 추가
+#PRIMARY KEY (user_id) 제거 1-10 오전 11시
+CREATE TABLE Community_QnA_Reple_RecomT
+(
+    `user_id`       VARCHAR(20)    NOT NULL, 
+    `com_qna_reple_no`  INT        NOT NULL, 
+);
+
+#오후 2:39 2018-01-04 컬럼 명 변경
+#zipcode zipdetail 추가
+CREATE TABLE UserT
+(
+    `user_id`    VARCHAR(20)     NOT NULL, 
+    `ssn1`       CHAR(6)         NOT NULL, 
+    `ssn2`       CHAR(7)         NOT NULL, 
+    `passwd`     VARCHAR(20)     NOT NULL, 
+    `user_name`  VARCHAR(10)     NOT NULL, 
+    `gender`     CHAR(1)         NOT NULL, 
+    `phone`      VARCHAR(11)     NOT NULL, 
+    `nickname`   VARCHAR(20)     NOT NULL, 
+    `zipcode`    VARCHAR(20)     NOT NULL, 
+    `email`      VARCHAR(50)     NOT NULL, 
+    `grade`      INT             NOT NULL,
+    zipdetail VARCHAR(20) NOT NULL,
+    PRIMARY KEY (user_id)
+);
+
+
+
+CREATE TABLE noticeT
+(
+    `notice_no`       INT            NOT NULL    AUTO_INCREMENT, 
+    `notice_title`    VARCHAR(45)    NULL, 
+    `notice_content`  TEXT           NULL, 
+    `the_time`        DATETIME       NULL, 
+    PRIMARY KEY (notice_no)
+);
+
+#2018-01-02 컬럼 삭제
+CREATE TABLE User_ClubT
+(
+    `club_no`  INT            NOT NULL, 
+    `user_id`  VARCHAR(20)    NOT NULL, 
+    PRIMARY KEY (club_no, user_id)
+);
+
+#오전 11:26 2018-01-04 컬럽 타입 변경
+CREATE TABLE Club_NoticeT
+(
+    `c_notice_no`       INT            NOT NULL    AUTO_INCREMENT, 
+    `c_notice_title`    VARCHAR(200)   NULL, 
+    `c_notice_content`  TEXT           NULL, 
+    `the_time`          DATETIME       NULL, 
+	`view_count`		INT			   NULL,
+    `user_id`           VARCHAR(20)    NULL, 
+    `club_no`           int            NULL, 
+    PRIMARY KEY (c_notice_no)
+);
+
+
+
+
+
+CREATE TABLE Community_BoardT
+(
+    `com_board_no`       INT            NOT NULL    AUTO_INCREMENT, 
+    `com_board_title`    TEXT           NULL, 
+    `com_board_content`  TEXT	        NULL, 
+    `the_time`           VARCHAR(45)    NULL, 
+    `user_id`            VARCHAR(20)    NULL, 
+    `view_count`         INT            NULL, 
+    `recom_count`        INT            NULL, 
+    PRIMARY KEY (com_board_no)
+);
+
+
+#2018-01-03 컬럼 삭제
+CREATE TABLE Club_Notice_RepleT
+(
+    `c_notice_reple_no`       INT            NOT NULL    AUTO_INCREMENT, 
+    `user_id`                 VARCHAR(20)    NULL, 
+    `c_notice_no`             INT            NULL, 
+    `the_time`                DATETIME       NULL, 
+    `c_notice_reple_content`  TEXT           NULL, 
+    PRIMARY KEY (c_notice_reple_no)
+);
+
+#오후 3:33 2018-01-04 컬럼명 변경
+CREATE TABLE ClubT
+(
+    `club_no`          INT             NOT NULL    AUTO_INCREMENT, 
+    `user_id`          VARCHAR(20)     NOT NULL, 
+    `club_name`        VARCHAR(50)     NOT NULL, 
+    `club_title`       VARCHAR(100)    NOT NULL, 
+    `club_content`     TEXT	       NOT NULL, 
+    `club_thumb_img`  VARCHAR(100)    NOT NULL, 
+    `max_member`       INT             NOT NULL, 
+    `create_time`      DATETIME        NOT NULL, 
+    `l_category_no`    INT             NOT NULL, 
+    `c_category_no`    INT             NOT NULL, 
+    PRIMARY KEY (club_no)
+);
+
+
+#오후 4:46 2018-01-05 컬럼 추가
+CREATE TABLE Club_applyT
+(
+    `apply_no`       INT             NOT NULL    AUTO_INCREMENT, 
+    `user_id`        VARCHAR(20)     NOT NULL, 
+    `club_no`        INT             NOT NULL, 
+    `apply_content`  TEXT	     NOT NULL,
+    `etc`	     TEXT,
+    PRIMARY KEY (apply_no)
+);
+
+# 2018.01.03 : HostT, SpaceT 에서  CRN ==> crn 로 수정
+
+CREATE TABLE HostT
+(
+    `crn`           VARCHAR(13)     NOT NULL, 
+    `user_id`       VARCHAR(20)     NOT NULL, 
+    `host_name`     VARCHAR(20)     NOT NULL, 
+    `host_account`  VARCHAR(20)     NOT NULL, 
+    `zipcode`       VARCHAR(200)    NOT NULL, 
+    PRIMARY KEY (crn)
+);
+
+create table HostApplyT(
+    `host_apply_no`          INT            NOT NULL    AUTO_INCREMENT,
+    `crn`           VARCHAR(13)     NOT NULL, 
+    `user_id`       VARCHAR(20)     NOT NULL, 
+    `host_name`     VARCHAR(20)     NOT NULL, 
+    `host_account`  VARCHAR(20)     NOT NULL, 
+    `zipcode`       VARCHAR(200)    NOT NULL, 
+    etc           VARCHAR(30),
+ PRIMARY KEY (host_apply_no)
+);
+
+
+#오후 1:34 2018-01-04 컬럼명 변경
+#오후 4:29 2018-01-04 the_time 추가
+CREATE TABLE SpaceT
+(
+    `space_no`         INT             NOT NULL    AUTO_INCREMENT, 
+    `crn`              VARCHAR(13)     NOT NULL, 
+    `space_title`      VARCHAR(50)     NOT NULL, 
+    `space_content`    TEXT            NOT NULL, 
+    `space_thumb_img`  VARCHAR(100)    NOT NULL, 
+    `open_time`        CHAR(2)         NOT NULL, 
+    `close_time`       CHAR(2)         NOT NULL, 
+    `price`            INT             NOT NULL, 
+    `max_people`       INT             NOT NULL, 
+    `min_people`       INT             NULL, 
+    `space_call`       VARCHAR(20)     NOT NULL, 
+    `zipcode`          VARCHAR(200)    NOT NULL, 
+    `s_category_no`    INT             NOT NULL, 
+    `l_category_no`    INT             NOT NULL,
+    `the_time`         DATETIME        NULL, 
+    PRIMARY KEY (space_no)
+);
+
+
+CREATE TABLE L_CategoryT
+(
+    `l_category_no`    INT            NOT NULL    AUTO_INCREMENT, 
+    `l_category_name`  VARCHAR(45)    NOT NULL, 
+    PRIMARY KEY (l_category_no)
+);
+
+
+
+CREATE TABLE C_CategoryT
+(
+    `c_category_no`     INT            NOT NULL    AUTO_INCREMENT, 
+    `c_category_name`   VARCHAR(45)    NOT NULL, 
+    `c_category_grade`  INT            NOT NULL, 
+    PRIMARY KEY (c_category_no)
+);
+
+
+CREATE TABLE Space_QnAT
+(
+    `space_qna_no`       INT            NOT NULL    AUTO_INCREMENT, 
+    `space_no`           INT            NULL, 
+    `user_id`            VARCHAR(20)    NULL, 
+    `space_qna_content`  TEXT           NULL, 
+    `space_qna_title`    VARCHAR(45)    NULL, 
+    `the_time`           DATETIME       NULL, 
+    PRIMARY KEY (space_qna_no)
+);
+
+CREATE TABLE Space_QnA_RepleT
+(
+    `space_qna_reple_no`       INT            NOT NULL    AUTO_INCREMENT, 
+    `space_qna_no`             INT            NULL, 
+    `space_no`                 INT            NULL, 
+    `space_qna_reple_title`    VARCHAR(45)    NULL, 
+    `space_qna_reple_content`  TEXT           NULL, 
+    `the_time`                 DATETIME       NULL, 
+    `user_id`                  VARCHAR(20)    NULL, 
+    PRIMARY KEY (space_qna_reple_no)
+);
+
+
+CREATE TABLE MessageT
+(
+    `msg_no`           INT            NOT NULL    AUTO_INCREMENT, 
+    `send_user_id`     VARCHAR(20)    NULL, 
+    `receive_user_id`  VARCHAR(20)    NULL, 
+    `msg_content`      TEXT           NULL, 
+    `the_time`         DATETIME       NULL, 
+    `view_count`       INT            NOT NULL, 
+    PRIMARY KEY (msg_no)
+);
+
+CREATE TABLE S_CategoryT
+(
+    `s_category_no`     INT            NOT NULL    AUTO_INCREMENT, 
+    `s_category_name`   VARCHAR(45)    NOT NULL, 
+    `s_category_grade`  INT            NOT NULL, 
+    PRIMARY KEY (s_category_no)
+);
+
+
+오후 1:14 2018-01-16 컬럼 추가 및 변경.
+오후 5:41 2018-01-16 다시 컬럼 변경.
+CREATE TABLE ImageT
+(
+    `image_no`    INT            NOT NULL    AUTO_INCREMENT, 
+    `space_no`    INT            NULL, 
+    `image_name`  VARCHAR(45)    NULL,  
+    PRIMARY KEY (image_no)
+);
+
+
+
+
+
+CREATE TABLE ReviewT
+(
+    `review_no`       INT             NOT NULL    AUTO_INCREMENT, 
+    `space_no`        INT             NULL, 
+    `user_id`         VARCHAR(20)     NULL, 
+    `review_title`    VARCHAR(45)     NULL, 
+    `review_content`  TEXT            NULL, 
+    `the_time`        DATETIME        NULL, 
+    `review_score`    DOUBLE          NULL, 
+    `review_img`      VARCHAR(100)    NULL, 
+    PRIMARY KEY (review_no)
+);
+
+
+CREATE TABLE Review_RepleT
+(
+    `review_reple_no`       INT            NOT NULL    AUTO_INCREMENT, 
+    `review_reple_content`  TEXT           NULL, 
+    `the_time`              DATETIME       NULL, 
+    `review_no`             INT            NULL, 
+    `user_id`               VARCHAR(20)    NOT NULL, 
+    PRIMARY KEY (review_reple_no)
+);
+
+
+#오후 7:01 2018-01-15 수정
+CREATE TABLE zipcodeT (
+zipcode_no INT NOT NULL  NOT NULL    AUTO_INCREMENT,
+zipcode	CHAR(7) NULL,
+sido	VARCHAR(4) NULL,
+gugun 	VARCHAR(15) NULL,
+dong 	VARCHAR(52) NULL,
+bunji	VARCHAR(17) NULL,
+ PRIMARY KEY (zipcode_no)
+);
+
+
+CREATE TABLE BookmarkT
+(
+	`user_id`  VARCHAR(20)  NULL, 
+	`space_no`        INT   NULL
+);
+
+
+
+#오후 3:19 2018-01-10 User_del_emailT 테이블 추가
+#오후 4:30 2018-01-10 User_del_emailT 테이블 변경
+#오후 4:30 2018-01-10 User_del_emailT 테이블 기본키 삭제
+#오전 9:30 2018-01-11 User_del_emailT 테이블 변경
+CREATE TABLE User_del_emailT
+(
+	`writing_no`       INT            NOT NULL    AUTO_INCREMENT, 
+	`user_id`  VARCHAR(20)  	NULL,
+	`user_name`  VARCHAR(10)    NULL, 
+	`email`      VARCHAR(50)    NULL,
+	`subject`	TEXT  			NULL,
+	`mail_content`	TEXT     NULL,
+	`the_time`        DATETIME        NULL,
+	PRIMARY KEY (writing_no)
+);
+
+

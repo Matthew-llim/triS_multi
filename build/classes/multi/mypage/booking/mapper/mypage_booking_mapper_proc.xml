@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mypage_mybooking_proc">
+
+
+	
+	<!-- **************** multi.mypage.mybooking **************** -->
+
+	<resultMap id="RM_mybookinginfo" type="multi.mypage.booking.vo.BookingVO">
+	  <result property="booking_no" column="booking_no" jdbcType="INTEGER"/>
+	  <result property="space_no" column="space_no" jdbcType="INTEGER"/>	  
+      <result property="user_id" column="user_id" jdbcType="VARCHAR"/>
+      <result property="du_time" column="du_time" jdbcType="VARCHAR"/>
+      <result property="booking_date" column="booking_date" jdbcType="VARCHAR"/>
+      <result property="start_time" column="start_time" jdbcType="VARCHAR"/>
+      <result property="end_time" column="end_time" jdbcType="VARCHAR"/>
+	  <result property="booking_people" column="booking_people" jdbcType="INTEGER"/>
+	  <result property="booking_price" column="booking_price" jdbcType="INTEGER"/>	  
+	  <result property="club_no" column="club_no" jdbcType="INTEGER"/>	  
+	  <result property="booking_user_name" column="booking_user_name" jdbcType="VARCHAR"/>	  
+	  <result property="booking_phone" column="booking_phone" jdbcType="VARCHAR"/>	
+	  <result property="booking_email" column="booking_email" jdbcType="VARCHAR"/>	  
+	  <result property="booking_message" column="booking_message" jdbcType="VARCHAR"/>
+   </resultMap>
+
+
+	 <select id="mypage_bookingInfo" resultMap="RM_mybookinginfo">
+		{CALL p_mypage_booking_info(#{user_id})}
+	</select>
+
+	<resultMap id="RM_booking_userinfo" type="main.vo.UserVO">
+      <result property="user_id" column="user_id" jdbcType="VARCHAR"/>
+      <result property="ssn1" column="ssn1" jdbcType="VARCHAR"/>
+      <result property="ssn2" column="ssn2" jdbcType="VARCHAR"/>     
+      <result property="passwd" column="passwd" jdbcType="VARCHAR"/>
+      <result property="user_name" column="user_name" jdbcType="VARCHAR"/>
+      <result property="gender" column="gender" jdbcType="VARCHAR"/>      
+      <result property="phone" column="phone" jdbcType="VARCHAR"/>      
+      <result property="nickname" column="nickname" jdbcType="VARCHAR"/>      
+      <result property="zipcode" column="zipcode" jdbcType="VARCHAR"/>            
+      <result property="email" column="email" jdbcType="VARCHAR"/>     
+      <result property="grade" column="grade" jdbcType="INTEGER"/>          
+   </resultMap>
+	
+	<select id="mypage_bookingFindUserInfo" resultMap="RM_booking_userinfo">
+		{CALL p_mypage_booking_find_user_info(#{user_id})}
+	</select>
+	
+	
+	
+	<select id="mypage_search_booking" parameterType="multi.mypage.vo.Mypage_searchVO" resultMap="RM_mybookinginfo">
+		SELECT * FROM bookingt WHERE user_id = #{user_id}
+		<if test="start_no != null">
+			ORDER BY user_id ASC LIMIT #{start_no},10
+		</if>
+		
+	</select>
+	
+   
+</mapper>
+<!--
+
+-->

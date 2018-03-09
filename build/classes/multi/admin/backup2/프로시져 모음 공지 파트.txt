@@ -1,0 +1,68 @@
+DELETE FROM noticet; 
+INSERT INTO noticet VALUES ( default, '첫번째 공지', '공지사항은 이렇이렇습니다.', NOW() );
+
+################################################################
+	DROP PROCEDURE IF EXISTS p_admin_notice_FindAllTexts;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_notice_FindAllTexts()
+	BEGIN
+		SELECT * FROM noticet ORDER BY notice_no DESC;
+	END$$
+	DELIMITER ;
+	
+################################################################
+
+	DROP PROCEDURE IF EXISTS p_admin_notice_FindText;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_notice_FindText(
+		IN v_notice_no INT
+	)
+	BEGIN
+		SELECT * FROM noticet WHERE notice_no = v_notice_no;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_notice_AddText;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_notice_AddText(
+		IN v_notice_title VARCHAR(45),
+		IN v_notice_content TEXT
+	)
+	BEGIN
+		INSERT INTO noticet VALUES(default,
+			v_notice_title,v_notice_content,NOW());
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_notice_modText;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_notice_modText(
+		IN v_notice_no INT,
+		IN v_notice_title VARCHAR(45),
+		IN v_notice_content TEXT
+	)
+	BEGIN
+		UPDATE noticet set notice_title=v_notice_title, notice_content=v_notice_content
+			WHERE notice_no = v_notice_no;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_notice_DelByPK;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_notice_DelByPK(
+		IN v_notice_no INT
+	)
+	BEGIN
+		DELETE FROM noticet WHERE notice_no = v_notice_no;
+	END$$
+	DELIMITER ;
+	
+	
+	
+	

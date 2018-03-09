@@ -1,0 +1,115 @@
+#mypage_message_find_receive_message_proc
+DROP PROCEDURE IF EXISTS p_mypage_message_find_receive_message;
+DELIMITER $$
+CREATE PROCEDURE p_mypage_message_find_receive_message(
+	IN v_user_id VARCHAR(20)
+)
+BEGIN
+	SELECT * from messaget where receive_user_id = v_user_id;
+END$$
+DELIMITER ;
+DELIMITER ;
+
+
+
+#mypage_message_read_receive_message_proc
+DROP PROCEDURE IF EXISTS p_mypage_message_read_receive_message;
+DELIMITER $$
+CREATE PROCEDURE p_mypage_message_read_receive_message(
+	IN v_msg_no INT(11)
+)
+BEGIN
+	SELECT * from messaget where msg_no = v_msg_no;
+END$$
+DELIMITER ;
+DELIMITER ;
+
+
+
+#mypage_message_find_send_message_proc
+DROP PROCEDURE IF EXISTS p_mypage_message_find_send_message;
+DELIMITER $$
+CREATE PROCEDURE p_mypage_message_find_send_message(
+	IN v_user_id VARCHAR(20)
+)
+BEGIN
+	SELECT * from messaget where send_user_id = v_user_id;
+END$$
+DELIMITER ;
+DELIMITER ;
+
+
+
+
+#mypage_message_read_send_message_proc
+DROP PROCEDURE IF EXISTS p_mypage_message_read_send_message;
+DELIMITER $$
+CREATE PROCEDURE p_mypage_message_read_send_message(
+	IN v_msg_no INT(11)
+)
+BEGIN
+	SELECT * from messaget where msg_no = v_msg_no;
+END$$
+DELIMITER ;
+DELIMITER ;
+
+
+
+#mypage_message_find_user_club_proc
+DROP PROCEDURE IF EXISTS p_mypage_message_find_user_club;
+DELIMITER $$
+CREATE PROCEDURE p_mypage_message_find_user_club(
+	IN v_user_id VARCHAR(20)
+)
+BEGIN
+	SELECT * from clubT c , user_clubT ut where c.club_no = ut.club_no AND ut.user_id = v_user_id;
+END$$
+DELIMITER ;
+DELIMITER ;
+
+
+
+
+#mypage_message_find_user_club_member_proc
+DROP PROCEDURE IF EXISTS p_mypage_message_find_user_club_member;
+DELIMITER $$
+CREATE PROCEDURE p_mypage_message_find_user_club_member(
+	IN v_club_no INT(11)
+)
+BEGIN
+	SELECT * from User_clubT where club_no = v_club_no;
+END$$
+DELIMITER ;
+DELIMITER ;
+
+
+
+#mypage_message_send_message_proc
+
+DROP PROCEDURE IF EXISTS p_mypage_send_message;
+DELIMITER $$
+CREATE PROCEDURE p_mypage_send_message(
+	IN v_send_user_id VARCHAR(20),
+	IN v_receive_user_id VARCHAR(20),
+	IN v_msg_content TEXT
+)
+BEGIN
+	INSERT into messaget values (default,v_send_user_id,v_receive_user_id,v_msg_content,now(),0);
+END$$
+DELIMITER ;
+DELIMITER ;
+
+
+
+
+#mypage_message_del_message_proc
+DROP PROCEDURE IF EXISTS p_mypage_message_del_message;
+DELIMITER $$
+CREATE PROCEDURE p_mypage_message_del_message(
+	IN v_msg_no INT(11)
+)
+BEGIN
+   		DELETE FROM messaget where msg_no = v_msg_no;
+END$$
+DELIMITER ;
+DELIMITER ;

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="booking">
+
+	<select id="sysdate" resultType="java.lang.String">
+		SELECT NOW()
+	</select>
+	<!-- 
+	<insert id="add_booking" parameterType="main.vo.BookingVO">
+		INSERT INTO BookingT VALUES (default,#{space_no},NOW(),
+		#{booking_date},#{start_time},
+		#{end_time},#{booking_people},
+		#{booking_price},#{booking_user_name},
+		#{booking_phone},#{booking_email},
+		#{booking_message},#{user_id}
+		)
+	</insert>
+	 -->
+	<insert id="add_booking" parameterType="main.vo.BookingVO">
+		{call p_add_booking(#{space_no},#{booking_date},#{start_time},
+		#{end_time},#{booking_people},
+		#{booking_price},#{booking_user_name},
+		#{booking_phone},#{booking_email},
+		#{booking_message},#{user_id},#{club_list})}
+	</insert>
+	
+	<select id="find_booking_by_space_no_and_booking_date" parameterType="main.vo.BookingVO" resultType="main.vo.BookingVO">
+		SELECT * FROM bookingt WHERE space_no=${space_no} AND booking_date='${booking_date}'
+	</select>
+	
+	<insert id="add_booking_club" parameterType="multi.space.vo.Booking_clubVO">
+		INSERT booking_clubt VALUES #{booking_no},#{club_no} 	
+	</insert>
+</mapper>
+
+
+
+
+
+

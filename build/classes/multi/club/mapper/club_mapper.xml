@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="club">
+
+	<select id="sysdate" resultType="java.lang.String">
+		SELECT NOW()
+	</select>
+
+	<!-- club 리스트 찾기 시작 -->
+	<select id="club_findAll" resultMap="RM_club_findAll" statementType="CALLABLE">
+		{call p_club_findAll()}	
+	</select>
+	<resultMap id="RM_club_findAll" type="main.vo.ClubVO">
+		<result property="club_no"	  	 	column="club_no"			jdbcType="INTEGER"/>
+		<result property="user_id" 	 	 	column="user_id" 			jdbcType="VARCHAR"/>
+		<result property="club_name" 	 	column="club_name"			jdbcType="VARCHAR"/>
+		<result property="club_content"	 	column="club_content"		jdbcType="VARCHAR"/>
+		<result property="club_thumb_img"	column="club_thumb_img"		jdbcType="VARCHAR"/>
+		<result property="max_member"    	column="max_member"			jdbcType="INTEGER"/>
+		<result property="create_time"   	column="create_time"		jdbcType="VARCHAR"/>
+		<result property="l_category_no"   	column="l_category_no"		jdbcType="INTEGER"/>
+		<result property="c_category_no"   	column="c_category_no"		jdbcType="INTEGER"/>
+		<result property="user_count"   	column="user_count"			jdbcType="INTEGER"/>
+	</resultMap>
+	<!-- club 리스트 찾기 끝 -->
+	
+	<!-- l_Category 리스트 찾기 시작 -->
+	<select id="club_find_lcategory" resultType="java.util.HashMap" statementType="CALLABLE">
+		{call p_club_find_lcategory()}
+	</select>
+	<!-- l_Category 리스트 찾기 끝 -->
+	
+	<!-- c_Category 리스트 찾기 시작 -->
+	<select id="club_find_ccategory" resultType="java.util.HashMap" statementType="CALLABLE">
+		{call p_club_find_ccategory()}
+	</select>
+	<!-- c_Category 리스트 찾기 끝 -->
+	
+	<!-- search 해서 리스트 찾기 시작 -->
+		<!-- 지역, 분야 검색-->
+		<select id="club_search" parameterType="multi.club.vo.Club_searchVO" resultType="hashmap">
+			SELECT c.club_no, c.user_id, c.club_name, c.club_title, c.club_content,
+				   c.club_thumb_img, c.max_member, c.create_time, c.l_category_no, c.c_category_no,
+				   l.l_category_name, cc.c_category_name, 
+				   (
+				   	SELECT COUNT(*) FROM user_clubt WHERE club_no=c.club_no
+				   ) AS user_count
+			  FROM clubt AS c, l_categoryt AS l, c_categoryt AS cc
+			 WHERE 0 = 0
+			   AND c.l_category_no = l.l_category_no
+			   AND c.c_category_no = cc.c_category_no
+			<if test="l_category_no != null">
+				AND c.l_category_no =${l_category_no}
+			</if>
+			<if test="c_category_no != null">
+				AND c.c_category_no =${c_category_no}
+			</if>
+			<if test="search_option == 1">
+				AND c.club_title like '%${search_content}%'
+			</if>
+			<if test="search_option == 2">
+				AND c.club_content like'%${search_content}%'
+			</if>
+			<if test="search_option == 3">
+				AND ( c.club_title like '%${search_content}%' OR c.club_content like '%${search_content}%' )
+			</if>
+			<if test="search_option == 4">
+				AND c.user_id like '%${search_content}%'
+			</if>
+			<if test="search_option == 5">
+				AND c.club_name like '%${search_content}%'
+			</if>
+			<if test="start!=null">
+				ORDER BY club_no DESC LIMIT #{start},10
+			</if>
+			<if test="start==null">
+				ORDER BY club_no DESC
+			</if>
+    	</select>
+	<!-- search 해서 리스트 찾기 끝 -->
+
+	<!-- club best 조회 -->
+	<select id="find_best_club" statementType="CALLABLE" resultType="hashmap"> 
+		{call p_find_best_club()}
+	</select>
+	<!-- club best 조회 -->
+
+	<!-- club 디테일 찾기 시작 -->
+	<select id="club_find_detail" parameterMap="PM_club_find_detail" resultMap="RM_club_findAll" statementType="CALLABLE" >
+		{call p_club_find_detail(?,?)}
+	</select>
+	<parameterMap id="PM_club_find_detail" type="main.vo.ClubVO">
+		<parameter property="club_no"	 mode="IN" 	jdbcType="INTEGER"/>
+		<parameter property="user_count" mode="OUT" jdbcType="INTEGER"/>
+	</parameterMap>
+	<!-- club 디테일 찾기 끝 -->
+	
+	<!-- club 디테일에 추천 장소 조회 시작 -->
+	<select id="club_find_detail_space" parameterType="main.vo.ClubVO" resultMap="RM_find_space_all" statementType="CALLABLE" >
+		{call p_club_find_detail_space(#{club_no})}
+	</select>
+	<resultMap id="RM_find_space_all" type="main.vo.SpaceVO">
+		<result property="space_no" 		column="space_no" 			jdbcType="INTEGER"/>
+		<result property="crn" 				column="crn" 				jdbcType="VARCHAR"/>
+		<result property="space_content"	column="space_content" 		jdbcType="VARCHAR"/>
+		<result property="space_thumb_img" 	column="space_thumb_img"	jdbcType="VARCHAR"/>
+		<result property="open_time" 		column="open_time" 			jdbcType="VARCHAR"/>
+		<result property="close_time" 		column="close_time" 		jdbcType="VARCHAR"/>
+		<result property="price" 			column="price" 				jdbcType="INTEGER"/>
+		<result property="max_people" 		column="max_people" 		jdbcType="INTEGER"/>
+		<result property="space_call" 		column="space_call" 		jdbcType="VARCHAR"/>
+		<result property="zipcode" 			column="zipcode" 			jdbcType="VARCHAR"/>
+		<result property="s_category_no" 	column="s_category_no" 		jdbcType="INTEGER"/>
+		<result property="l_category_no" 	column="l_category_no" 		jdbcType="INTEGER"/>
+   	</resultMap>
+	<!-- club 디테일에 추천 장소 조회 끝 -->
+	
+	<!-- club_user 찾기 시작 -->
+	<select id="club_find_master" parameterMap="PM_club_find_user" resultType="java.lang.String" statementType="CALLABLE" >
+		{call p_club_find_master(?)}
+	</select>
+	<parameterMap id="PM_club_find_user" type="main.vo.ClubVO">
+		<parameter property="club_no"	 mode="IN" 	jdbcType="VARCHAR"/>
+	</parameterMap>
+	<!-- club_user 찾기 끝 -->
+	
+	<!-- club 등록 시작 -->
+	<update id="club_add_page_submit" parameterType="main.vo.ClubVO" statementType="CALLABLE">
+		{call p_club_addClub(#{user_id},#{club_name},#{club_title},#{club_content},#{club_thumb_img},#{max_member},#{l_category_no},#{c_category_no})}
+	</update>
+	<!-- club 등록 끝 -->
+	
+	<!-- club 등록 시작 -->
+	<update id="club_mod_club" parameterType="main.vo.ClubVO" statementType="CALLABLE">
+		{call p_club_mod_club(#{club_no},#{user_id},#{club_name},#{club_title},#{club_content},#{club_thumb_img},#{max_member},#{l_category_no},#{c_category_no},#{create_time})}
+	</update>
+	<!-- club 등록 끝 -->
+
+	<!-- 모임 신청 시작 -->
+	<update id="club_add_apply" parameterMap="PM_club_add_apply" statementType="CALLABLE">
+		{call p_club_add_apply(?,?,?,?)}
+	</update>
+	<parameterMap id="PM_club_add_apply" type="multi.club.vo.Club_applyVO">
+		<parameter property="user_id"		 mode="IN" 	jdbcType="VARCHAR"/>
+		<parameter property="club_no"	 	 mode="IN" 	jdbcType="INTEGER"/>
+		<parameter property="apply_content"	 mode="IN" 	jdbcType="VARCHAR"/>
+		<parameter property="flag"			 mode="OUT" jdbcType="INTEGER"/>
+	</parameterMap>
+	<!-- 모임 신청 끝 -->
+	
+	<!-- 모임 회원 조회 시작-->
+	<select id="club_find_user" parameterType="main.vo.ClubVO" resultMap="RM_find_user" statementType="CALLABLE">
+		{call p_club_find_user(#{club_no})}
+	</select>
+	<resultMap id="RM_find_user" type="main.vo.UserVO">
+      	<result property="user_id" 		column="user_id" 	jdbcType="VARCHAR"/>
+      	<result property="ssn1" 		column="ssn1" 		jdbcType="VARCHAR"/>
+      	<result property="ssn2" 		column="ssn2" 		jdbcType="VARCHAR"/>     
+      	<result property="passwd" 		column="passwd"		jdbcType="VARCHAR"/>
+      	<result property="user_name"	column="user_name"	jdbcType="VARCHAR"/>
+      	<result property="gender" 		column="gender" 	jdbcType="VARCHAR"/>      
+      	<result property="phone" 		column="phone" 		jdbcType="VARCHAR"/>      
+      	<result property="nickname" 	column="nickname" 	jdbcType="VARCHAR"/>      
+      	<result property="zipcode" 		column="zipcode" 	jdbcType="VARCHAR"/>            
+      	<result property="email" 		column="email" 		jdbcType="VARCHAR"/>     
+      	<result property="grade" 		column="grade" 		jdbcType="INTEGER"/>          
+   </resultMap>
+	<!-- 모임 회원 조회 끝 -->
+	<!-- 모임 회원 판단 시 사용 시작-->
+	<select id="club_find_user_byId" parameterType="main.vo.User_clubVO" resultType="main.vo.User_clubVO" statementType="CALLABLE">
+		SELECT * FROM user_clubt WHERE club_no = #{club_no} AND user_id = #{user_id}
+	</select>
+	<!-- 모임 회원 판단 시 사용 끝 -->
+	
+	<!-- 모임 신청자 리스트 조회 시작-->
+	<select id="club_find_apply" parameterType="main.vo.ClubVO" resultMap="RM_club_find_apply" statementType="CALLABLE">
+		{call p_club_find_apply(#{club_no})}
+	</select>
+	<resultMap id="RM_club_find_apply" type="multi.club.vo.Club_applyVO">
+      	<result property="apply_no" 		column="apply_no" 		jdbcType="INTEGER"/>          
+      	<result property="user_id" 			column="user_id" 		jdbcType="VARCHAR"/>
+      	<result property="club_no" 			column="club_no" 		jdbcType="INTEGER"/>          
+      	<result property="apply_content"	column="apply_content"	jdbcType="VARCHAR"/>
+      	<result property="user_name"		column="user_name"		jdbcType="VARCHAR"/>
+   </resultMap>
+	<!-- 모임 신청자 리스트 조회 끝 -->
+	
+	<!-- 모임 신청자 신청내역 조회 시작-->
+	<select id="club_find_apply_detail" parameterMap="PM_club_find_apply_detail" resultMap="RM_club_find_apply" statementType="CALLABLE">
+		{call p_club_find_apply_detail(?,?,?)}
+	</select>
+	<parameterMap id="PM_club_find_apply_detail" type="multi.club.vo.Club_applyVO">
+		<parameter property="user_id"		 mode="IN" 	jdbcType="VARCHAR"/>
+		<parameter property="club_no"	 	 mode="IN" 	jdbcType="INTEGER"/>
+		<parameter property="flag"			 mode="OUT" jdbcType="INTEGER"/>
+	</parameterMap>
+	<!-- 모임 신청자 신청내역 조회 끝-->
+	
+	<!-- 모임 신청 수락 시작-->
+	<update id="club_apply_agree" parameterMap="PM_club_apply_agree" statementType="CALLABLE">
+		{call p_club_apply_agree(?,?,?,?)}
+	</update>
+	<parameterMap id="PM_club_apply_agree" type="multi.club.vo.Club_applyVO">
+		<parameter property="user_id"		 mode="IN" 	jdbcType="VARCHAR"/>
+		<parameter property="club_no"	 	 mode="IN" 	jdbcType="INTEGER"/>
+		<parameter property="apply_content"	 mode="IN" 	jdbcType="VARCHAR"/>
+		<parameter property="flag"			 mode="OUT" jdbcType="INTEGER"/>
+	</parameterMap>
+	<!-- 모임 신청 수락 끝-->
+	
+	<!-- 모임 신청 거절 시작-->
+	<update id="club_apply_disagree" parameterType="multi.club.vo.Club_applyVO" statementType="CALLABLE">
+		{call p_club_apply_disagree(#{user_id},#{club_no},#{etc})}
+	</update>
+	<!-- 모임 신청 거절 끝-->
+	<!-- 쪽지 보내기 시작-->
+	<update id="club_add_message" parameterType="main.vo.MessageVO" statementType="CALLABLE">
+		{call p_club_add_message(#{send_user_id},#{receive_user_id},#{msg_content})}
+	</update>
+	<!-- 쪽지 보내기 끝-->
+	<!-- 모임의 유저 탈퇴 시작-->
+	<update id="club_del_user" parameterType="main.vo.User_clubVO" statementType="CALLABLE">
+		{call p_club_del_user(#{club_no},#{user_id})}
+	</update>
+	<!-- 모임의 유저 탈퇴 끝-->
+	<!-- 모임 해체 시작-->
+	<update id="club_del_club" parameterType="main.vo.User_clubVO" statementType="CALLABLE">
+		{call p_club_del_club(#{club_no})}
+	</update>
+	<!-- 모임 해체 끝-->
+	<!-- 모임의 유저 방출 시작-->
+	<update id="club_user_release" parameterType="multi.club.vo.Club_applyVO" statementType="CALLABLE">
+		{call p_club_user_release(#{club_no},#{user_id},#{apply_content})}
+	</update>
+	<!-- 모임의 유저 방출 끝-->
+	
+	
+	
+</mapper>

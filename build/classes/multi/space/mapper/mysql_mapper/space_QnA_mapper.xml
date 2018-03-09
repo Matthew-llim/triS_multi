@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="space_qna">
+		
+	<insert id="add_spaceQnA" parameterType="main.vo.Space_qnaVO">
+		{call p_add_spaceQnA(#{space_no},#{user_id},#{space_qna_content},#{space_qna_title})}
+	</insert>
+	
+	<!-- 
+	<insert id="add_spaceQnA" parameterType="main.vo.Space_qnaVO">
+		INSERT INTO Space_QnAT VALUES (default,#{space_no},#{user_id},#{space_qna_content}
+		,#{space_qna_title},NOW())
+	</insert>
+	 -->
+	 
+	<select id="find_spaceQnA_by_space_no" parameterType="multi.space.vo.Space_qna_searchVO" resultType="main.vo.Space_qnaVO">
+		SELECT * FROM Space_QnAT WHERE space_no=#{space_no}
+		<if test="start_no != null">
+			ORDER BY space_qna_no ASC LIMIT #{start_no},5
+		</if>
+	</select>
+	
+	<delete id="delete_spaceQnA_by_space_qna_no" parameterType="main.vo.Space_qnaVO">
+		{call p_delete_spaceQnA_by_space_qna_no(#{space_qna_no})}
+	</delete>
+	
+	<!-- 
+	<delete id="delete_spaceQnA_by_spane_qna_no" parameterType="main.vo.Space_qnaVO">
+		DELETE FROM Space_QnAT WHERE space_qna_no=#{space_qna_no}
+	</delete>
+	 -->
+	
+	<select id="find_spaceQnA_by_space_qna_no" parameterType="main.vo.Space_qnaVO" resultType="main.vo.Space_qnaVO">
+		{call p_find_spaceQnA_by_space_qna_no(#{space_qna_no})}
+	</select>
+	
+	<!-- 
+	<select id="find_spaceQnA_by_space_qna_no" parameterType="main.vo.Space_qnaVO" resultType="main.vo.Space_qnaVO">
+		SELECT * FROM Space_QnAT WHERE space_qna_no=#{space_qna_no}
+	</select>
+	 -->
+	
+	<update id="mod_spaceQnA_by_space_qna_no" parameterType="main.vo.Space_qnaVO">
+		{call p_mod_spaceQnA_by_space_qna_no(#{space_qna_title},#{space_qna_content},#{space_qna_no})}
+	</update>
+	
+	<!-- 
+	<update id="mod_spaceQnA_by_spane_qna_no" parameterType="main.vo.Space_qnaVO">
+		UPDATE Space_QnAT SET space_qna_title=#{space_qna_title}, space_qna_content=#{space_qna_content} WHERE space_qna_no=#{space_qna_no}
+	</update>
+	 -->
+
+</mapper>
+
+
+
+
+
+
+

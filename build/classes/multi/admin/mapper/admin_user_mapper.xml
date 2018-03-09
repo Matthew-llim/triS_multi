@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="admin_user">
+
+	<select id="sysdate" resultType="java.lang.String">
+		SELECT NOW()
+	</select>
+	
+	<!-- 유저 부분 -->
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_user_findAll;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_user_findAll()
+	BEGIN
+		SELECT * FROM usert WHERE grade = 1;
+	END$$
+	DELIMITER ;
+	CALL p_admin_user_findAll();
+	-->
+	<resultMap id="RM_p_admin_user_findAll" type="main.vo.UserVO" >
+		<result property="user_id" column="user_id" jdbcType="VARCHAR" />
+		<result property="ssn1" column="ssn1" jdbcType="VARCHAR" />
+		<result property="ssn2" column="ssn2" jdbcType="VARCHAR" />
+		<result property="passwd" column="passwd" jdbcType="VARCHAR" />
+		<result property="user_name" column="user_name" jdbcType="VARCHAR" />
+		<result property="gender" column="gender" jdbcType="VARCHAR" />
+		<result property="phone" column="phone" jdbcType="VARCHAR" />
+		<result property="nickname" column="nickname" jdbcType="VARCHAR" />
+		<result property="zipcode" column="zipcode" jdbcType="VARCHAR" />
+		<result property="email" column="email" jdbcType="VARCHAR" />
+		<result property="grade" column="grade" jdbcType="INTEGER" />
+		<result property="zipdetail" column="zipdetail" jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="p_admin_user_findAll" statementType="CALLABLE" resultMap="RM_p_admin_user_findAll">
+		{call p_admin_user_findAll()}
+	</select>
+	
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_user_findUser;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_user_findUser(
+		IN v_user_id VARCHAR(50)
+	)
+	BEGIN
+		SELECT * FROM usert WHERE user_id = v_user_id;
+	END$$
+	DELIMITER ;
+	-->
+	<parameterMap id="PM_p_admin_user_findUser" type="main.vo.UserVO" >
+		<parameter property="user_id" mode="IN" jdbcType="VARCHAR"/>
+	</parameterMap>
+	<resultMap id="RM_p_admin_user_findUser" type="main.vo.UserVO" >
+		<result property="user_id" column="user_id" jdbcType="VARCHAR" />
+		<result property="ssn1" column="ssn1" jdbcType="VARCHAR" />
+		<result property="ssn2" column="ssn2" jdbcType="VARCHAR" />
+		<result property="passwd" column="passwd" jdbcType="VARCHAR" />
+		<result property="user_name" column="user_name" jdbcType="VARCHAR" />
+		<result property="gender" column="gender" jdbcType="VARCHAR" />
+		<result property="phone" column="phone" jdbcType="VARCHAR" />
+		<result property="nickname" column="nickname" jdbcType="VARCHAR" />
+		<result property="zipcode" column="zipcode" jdbcType="VARCHAR" />
+		<result property="email" column="email" jdbcType="VARCHAR" />
+		<result property="grade" column="grade" jdbcType="INTEGER" />
+		<result property="zipdetail" column="zipdetail" jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="p_admin_user_findUser" statementType="CALLABLE" 
+		resultMap="RM_p_admin_user_findUser"
+		parameterMap="PM_p_admin_user_findUser">
+		{call p_admin_user_findUser(?)}
+	</select>
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_user_DelUser;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_user_DelUser(
+		IN v_user_id VARCHAR(50),
+		IN v_user_name VARCHAR(50),
+		IN v_email VARCHAR(50),
+		IN v_subject TEXT,
+		IN v_mail_content TEXT
+	)
+	BEGIN
+			INSERT INTO User_del_emailT VALUES ( default, v_user_id, v_user_name, v_email, v_subject, v_mail_content, NOW() );
+			DELETE FROM Club_BoardT WHERE user_id = v_user_id;
+			DELETE FROM BookingT WHERE user_id = v_user_id;
+			DELETE FROM Community_Board_RepleT WHERE user_id = v_user_id;
+			DELETE FROM Community_QnAT WHERE user_id = v_user_id;
+			DELETE FROM Club_Board_RepleT WHERE user_id = v_user_id;
+			DELETE FROM Community_Board_RecomtT WHERE user_id = v_user_id;
+			DELETE FROM Community_QnA_RepleT WHERE user_id = v_user_id;
+			DELETE FROM Community_QnA_Reple_RecomT WHERE user_id = v_user_id;
+			DELETE FROM User_ClubT WHERE user_id = v_user_id;
+			DELETE FROM Club_NoticeT WHERE user_id = v_user_id;
+			DELETE FROM Community_BoardT WHERE user_id = v_user_id;
+			DELETE FROM Club_Notice_RepleT WHERE user_id = v_user_id;
+			DELETE FROM ClubT WHERE user_id = v_user_id;
+			DELETE FROM Club_applyT WHERE user_id = v_user_id;
+			DELETE FROM HostT WHERE user_id = v_user_id;
+			DELETE FROM HostApplyT WHERE user_id = v_user_id;
+			DELETE FROM Space_QnAT WHERE user_id = v_user_id;
+			DELETE FROM Space_QnA_RepleT WHERE user_id = v_user_id;
+			DELETE FROM ReviewT WHERE user_id = v_user_id;
+			DELETE FROM Review_RepleT WHERE user_id = v_user_id;
+			DELETE FROM BookmarkT WHERE user_id = v_user_id;
+			DELETE FROM usert WHERE user_id = v_user_id;
+	END$$
+	DELIMITER ;
+	-->
+	<parameterMap id="PM_p_admin_user_DelUser" type="multi.admin.vo.Admin_User_Del_EmailVO" >
+		<parameter property="user_id" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="user_name" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="email" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="subject" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="mail_content" mode="IN" jdbcType="VARCHAR"/>
+	</parameterMap>
+	<delete id="p_admin_user_DelUser" statementType="CALLABLE"
+		parameterType = "multi.admin.vo.Admin_User_Del_EmailVO"
+		parameterMap = "PM_p_admin_user_DelUser">
+		{call p_admin_user_DelUser(?,?,?,?,?)}
+	</delete>
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_user_modifyUser;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_user_modifyUser(
+		IN v_user_id VARCHAR(50),
+		IN v_user_name VARCHAR(50),
+		IN v_phone VARCHAR(50),
+		IN v_nickname VARCHAR(50),
+		IN v_zipcode VARCHAR(50),
+		IN v_zipdetail VARCHAR(50),
+		IN v_email VARCHAR(50)
+	)
+	BEGIN
+		UPDATE usert SET user_name = v_user_name, phone=v_phone, 
+		nickname=v_nickname, zipcode = v_zipcode, zipdetail = v_zipdetail, email = v_email WHERE user_id = v_user_id;
+	END$$
+	DELIMITER ;
+	-->
+	<parameterMap id="PM_p_admin_user_modifyUser" type="main.vo.UserVO" >
+		<parameter property="user_id" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="user_name" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="phone" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="nickname" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="zipcode" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="zipdetail" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="email" mode="IN" jdbcType="VARCHAR"/>
+		
+	</parameterMap>
+	<update id="p_admin_user_modifyUser" statementType="CALLABLE"
+		parameterType = "main.vo.UserVO"
+		parameterMap = "PM_p_admin_user_modifyUser">
+		{call p_admin_user_modifyUser(?,?,?,?,?,?,?)}
+	</update>
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_list_removed_users;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_list_removed_users()
+	BEGIN
+		SELECT * FROM user_del_emailt ORDER BY writing_no DESC;
+	END$$
+	DELIMITER ;
+	-->
+	<resultMap id="RM_p_admin_list_removed_users" type="multi.admin.vo.Admin_User_Del_EmailVO" >
+		<result property="writing_no" column="writing_no" jdbcType="INTEGER"/>
+		<result property="user_id" column="user_id" jdbcType="VARCHAR"/>
+		<result property="user_name" column="user_name" jdbcType="VARCHAR"/>
+		<result property="email" column="email" jdbcType="VARCHAR"/>
+		<result property="subject" column="subject" jdbcType="VARCHAR"/>
+		<result property="mail_content" column="mail_content" jdbcType="VARCHAR"/>
+		<result property="the_time" column="the_time" jdbcType="VARCHAR"/>
+	</resultMap>
+	<select id="p_admin_list_removed_users" statementType="CALLABLE"
+		resultMap = "RM_p_admin_list_removed_users">
+		{call p_admin_list_removed_users()}
+	</select>
+	
+	
+	<select id="admin_search_user" parameterType="multi.admin.vo.Admin_searchVO" resultType="main.vo.UserVO">
+		
+		SELECT * FROM usert WHERE grade=1 AND 0=0 
+		<if test="search_option == 1">
+		AND user_name like '%${search_content}%'
+		</if>
+		<if test="search_option == 2">
+		AND user_id like '%${search_content}%'
+		</if>
+		<if test="search_option == 3">
+		AND nickname like '%${search_content}%'
+		</if>
+		<if test="search_option == 4">
+		AND gender like '%${search_content}%'
+		</if>
+		<if test="search_option == 5">
+		AND email like '%${search_content}%'
+		</if>
+		<if test="search_option == 6">
+		AND zipcode like '%${search_content}%'
+		</if>
+		<if test="search_option == 7">
+		AND zipdetail like '%${search_content}%'
+		</if>
+		<if test="start_no != null">
+			ORDER BY user_id ASC LIMIT #{start_no},10
+		</if>
+	</select>
+	
+	<select id="admin_search_removed_user" parameterType="multi.admin.vo.Admin_searchVO" 
+		resultType="multi.admin.vo.Admin_User_Del_EmailVO">
+		SELECT * FROM user_del_emailt WHERE 0=0 
+		<if test="start_no != null">
+			ORDER BY writing_no DESC LIMIT #{start_no},10
+		</if>
+	</select>
+	
+</mapper>
+<!--
+
+-->
+
+
+
+
+
+

@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="euc-kr"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+   xsi:schemaLocation="
+      http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+      http://www.springframework.org/schema/context
+      http://www.springframework.org/schema/context/spring-context-4.1.xsd">
+
+   <context:annotation-config></context:annotation-config>
+
+   <bean id="ds2" class="org.apache.commons.dbcp2.BasicDataSource">
+      <property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+      <property name="username" value="nightswan0school"></property>
+      <property name="password" value="multi@3429"></property>
+      <property name="url" value="jdbc:mysql://116.126.143.83:3306/nightswan0school?noAccessToProcedureBodies=true"></property>
+   </bean>
+
+   <bean id="factory" class="org.mybatis.spring.SqlSessionFactoryBean">
+      <property name="dataSource" ref="ds2" />
+      <property name="configLocation" value="classpath:/main/mybatis-config.xml" />
+   </bean>
+
+   <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+      <constructor-arg index="0" ref="factory" />
+   </bean>
+
+   <bean id="viewResolver" class="main.ViewResolver">
+      <property name="prefix" value="WEB-INF/space_jsp/" />
+      <property name="suffix" value=".jsp" />
+   </bean>
+
+   <bean id="mapping" class="main.MethodAndTargetMap" />
+
+
+   <!-- 여기다 자기꺼 추가해주세요!!!!!! <bean class="multi.temp.controller.CtrlSh"/> -->
+
+   <!--space 컨트롤러 -->
+   <bean class="multi.space.controller.CtrlSpace" />
+
+   <!--space DAO -->
+   <bean id="space_spaceDAO" class="multi.space.dao.SpaceDAO_MybatisProcImpl" />
+
+   <!--booking DAO -->
+   <bean id="space_bookingDAO" class="multi.space.dao.BookingDAO_MySQLImpl" />
+
+   <!--space_QnADAO -->
+   <bean id="space_space_QnADAO" class="multi.space.dao.Space_QnADAO_MybatisProcImpl" />
+
+   <!--space_Qna_RepleDAO -->
+   <bean id="space_space_QnA_RepleDAO" class="multi.space.dao.Space_QnA_RepleDAO_MybatisProcImpl" />
+   
+   <!--userDAO -->
+   <bean id="space_userDAO" class="multi.space.dao.UserDAO_MybatisProcImpl" />
+   
+   <!--hostDAO -->
+   <bean id="space_hostDAO" class="multi.space.dao.HostDAO_MybatisProcImpl" />
+   
+   <!--bookmarkDAO -->
+   <bean id="space_bookmarkDAO" class="multi.space.dao.BookmarkDAO_MybatisProcImpl"/>
+   
+   <!--reviewDAO -->
+   <bean id="space_reviewDAO" class="multi.space.dao.ReviewDAO_MybatisProcImpl" />
+
+   
+   <bean class="multi.home.userjoin.controller.CtrlUserJoin" />
+
+   <bean class="multi.home.userjoin.dao.UserJoinDAO_MybatisProcImpl"
+      id="userJoinDAO" />
+
+   <!-- mypage_myinfo -->
+
+
+   <bean class="multi.mypage.myinfo.controller.CtrlMypageInfo" />
+
+   <bean class="multi.mypage.myinfo.dao.MyInfoDAO_MybatisProcImpl"
+      id="myInfoDAO" />
+
+   <!-- mypage_bookmark -->
+
+
+   <bean class="multi.mypage.mybookmark.controller.CtrlMypageBookmark" />
+
+   <bean class="multi.mypage.mybookmark.dao.BookmarkDAO_MybatisProcImpl"
+      id="bookmarkDAO" />
+
+   <!-- mypage_review -->
+
+
+   <bean class="multi.mypage.myreview.controller.CtrlMypageReview" />
+
+   <bean class="multi.mypage.myreview.dao.MPReviewDAO_MybatisProcImpl"
+      id="MPreviewDAO" />
+
+   <!-- mypage_myclub -->
+
+
+   <bean class="multi.mypage.myclub.controller.CtrlMypageMyclub" />
+
+   <bean class="multi.mypage.myclub.dao.MyclubDAO_MybatisProcImpl"
+      id="myclubDAO" />
+
+   <!-- mypage myhost -->
+
+
+   <bean class="multi.mypage.myhost.controller.CtrlMypageMyHost" />
+
+   <bean class="multi.mypage.myhost.dao.MyHostDAO_MybatisProcImpl"
+      id="myhostDAO" />
+
+   <!--@@@@@@@@@@@@@@@@ sb-end @@@@@@@@@@@@@@@@@@@@ -->
+
+   
+
+   <!-- 김소영 -->
+   <!--CtrlCommunity 컨트롤러 -->
+   <bean class="multi.community.controller.CtrlCommunity" />
+   <!--faq 컨트롤러 -->
+   <bean class="multi.faq.controller.CtrlFaq" />
+   <!--faqDAO 컨트롤러 -->
+   <bean class="multi.faq.dao.FaqDAO_MybatisProcImpl" id="faqDAO" />
+   <!--o2oQnA 컨트롤러 -->
+   <bean class="multi.o2oQnA.controller.CtrlO2OQnA" />
+   <!--o2oQnADAO 컨트롤러 -->
+   <bean class="multi.o2oQnA.dao.O2OQnADAO_MybatisProcImpl" id="o2oQnADAO" />
+   <!--CtrlBoard 컨트롤러 -->
+   <bean class="multi.community.board.controller.CtrlBoard" />
+   <!--community_boardDAO 컨트롤러 -->
+   <bean class="multi.community.board.dao.Community_boardDAO_MybatisProcImpl"
+      id="community_boardDAO" />
+   <!--community_boardrepleDAO 컨트롤러 -->
+   <bean class="multi.community.board.dao.Community_boardrepleDAO_MybatisProcImpl"
+      id="community_boardrepleDAO" />
+   <!--Community_boardmytextDAO 컨트롤러 -->   
+      <bean class="multi.community.board.dao.Community_boardmytextDAO_MybatisProcImpl"
+      id="community_boardmytextDAO" />
+   <!--Community_board_searchDAO 컨트롤러 -->   
+      <bean class="multi.community.board.dao.Community_board_searchDAO_MybatisProcImpl"
+      id="community_board_searchDAO" />
+      
+   <!--CtrlReview 컨트롤러  -->
+      <bean class="multi.community.review.controller.CtrlReview" />
+   <!--Community_board_reviewDAO 컨트롤러  -->   
+      <bean class="multi.community.review.dao.Community_board_reviewDAO_MybatisProcImpl"
+      id="community_board_reviewDAO" />
+   <!-- 김소영 -->
+
+   <!-- 조우열 -->
+   <bean class="multi.notice.controller.CtrlNotice" />
+   <bean class="multi.notice.dao.NoticeDAO_ProcImpl" id="noticeDAO" />
+   <bean class="multi.community.qna.dao.Community_qnaDAO_ProcImpl"
+      id="community_qnaDAO" />
+   <bean class="multi.community.qna.dao.Community_qna_repleDAO_ProcImpl"
+      id="community_qna_repleDAO" />
+   <bean class="multi.community.qna.dao.Community_qna_mytextDAO_ProcImpl"
+      id="community_qna_mytextDAO" />
+   <bean class="multi.community.qna.dao.Community_qna_searchDAO_ProcImpl"
+      id="community_qna_searchDAO" />
+   <bean class="multi.community.controller.CtrlCommunity" />
+   <bean class="multi.community.qna.controller.CtrlQna" />
+   <!-- 조우열 -->
+
+   <!-- 허빛찬샘 -->
+   <bean class="multi.club.dao.ClubDAO_fakeImpl" id="clubDAO" />
+   <bean class="multi.club.controller.CtrlClub" />
+   <bean class="multi.club.controller.CtrlClub_board" />
+   <bean class="multi.club.controller.CtrlClub_notice" />
+   <!-- 허빛찬샘 -->
+
+   <!-- 이양재 -->
+   <bean class="multi.admin.controller.CtrlAdmin" />
+   <bean class="multi.admin.controller.Ctrl_Admin_Users" />
+   <bean class="multi.admin.controller.Ctrl_Admin_Hosts" />
+   <bean class="multi.admin.controller.Ctrl_Admin_Spaces" />
+   <bean class="multi.admin.controller.Ctrl_Admin_Clubs" />
+   <bean class="multi.admin.controller.Ctrl_Admin_Notices" />
+   <bean class="multi.admin.controller.Ctrl_Admin_Events" />
+   <bean class="multi.admin.controller.Ctrl_Admin_FAQ" />
+   <bean class="multi.admin.controller.Ctrl_Admin_o2oQnA" />
+   <bean class="multi.admin.controller.Ctrl_Admin_Clubs" />
+   <bean class="multi.admin.controller.Ctrl_Admin_Message" /> 
+   <bean class="multi.admin.controller.Ctrl_Admin_Freeboard" />
+   <bean class="multi.admin.controller.Ctrl_Admin_Qna" /> 
+   <bean class="multi.admin.controller.Ctrl_Admin_Review" /> 
+   
+   <bean class="multi.admin.dao.Admin_UserDAO_MysqlImpl" id="admin_UserDAO" />
+   <bean class="multi.admin.dao.Admin_HostDAO_MysqlImpl" id="admin_HostDAO" />
+   <bean class="multi.admin.dao.Admin_NoticeDAO_MysqlImpl" id="admin_NoticeDAO" />
+   <bean class="multi.admin.dao.Admin_FaqDAO_MysqlImpl" id="admin_FaqDAO" />
+   <bean class="multi.admin.dao.Admin_o2oQnADAO_MysqlImpl" id="admin_o2oQnADAO" />
+   <bean class="multi.admin.dao.Admin_SpaceDAO_MysqlImpl" id="admin_SpaceDAO" />
+   <bean class="multi.admin.dao.Admin_ClubDAO_MysqlImpl" id="admin_ClubDAO" />
+   <bean class="multi.admin.dao.Admin_MessageDAO_MysqlImpl" id="admin_MessageDAO" />
+   <bean class="multi.admin.dao.Admin_EventDAO_MysqlImpl" id="admin_EventDAO" />
+    <bean class="multi.admin.dao.Admin_FreeboardDAO_MysqlImpl" id="admin_FreeboardDAO" />
+    <bean class="multi.admin.dao.Admin_QnaDAO_MysqlImpl" id="admin_QnaDAO_MysqlImpl" />
+    <bean class="multi.admin.dao.Admin_ReviewDAO_MysqlImpl" id="admin_ReviewDAO" />
+   <!-- 이양재 -->
+
+     <!-- 안수진 -->
+<!--
+   <bean class="multi.home.login.dao.UserDAO_MybatisImpl" id="home_login_UserDAO" /> 
+   <bean class="multi.mypage.booking.dao.UserDAO_MybatisImpl" id="mypage_booking_UserDAO" />
+   <bean class="multi.mypage.booking.dao.BookingDAO_MybatisImpl" id="mypage_booking_BookingDAO" />
+   <bean class="multi.mypage.qna.dao.UserDAO_MybatisImpl" id="mypage_qna_UserDAO" />   
+   <bean class="multi.mypage.qna.dao.Space_qnaDAO_MybatisImpl" id="mypage_qna_Space_qnaDAO" />   
+   <bean class="multi.mypage.qna.dao.Space_qna_repleDAO_MybatisImpl" id="mypage_qna_Space_qna_repleDAO" />
+   <bean class="multi.mypage.message.dao.UserDAO_MybatisImpl" id="mypage_message_UserDAO" />
+   <bean class="multi.mypage.message.dao.MessageDAO_MybatisImpl" id="mypage_message_MessageDAO" />   
+   <bean class="multi.mypage.message.dao.User_clubDAO_MybatisImpl"
+      id="mypage_message_User_clubDAO" />
+   <bean id="mypage_myinfo_UserDAO" class="multi.mypage.myinfo.dao.UserDAO_MybatisImpl"></bean>
+   
+-->
+   
+   
+   <bean class="multi.home.login.controller.CtrlLogin" />
+   <bean class="multi.home.login.dao.UserDAO_MybatisProcImpl" id="home_login_UserDAO" />
+   <bean class="multi.mypage.booking.controller.CtrlBooking" />
+   <bean class="multi.mypage.booking.dao.UserDAO_MybatisProcImpl" id="mypage_booking_UserDAO" />
+   <bean class="multi.mypage.booking.dao.BookingDAO_MybatisProcImpl" id="mypage_booking_BookingDAO" />
+   <bean class="multi.mypage.qna.controller.CtrlQnA" />
+   <bean class="multi.mypage.qna.dao.UserDAO_MybatisProcImpl" id="mypage_qna_UserDAO" />   
+   <bean class="multi.mypage.qna.dao.Space_qnaDAO_MybatisProcImpl" id="mypage_qna_Space_qnaDAO" />
+   <bean class="multi.mypage.qna.dao.Space_qna_repleDAO_MybatisProcImpl" id="mypage_qna_Space_qna_repleDAO" />
+   <bean class="multi.mypage.message.controller.CtrlMessage" />
+   <bean class="multi.mypage.message.dao.UserDAO_MybatisProcImpl" id="mypage_message_UserDAO" />
+   <bean class="multi.mypage.message.dao.MessageDAO_MybatisProcImpl" id="mypage_message_MessageDAO" />
+      <bean class="multi.mypage.message.dao.User_clubDAO_MybatisProcImpl"
+      id="mypage_message_User_clubDAO" />
+   <bean id="mypage_myinfo_UserDAO" class="multi.mypage.myinfo.dao.UserDAO_MybatisProcImpl"></bean>
+   <!-- 안수진 -->
+   
+   <!-- 배승현 -->
+   <!-- event 컨트롤러-->
+   <bean class="multi.event.controller.CtrlEvent"/>
+   <!--event DAO-->
+   <bean class="multi.event.dao.EventDAO_MysqlImpl" id="eventDAO"/>
+   <!-- 배승현 -->
+</beans>
+
+
+
+
+
+
+
+
+
+
+
+

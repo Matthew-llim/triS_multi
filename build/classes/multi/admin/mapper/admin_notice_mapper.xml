@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="admin_notice">
+	<!-- 공지 부분 -->
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_notice_FindAllTexts;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_notice_FindAllTexts()
+	BEGIN
+		SELECT * FROM noticet ORDER BY notice_no DESC;
+	END$$
+	DELIMITER ;
+	-->
+	<resultMap id="RM_p_admin_notice_FindAllTexts" type="main.vo.NoticeVO">
+		<result property="notice_no" column="notice_no" jdbcType="INTEGER"/>
+		<result property="notice_title" column="notice_title" jdbcType="VARCHAR"/>
+		<result property="notice_content" column="notice_content" jdbcType="VARCHAR"/>
+		<result property="the_time" column="the_time" jdbcType="VARCHAR"/>
+	</resultMap>
+	<select id="p_admin_notice_FindAllTexts" statementType="CALLABLE" resultMap="RM_p_admin_notice_FindAllTexts">
+		{call p_admin_notice_FindAllTexts()}
+	</select>
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_notice_FindText;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_notice_FindText(
+		IN v_notice_no INT
+	)
+	BEGIN
+		SELECT * FROM noticet WHERE notice_no = v_notice_no;
+	END$$
+	DELIMITER ;
+	-->
+	<resultMap id="RM_p_admin_notice_FindText" type="main.vo.NoticeVO">
+		<result property="notice_no" column="notice_no" jdbcType="INTEGER"/>
+		<result property="notice_title" column="notice_title" jdbcType="VARCHAR"/>
+		<result property="notice_content" column="notice_content" jdbcType="VARCHAR"/>
+		<result property="the_time" column="the_time" jdbcType="VARCHAR"/>
+	</resultMap>
+	<parameterMap id="PM_p_admin_notice_FindText" type="main.vo.NoticeVO">
+		<parameter property="notice_no" mode="IN" jdbcType="INTEGER"/>
+	</parameterMap>
+	<select id="p_admin_notice_FindText" statementType="CALLABLE"
+		resultMap="RM_p_admin_notice_FindText" parameterMap="PM_p_admin_notice_FindText">
+		{call p_admin_notice_FindText(?)}
+	</select>
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_notice_AddText;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_notice_AddText(
+		IN v_notice_title VARCHAR(45),
+		IN v_notice_content TEXT
+	)
+	BEGIN
+		INSERT INTO noticeT VALUES(default,
+			v_notice_title,v_notice_content,NOW());
+	END$$
+	DELIMITER ;
+	-->
+	<parameterMap id="PM_p_admin_notice_AddText" type="main.vo.NoticeVO">
+		<parameter property="notice_title"   mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="notice_content" mode="IN" jdbcType="VARCHAR"/>
+	</parameterMap>
+	
+	<insert id="p_admin_notice_AddText" statementType="CALLABLE" 
+		parameterMap="PM_p_admin_notice_AddText">
+		{call p_admin_notice_AddText(?,?)}
+	</insert>
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_notice_modText;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_notice_modText(
+		IN v_notice_no INT,
+		IN v_notice_title VARCHAR(45),
+		IN v_notice_content TEXT
+	)
+	BEGIN
+		UPDATE noticeT set notice_title=v_notice_title, notice_content=v_notice_content
+			WHERE notice_no = v_notice_no;
+	END$$
+	DELIMITER ;
+	-->
+	<parameterMap id="PM_p_admin_notice_modText" type="main.vo.NoticeVO">
+		<parameter property="notice_no"   mode="IN" jdbcType="INTEGER"/>
+		<parameter property="notice_title"   mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="notice_content" mode="IN" jdbcType="VARCHAR"/>
+	</parameterMap>
+	<insert id="p_admin_notice_modText" statementType="CALLABLE" 
+		parameterMap="PM_p_admin_notice_modText">
+		{call p_admin_notice_modText(?,?,?)}
+	</insert>
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_notice_DelByPK;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_notice_DelByPK(
+		IN v_notice_no INT
+	)
+	BEGIN
+		DELETE FROM noticeT WHERE notice_no = v_notice_no;
+	END$$
+	DELIMITER ;
+	-->
+	
+	<parameterMap id="PM_p_admin_notice_DelByPK" type="main.vo.NoticeVO">
+		<parameter property="notice_no" mode="IN" jdbcType="INTEGER"/>
+	</parameterMap>
+
+	<delete id="p_admin_notice_DelByPK" statementType="CALLABLE"
+		parameterMap="PM_p_admin_notice_DelByPK">
+		{call p_admin_notice_DelByPK(?)}
+	</delete>
+	
+	<select id="admin_search_All" parameterType="multi.admin.vo.Admin_searchVO"
+		resultType="main.vo.NoticeVO">
+		
+	SELECT * FROM noticet WHERE 0 = 0
+	<if test="search_option == 1">
+	AND notice_title like '%${search_content}%'
+	</if>
+	<if test="search_option == 2">
+	AND notice_content like '%${search_content}%'
+	</if>
+	<if test="search_option == 3">
+	AND notice_title like '%${search_content}%'
+	OR notice_content like '%${search_content}%'
+	</if>
+	<if test="start_no != null">
+		ORDER BY notice_no DESC LIMIT #{start_no},10
+	</if>
+	
+	</select>
+
+</mapper>
+<!--
+
+-->
+
+
+
+
+
+

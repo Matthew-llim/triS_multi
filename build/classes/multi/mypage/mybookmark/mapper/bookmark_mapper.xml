@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="bookmark">
+
+	<select id="sysdate" resultType="java.lang.String">
+		SELECT NOW()
+	</select>
+	
+	<!-- 즐겨찾기 LIST FIND -->
+	<resultMap type="main.vo.SpaceVO" id="RM_bookmark_findall">
+		<result property="space_no" column="space_no"/>
+		<result property="space_title" column="space_title"/>
+		<result property="space_thumb_img" column="space_thumb_img"/>
+	</resultMap>
+	
+	<select id="p_bookmark_findall" resultMap="RM_bookmark_findall" parameterType="java.lang.String" statementType="CALLABLE">
+		{call p_bookmark_findall(#{user_id})}
+	</select>
+	
+	<!-- 즐겨찾기 DELETE  -->
+	
+	<parameterMap type="main.vo.BookmarkVO" id="PM_bookmark_del">
+		<parameter property="space_no" mode="IN"/>
+	</parameterMap>
+	
+	
+	<delete id="p_bookmark_del" parameterMap="PM_bookmark_del" statementType="CALLABLE">
+		{call p_bookmark_del(?)}
+	</delete>
+	
+	
+</mapper>
+
+
+
+
+

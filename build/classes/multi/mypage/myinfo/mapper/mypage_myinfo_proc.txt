@@ -1,0 +1,11 @@
+#mypage_myinfo_find_user_info_proc
+
+DROP PROCEDURE IF EXISTS p_mypage_myinfo_find_user;
+DELIMITER $$
+CREATE PROCEDURE p_mypage_myinfo_find_user(
+	IN v_user_id VARCHAR(20)
+)
+BEGIN
+	SELECT * from usert where user_id = v_user_id;
+END$$
+DELIMITER ;

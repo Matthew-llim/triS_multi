@@ -1,0 +1,30 @@
+################################################################
+################################################################
+	DROP PROCEDURE IF EXISTS p_admin_comm_boardreviewFindAllTexts;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_boardreviewFindAllTexts()
+	BEGIN
+		SELECT * FROM ReviewT ORDER BY review_no DESC;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_remove_Review;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_remove_Review(
+		IN v_review_no INT,
+		IN v_space_no INT
+	)
+	BEGIN
+		DECLARE exit handler FOR SQLEXCEPTION
+		BEGIN
+			ROLLBACK;
+			SIGNAL SQLSTATE '45000';
+		END;
+		START TRANSACTION;
+			DELETE FROM ReviewT WHERE review_no = v_review_no AND space_no = v_space_no;
+		COMMIT;
+	END$$
+	DELIMITER ;
+	

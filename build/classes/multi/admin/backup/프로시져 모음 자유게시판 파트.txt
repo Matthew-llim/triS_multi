@@ -1,0 +1,173 @@
+################################################################
+################################################################
+	DROP PROCEDURE IF EXISTS p_admin_comm_boardFindAllTexts;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_boardFindAllTexts()
+	BEGIN
+		SELECT * FROM Community_BoardT ORDER BY com_board_no DESC;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_comm_boardAdd;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_boardAdd(
+		IN v_com_board_no INT(11),
+		IN v_com_board_title VARCHAR(45),
+		IN v_com_board_content TEXT,
+		IN v_user_id  VARCHAR(20),
+		IN v_view_count INT,
+		IN v_recom_count INT
+
+	)
+	BEGIN
+		INSERT INTO Community_BoardT VALUES(default,
+			v_user_id, v_com_board_title,v_com_board_content,NOW(),0,0);
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_comm_boardFindText;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_boardFindText(
+		IN v_com_board_no INT(11)
+	)
+	BEGIN
+		SELECT * FROM Community_BoardT WHERE com_board_no = v_com_board_no;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_comm_boardMod;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_boardMod(
+		IN v_com_board_no INT(11),
+		IN v_com_board_title VARCHAR(45),
+		IN v_com_board_content TEXT
+	)
+	BEGIN
+		update Community_BoardT set com_board_content = v_com_board_content , com_board_title=v_com_board_title where com_board_no = v_com_board_no;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_comm_boardDelByPK;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_boardDelByPK(
+			IN v_com_board_no INT(11)
+	)
+	BEGIN
+		DELETE FROM Community_BoardT WHERE com_board_no = v_com_board_no;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_comm_boardIncRecomLogic;
+	DELIMITER $$
+
+	CREATE PROCEDURE p_admin_comm_boardIncRecomLogic(
+		IN v_user_id  VARCHAR(20),
+		IN v_com_board_no INT(11),
+		OUT v_recom INT
+	)
+	BEGIN
+		DECLARE v_count INT;
+		
+		DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+		BEGIN
+			ROLLBACK;
+			SIGNAL SQLSTATE '45000';
+		END;
+		
+		SELECT COUNT(*) INTO v_count FROM Community_Board_RecomtT
+			WHERE user_id = v_user_id AND com_board_no = v_com_board_no;
+		IF v_count = 0 THEN
+			START TRANSACTION;
+				INSERT INTO Community_Board_RecomtT VALUES ( v_user_id, v_com_board_no );
+				UPDATE Community_BoardT SET recom_count = recom_count + 1 
+					WHERE com_board_no = v_com_board_no;
+				SELECT recom_count INTO v_recom FROM Community_BoardT
+					WHERE com_board_no = v_com_board_no; 
+			COMMIT;
+		ELSE
+			SET v_recom = -1;
+		END IF;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_comm_boardIncViewLogic;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_boardIncViewLogic(
+		IN v_com_board_no INT(11)
+	)
+	BEGIN
+		update Community_BoardT set view_count = view_count+1 where com_board_no=v_com_board_no;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_comm_boardrepleAdd;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_boardrepleAdd(
+	
+		IN v_com_board_reple_content TEXT,
+		IN v_com_board_no INT,
+		IN v_user_id  VARCHAR(20)
+
+	)
+	BEGIN
+		INSERT INTO Community_Board_RepleT VALUES(default,
+			v_user_id, v_com_board_no, v_com_board_reple_content, NOW());
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_comm_boardrepleMod;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_boardrepleMod(
+	
+		IN v_com_board_reple_no INT(11),
+		IN v_com_board_reple_content TEXT
+	)
+	BEGIN
+		update Community_Board_RepleT set com_board_reple_content = v_com_board_reple_content where com_board_reple_no = v_com_board_reple_no;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_comm_boardrepleDel;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_boardrepleDel(
+	
+		IN v_com_board_reple_no INT(11),
+		IN v_com_board_no INT(11)
+		
+
+	)
+	BEGIN
+		DELETE FROM Community_Board_RepleT WHERE com_board_reple_no = v_com_board_reple_no and com_board_no =  v_com_board_no;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_comm_boradrepleFindAllTexts;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_boradrepleFindAllTexts(
+	IN v_com_board_no INT(11)
+	)
+	BEGIN
+		SELECT * FROM Community_Board_RepleT where com_board_no =  v_com_board_no;
+	END$$
+	DELIMITER ;
+	

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mypage_review">
+
+	<select id="sysdate" resultType="java.lang.String">
+		SELECT NOW()
+	</select>
+	
+	<resultMap type="main.vo.ReviewVO" id="RM_p_review_find" >
+		<result property="review_no" column="review_no"/>
+		<result property="space_no" column="space_no"/>
+		<result property="user_id" column="user_id"/>
+		<result property="review_title" column="review_title"/>
+		<result property="review_content" column="review_content"/>
+		<result property="review_content" column="review_content"/>
+		<result property="review_score" column="review_score"/>
+		<result property="review_img" column="review_img"/>
+	</resultMap>
+	
+	<!-- 후기찾기 -->
+	<select id="p_MPreview_find" parameterType="java.lang.String" resultMap="RM_p_review_find" statementType="CALLABLE">
+		{call p_MPreview_find(#{user_id})}
+	</select>
+	
+	<!-- 후기찾기 페이징 -->
+	<select id="mypage_search_review" parameterType="multi.mypage.vo.Mypage_searchVO" resultType="main.vo.ReviewVO">
+		SELECT * FROM reviewt where user_id = #{user_id} AND 0=0
+		<if test="start_no !=null">
+			ORDER BY user_id ASC LIMIT #{start_no},10
+		</if>
+	</select>
+	
+</mapper>
+
+
+
+
+

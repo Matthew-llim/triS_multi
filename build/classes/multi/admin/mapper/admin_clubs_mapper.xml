@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="admin_club">
+	<!-- 모임 부분 -->
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_club_FindAllClubs;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_club_FindAllClubs()
+	BEGIN
+		SELECT * FROM clubt ORDER BY create_time DESC;
+	END$$
+	DELIMITER ;
+	
+	-->
+ 	<resultMap id="RM_p_admin_club_FindAllClubs" type="main.vo.ClubVO">
+		<result property="club_no" column="club_no" jdbcType="INTEGER" />
+		<result property="user_id" column="user_id" jdbcType="VARCHAR" />
+		<result property="club_name" column="club_name" jdbcType="VARCHAR" />
+		<result property="club_title" column="club_title" jdbcType="VARCHAR" />
+		<result property="club_content" column="club_content" jdbcType="VARCHAR" />
+		<result property="club_thumb_img" column="club_thumb_img" jdbcType="VARCHAR" />
+		<result property="max_member" column="max_member" jdbcType="INTEGER" />
+		<result property="create_time" column="create_time" jdbcType="VARCHAR" />
+		<result property="l_category_no" column="l_category_no" jdbcType="INTEGER" />
+		<result property="c_category_no" column="c_category_no" jdbcType="INTEGER" />
+	</resultMap>
+	<select id="p_admin_club_FindAllClubs" statementType="CALLABLE" 
+		resultMap="RM_p_admin_club_FindAllClubs">
+		{call p_admin_club_FindAllClubs()}
+	</select>
+
+
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_club_Remove;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_club_Remove(
+		IN v_club_no INT
+	)
+	BEGIN
+		DELETE FROM user_clubt WHERE club_no = v_club_no;
+		DELETE FROM club_noticet WHERE club_no = v_club_no;
+		DELETE FROM club_applyt WHERE club_no = v_club_no;
+		DELETE FROM clubt WHERE club_no = v_club_no;
+	END$$
+	DELIMITER ;
+	
+	-->
+	<parameterMap id="PM_p_admin_club_Remove" type="main.vo.ClubVO" >
+		<parameter property="club_no" mode="IN" jdbcType="VARCHAR"/>
+	</parameterMap>
+	<delete id="p_admin_club_Remove" statementType="CALLABLE" 
+		parameterMap="PM_p_admin_club_Remove">
+		{call p_admin_club_Remove(?)}
+	</delete>
+	
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_club_FindSpecificClub;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_club_FindSpecificClub(
+		IN v_club_no INT
+	)
+	BEGIN
+		SELECT * FROM clubt WHERE club_no = v_club_no;
+	END$$
+	DELIMITER ;
+	
+	-->
+	<parameterMap id="PM_p_admin_club_FindSpecificClub" type="main.vo.ClubVO" >
+		<parameter property="club_no" mode="IN" jdbcType="VARCHAR"/>
+	</parameterMap>
+ 	<resultMap id="RM_p_admin_club_FindSpecificClub" type="main.vo.ClubVO">
+		<result property="club_no" column="club_no" jdbcType="INTEGER" />
+		<result property="user_id" column="user_id" jdbcType="VARCHAR" />
+		<result property="club_name" column="club_name" jdbcType="VARCHAR" />
+		<result property="club_title" column="club_title" jdbcType="VARCHAR" />
+		<result property="club_content" column="club_content" jdbcType="VARCHAR" />
+		<result property="club_thumb_img" column="club_thumb_img" jdbcType="VARCHAR" />
+		<result property="max_member" column="max_member" jdbcType="INTEGER" />
+		<result property="create_time" column="create_time" jdbcType="VARCHAR" />
+		<result property="l_category_no" column="l_category_no" jdbcType="INTEGER" />
+		<result property="c_category_no" column="c_category_no" jdbcType="INTEGER" />
+	</resultMap>
+	<select id="p_admin_club_FindSpecificClub" statementType="CALLABLE" 
+		parameterMap="PM_p_admin_club_FindSpecificClub"
+		resultMap="RM_p_admin_club_FindSpecificClub">
+		{call p_admin_club_FindSpecificClub(?)}
+	</select>
+	
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_club_FindjoinedUsers;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_club_FindjoinedUsers(
+		IN v_club_no INT
+	)
+	BEGIN
+		SELECT * FROM user_clubt WHERE club_no = v_club_no;
+	END$$
+	DELIMITER ;
+	
+	-->
+	<parameterMap id="PM_p_admin_club_FindjoinedUsers" type="main.vo.User_clubVO" >
+		<parameter property="club_no" mode="IN" jdbcType="VARCHAR"/>
+	</parameterMap>
+	<resultMap id="RM_p_admin_club_FindjoinedUsers" type="main.vo.User_clubVO">
+		<result property="user_id" column="user_id" jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="p_admin_club_FindjoinedUsers" statementType="CALLABLE"
+			parameterMap="PM_p_admin_club_FindjoinedUsers"
+			resultMap="RM_p_admin_club_FindjoinedUsers">
+		{call p_admin_club_FindjoinedUsers(?)}
+	</select>
+	
+	<select id="admin_clubs_search" parameterType="multi.admin.vo.Admin_searchVO"
+		resultType="main.vo.ClubVO">
+	
+		SELECT * FROM clubt WHERE 0 = 0
+		<if test="search_option == 1">
+		AND club_name like '%${search_content}%'
+		</if>
+		<if test="search_option == 2">
+		AND user_id like '%${search_content}%'
+		</if>
+		<if test="search_option == 3">
+		AND max_member like '%${search_content}%'
+		</if>
+		<if test="search_option == 4">
+		AND create_time like '%${search_content}%'
+		</if>
+		<if test="search_option == 5">
+		AND c_category_no like '%${search_content}%'
+		</if>
+		<if test="search_option == 6">
+		AND l_category_no like '%${search_content}%'
+		</if>
+		<if test="start_no != null">
+			ORDER BY club_no DESC LIMIT #{start_no}, 10
+		</if>
+	</select>
+
+</mapper>
+

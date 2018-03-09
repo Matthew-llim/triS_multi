@@ -1,0 +1,23 @@
+################################################################
+################################################################
+	DROP PROCEDURE IF EXISTS p_admin_comm_boardreviewFindAllTexts;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_comm_boardreviewFindAllTexts()
+	BEGIN
+		SELECT * FROM reviewt ORDER BY review_no DESC;
+	END$$
+	DELIMITER ;
+	
+################################################################	
+	
+	DROP PROCEDURE IF EXISTS p_admin_remove_Review;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_remove_Review(
+		IN v_review_no INT,
+		IN v_space_no INT
+	)
+	BEGIN
+			DELETE FROM reviewt WHERE review_no = v_review_no AND space_no = v_space_no;
+	END$$
+	DELIMITER ;
+	

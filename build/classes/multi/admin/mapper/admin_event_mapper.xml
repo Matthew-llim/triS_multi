@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="admin_event">
+
+	<select id="sysdate" resultType="java.lang.String">
+		SELECT NOW()
+	</select>
+	
+<resultMap id="RM_event" type="main.vo.EventVO">
+		<result property="eve_no" column="eve_no" jdbcType="INTEGER"/>
+		<result property="eve_title" column="eve_title" jdbcType="VARCHAR"/>
+		<result property="eve_content" column="eve_content" jdbcType="VARCHAR"/>
+		<result property="the_time" column="the_time" jdbcType="VARCHAR"/>
+		<result property="eve_thumb_img" column="eve_thumb_img" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<!-- 
+ 	
+ 	DROP PROCEDURE IF EXISTS p_admin_event_add;
+     DELIMITER $$
+     CREATE PROCEDURE p_admin_event_add(
+           IN v_eve_title VARCHAR(45),
+           IN v_eve_content TEXT,
+           IN v_eve_thumb_img VARCHAR(45)
+     )
+     
+     BEGIN
+           INSERT INTO eventt VALUES (default, v_eve_title,v_eve_content,NOW(),v_eve_thumb_img);
+     END$$
+    DELIMITER ;
+    
+	-->
+	
+	 <parameterMap id="RM_p_admin_event_add" type="main.vo.EventVO">
+	 	<parameter property="eve_title" mode="IN" jdbcType="VARCHAR"/>
+	 	<parameter property="eve_content" mode="IN" jdbcType="VARCHAR"/>
+	 	<parameter property="eve_thumb_img" mode="IN" jdbcType="VARCHAR"/>
+	 </parameterMap>
+	
+	<insert id="p_admin_event_add" statementType="CALLABLE"
+     	 parameterMap="RM_p_admin_event_add">
+     	{call p_admin_event_add(?,?,?)}
+    </insert>
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_event_findAll;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_event_findAll()
+	BEGIN
+		SELECT * FROM eventt ORDER BY eve_no DESC;
+	END$$
+	DELIMITER ;
+	-->
+	
+	<select id="p_admin_event_findAll"  statementType="CALLABLE" resultMap="RM_event">
+		{call p_admin_event_findAll()}
+	</select> 
+	
+	<!-- 
+	<parameterMap id="PM_pAddText" type="hotdog.EventVO">
+	 	<parameter property="eve_no" mode="IN" jdbcType="INTEGER"/>
+	 	<parameter property="eve_title" mode="IN" jdbcType="VARCHAR"/>
+	 	<parameter property="eve_content" mode="IN" jdbcType="VARCHAR"/>
+	 	<parameter property="the_time" mode="IN" jdbcType="VARCHAR"/>	
+	 </parameterMap>
+	 -->
+	 
+	 <!-- 
+	 	DROP PROCEDURE IF EXISTS p_admin_event_getByPK;
+  		DELIMITER $$
+  		CREATE PROCEDURE p_admin_event_getByPK(
+			IN v_eve_no INT )
+  		BEGIN
+		SELECT * FROM eventt WHERE eve_no = v_eve_no;
+  		END$$
+  		DELIMITER ;
+	 -->
+	 
+	 <parameterMap id="PM_p_admin_event_getByPK" type="main.vo.EventVO">
+	 	<parameter property="eve_no" mode="IN" jdbcType="INTEGER"/>
+	 </parameterMap>
+	 
+	<select id="p_admin_event_getByPK"  statementType="CALLABLE" 
+		resultMap="RM_event" parameterMap="PM_p_admin_event_getByPK">
+		{call p_admin_event_getByPK(?)}
+	</select>
+	
+	
+	<!-- *********************************************************** -->
+	
+	<!--
+	DROP PROCEDURE IF EXISTS p_admin_event_mod;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_event_mod(
+		IN v_eve_no INT,
+		IN v_eve_title TEXT(45),
+		IN v_eve_content TEXT,
+		IN v_eve_thumb_img VARCHAR(45)
+	)
+	BEGIN
+		UPDATE eventt set eve_title=v_eve_title, eve_content=v_eve_content, eve_thumb_img= v_eve_thumb_img
+			WHERE eve_no = v_eve_no;
+	END$$
+	DELIMITER ;
+	-->
+	<parameterMap id="PM_p_eve_mod" type="main.vo.EventVO">
+		<parameter property="eve_no"   mode="IN" jdbcType="INTEGER"/>
+		<parameter property="eve_title"   mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="eve_content" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="eve_thumb_img" mode="IN" jdbcType="VARCHAR"/>
+	</parameterMap>
+	
+	<insert id="p_admin_event_mod" statementType="CALLABLE" 
+		parameterMap="PM_p_eve_mod">
+		{call p_admin_event_mod(?,?,?,?)}
+	</insert>
+	
+		<!--
+	DROP PROCEDURE IF EXISTS p_admin_event_delByPK;
+	DELIMITER $$
+	CREATE PROCEDURE p_admin_event_delByPK(
+		IN v_eve_no INT
+	)
+	BEGIN
+		DELETE FROM eventt WHERE eve_no = v_eve_no;
+	END$$
+	DELIMITER ;
+	-->
+	
+	<parameterMap id="PM_p_eve_delByPK" type="main.vo.EventVO">
+		<parameter property="eve_no" mode="IN" jdbcType="INTEGER"/>
+	</parameterMap>
+
+	<delete id="p_admin_event_delByPK" statementType="CALLABLE"
+		parameterMap="PM_p_eve_delByPK">
+		{call p_admin_event_delByPK(?)}
+	</delete>
+	
+	<select id="admin_search_All" parameterType="multi.admin.vo.Admin_searchVO"
+		resultType="main.vo.EventVO">
+
+	SELECT * FROM eventt WHERE 0 = 0
+	<if test="search_option == 1">
+	AND eve_title like '%${search_content}%'
+	</if>
+	<if test="search_option == 2">
+	AND eve_content like '%${search_content}%'
+	</if>
+	<if test="search_option == 3">
+	AND eve_title like '%${search_content}%'
+	OR eve_content like '%${search_content}%'
+	</if>
+	<if test="start_no != null">
+		ORDER BY eve_no DESC LIMIT #{start_no},10
+	</if>
+
+</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+

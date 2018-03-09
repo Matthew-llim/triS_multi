@@ -1,0 +1,441 @@
+######################프로시저######################
+
+######################findall 프로시저######################
+DROP PROCEDURE IF EXISTS p_club_findAll;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_findAll()
+BEGIN
+	SELECT *
+	FROM clubt
+	ORDER BY club_no DESC;
+END$$
+DELIMITER ;
+#findall 프로시저 끝
+
+######################p_club_find_lcategory 프로시저######################
+DROP PROCEDURE IF EXISTS p_club_find_lcategory;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_find_lcategory()
+BEGIN
+	SELECT *
+	FROM l_categoryt;
+END$$
+DELIMITER ;
+######################p_club_find_lcategory 프로시저 끝######################
+
+######################p_club_find_ccategory 프로시저######################
+DROP PROCEDURE IF EXISTS p_club_find_ccategory;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_find_ccategory()
+BEGIN
+	SELECT *
+	FROM c_categoryt;
+END$$
+DELIMITER ;
+######################p_club_find_ccategory 프로시저 끝######################
+
+######################p_club_search 프로시저######################
+DROP PROCEDURE IF EXISTS p_club_search;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_search(
+	IN v_l_category_no INT,
+	IN v_c_category_no INT,
+	IN v_searchOption INT,
+	IN v_searchContent TEXT
+)
+BEGIN
+	IF v_l_category_no=0 && v_c_category_no=0 && v_searchOption=0 THEN
+		SELECT * FROM clubt;
+	ELSEIF v_l_category_no!=0 && v_c_category_no!=0 THEN
+		SELECT * FROM clubt WHERE l_category_no=v_l_category_no	AND c_category_no=v_c_category_no;
+	ELSEIF v_l_category_no!=0 && v_searchOption!=0 THEN
+		IF v_searchOption=1 THEN
+			SELECT * FROM clubt WHERE l_category_no=v_l_category_no	AND club_title LIKE "%v_searchContent%";
+		ELSEIF v_searchOption=2 THEN
+			SELECT * FROM clubt WHERE l_category_no=v_l_category_no	AND club_title LIKE "%v_searchContent%"
+			OR club_content LIKE"%v_searchContent%";
+		ELSEIF v_searchOption=3 THEN
+			SELECT * FROM clubt WHERE l_category_no=v_l_category_no	AND user_id LIKE "%user_id%";
+		END IF;
+	END IF;
+
+END$$
+DELIMITER ;
+######################p_club_search 프로시저 끝######################
+
+######################p_club_find_detail_space 프로시저######################
+DROP PROCEDURE IF EXISTS p_club_find_detail_space;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_find_detail_space(
+	IN v_club_no INT
+)
+BEGIN
+	SELECT *
+ 	  FROM spacet
+  	 WHERE l_category_no = ( SELECT l_category_no
+	    					   FROM clubt
+	   					      WHERE club_no=v_club_no)
+	 ORDER BY space_no DESC
+ 	 LIMIT 5;
+END$$
+DELIMITER ;
+######################p_club_find_detail_space 프로시저 끝######################
+
+######################p_club_addClub 프로시저 시작######################
+DROP PROCEDURE IF EXISTS p_club_addClub;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_addClub(
+	IN v_user_id VARCHAR(20),
+	IN v_club_name VARCHAR(50),
+	IN v_club_title VARCHAR(100),
+	IN v_club_content VARCHAR(500),
+	IN v_club_thumb_img VARCHAR(100),
+	IN v_max_member INT,
+	IN v_l_category_no INT,
+	IN v_c_category_no INT
+)
+BEGIN
+	DECLARE p_club_no INT;
+	INSERT INTO clubt VALUES(default, v_user_id, v_l_category_no, v_c_category_no, v_club_name, v_club_title, v_club_content, v_club_thumb_img, v_max_member, now());
+	SELECT MAX(club_no) INTO p_club_no FROM clubt;
+	INSERT INTO user_clubt VALUES(p_club_no, v_user_id);
+END$$
+DELIMITER ;
+######################p_club_addClub 프로시저 끝######################
+
+######################p_club_mod_club 프로시저 시작######################
+DROP PROCEDURE IF EXISTS p_club_mod_club;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_mod_club(
+	IN v_club_no INT,
+	IN v_user_id VARCHAR(20),
+	IN v_club_name VARCHAR(50),
+	IN v_club_title VARCHAR(100),
+	IN v_club_content VARCHAR(500),
+	IN v_club_thumb_img VARCHAR(100),
+	IN v_max_member INT,
+	IN v_l_category_no INT,
+	IN v_c_category_no INT,
+	IN v_create_time DATETIME
+)
+BEGIN
+	UPDATE clubt SET club_name= v_club_name, club_title = v_club_title, 
+					club_content= v_club_content, club_thumb_img= v_club_thumb_img, max_member = v_max_member, create_time = v_create_time, 
+					l_category_no = v_l_category_no, c_category_no = v_c_category_no 
+				WHERE club_no = v_club_no;
+END$$
+DELIMITER ;
+######################p_club_mod_club 프로시저 끝######################
+
+######################p_club_find_detail 프로시저 시작######################
+DROP PROCEDURE IF EXISTS p_club_find_detail;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_find_detail(
+	IN v_club_no INT,
+	OUT v_user_count INT
+)
+BEGIN
+	DECLARE v_count INT;
+	SELECT COUNT(*) INTO v_count FROM user_clubt WHERE club_no=v_club_no;
+	SET v_user_count = v_count;
+	
+	SELECT *
+	FROM clubt
+	WHERE club_no = v_club_no;
+END$$
+DELIMITER ;
+######################p_club_find_detail 프로시저 끝######################
+
+######################p_club_find_apply_detail 프로시저 시작######################
+DROP PROCEDURE IF EXISTS p_club_find_apply_detail;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_find_apply_detail(
+	IN v_user_id VARCHAR(20),
+	IN v_club_no INT,
+	OUT v_flag INT
+)
+BEGIN
+	DECLARE user_chk INT;
+	DECLARE apply_chk INT;
+	
+	SELECT COUNT(*) INTO user_chk FROM user_clubt WHERE club_no = v_club_no AND user_id = v_user_id;
+	SELECT COUNT(*) INTO apply_chk FROM club_applyt WHERE club_no = v_club_no AND user_id = v_user_id;
+	
+	IF user_chk =0 THEN
+		IF apply_chk =0 THEN
+			SET v_flag = 10000;
+		ELSE
+			SET v_flag = 10001;
+		END IF;
+	END IF;
+	
+	SELECT *
+	FROM club_applyt
+	WHERE club_no = v_club_no
+	  AND user_id = v_user_id;
+	COMMIT;
+END$$
+DELIMITER ;
+######################p_club_find_apply_detail 프로시저 끝######################
+
+######################p_club_find_master 프로시저 시작######################
+DROP PROCEDURE IF EXISTS p_club_find_master;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_find_master(
+	IN v_club_no VARCHAR(20)
+)
+BEGIN
+	SELECT user_name
+	  FROM usert AS A, clubt AS B
+ 	 WHERE A.user_id = B.user_id
+	   AND B.club_no = v_club_no;
+END$$
+DELIMITER ;
+######################p_club_find_master 프로시저 끝######################
+
+######################p_club_find_user 프로시저 시작######################
+DROP PROCEDURE IF EXISTS p_club_find_user;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_find_user(
+	IN v_club_no INT
+)
+BEGIN
+	SELECT *
+      FROM usert, user_clubt
+	 WHERE user_clubt.club_no=v_club_no
+	   AND usert.user_id = user_clubt.user_id
+	 ORDER BY user_name;
+END$$
+DELIMITER ;
+######################p_club_find_user 프로시저 끝######################
+
+######################p_club_find_apply 프로시저 시작######################
+DROP PROCEDURE IF EXISTS p_club_find_apply;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_find_apply(
+	IN v_club_no INT
+)
+BEGIN
+	SELECT A.apply_no, A.user_id, A.club_no, A.apply_content, B.user_name
+      FROM club_applyt AS A, usert B
+	 WHERE A.club_no = v_club_no
+	   AND A.user_id = B.user_id
+	 ORDER BY A.club_no;
+END$$
+DELIMITER ;
+######################p_club_find_apply 프로시저 끝######################
+
+######################p_club_add_apply 프로시저 시작######################
+DROP PROCEDURE IF EXISTS p_club_add_apply;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_add_apply(
+	IN v_user_id VARCHAR(20),
+	IN v_club_no INT,
+	IN v_club_content TEXT,
+	OUT v_flag INT
+)
+BEGIN
+	DECLARE count INT;
+	SELECT COUNT(*) INTO count FROM club_applyt WHERE user_id=v_user_id AND club_no=v_club_no;
+	IF count=0 THEN
+		INSERT INTO club_applyt VALUES(default,v_user_id,v_club_no,v_club_content);
+		SET v_flag = 10000;
+	ELSE
+		SET v_flag = 10001;
+	END IF;
+END$$
+DELIMITER ;
+######################p_club_add_apply 프로시저 끝######################
+
+######################p_club_apply_agree 프로시저 시작######################
+DROP PROCEDURE IF EXISTS p_club_apply_agree;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_apply_agree(
+	IN v_user_id VARCHAR(20),
+	IN v_club_no INT,
+	IN v_apply_content VARCHAR(50),
+	OUT flag INT
+)
+BEGIN
+	DECLARE user_count INT;
+	DECLARE max_count INT;
+	DECLARE c_user_id VARCHAR(20);
+
+	SELECT COUNT(*) INTO user_count FROM user_clubt WHERE club_no = v_club_no;
+	SELECT max_member,user_id INTO max_count,c_user_id	FROM clubt WHERE club_no = v_club_no;
+	
+	IF user_count<max_count-1 THEN
+		INSERT INTO messaget VALUES(default,c_user_id,v_user_id,v_apply_content,now(),0);	
+		DELETE
+		  FROM club_applyt
+		 WHERE user_id=v_user_id
+	  	   AND club_no=v_club_no;
+		INSERT INTO user_clubt VALUES(v_club_no,v_user_id);
+		SET flag = 10000;
+	ELSE
+		SET flag = 10001;
+	END IF;
+
+END$$
+DELIMITER ;
+######################p_club_apply_agree 프로시저 끝######################
+
+######################p_club_apply_disagree 프로시저 시작######################
+DROP PROCEDURE IF EXISTS p_club_apply_disagree;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_apply_disagree(
+	IN v_user_id VARCHAR(20),
+	IN v_club_no INT,
+	IN v_etc TEXT
+)
+BEGIN
+	DECLARE c_user_id VARCHAR(20);
+	
+	SELECT user_id INTO c_user_id FROM clubt WHERE club_no = v_club_no;
+	INSERT INTO messaget VALUES(default,c_user_id,v_user_id,v_etc,now(),0);	
+		DELETE
+		  FROM club_applyt
+		 WHERE user_id=v_user_id
+	   	   AND club_no=v_club_no;
+	COMMIT;
+END$$
+DELIMITER ;
+######################p_club_apply_disagree 프로시저 끝######################
+
+######################p_club_add_message 프로시저 시작######################
+DROP PROCEDURE IF EXISTS p_club_add_message;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_add_message(
+	IN v_send_user_id VARCHAR(20),
+	IN v_receive_user_id VARCHAR(20),
+	IN v_msg_content TEXT
+)
+BEGIN
+	INSERT INTO messaget VALUES(default,v_send_user_id,v_receive_user_id,v_msg_content,now(),0);
+END$$
+DELIMITER ;
+######################p_club_add_message 프로시저 끝######################
+
+######################p_club_find_lcategory 프로시저######################
+DROP PROCEDURE IF EXISTS p_club_find_lcategory;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_find_lcategory()
+BEGIN
+	SELECT *
+	FROM l_categoryt;
+END$$
+DELIMITER ;
+######################p_club_find_lcategory 프로시저 끝######################
+
+######################p_club_find_ccategory 프로시저######################
+DROP PROCEDURE IF EXISTS p_club_find_ccategory;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_find_ccategory()
+BEGIN
+	SELECT *
+	FROM c_categoryt;
+END$$
+DELIMITER ;
+######################p_club_find_ccategory 프로시저 끝######################
+
+######################p_club_del_user 프로시저######################
+DROP PROCEDURE IF EXISTS p_club_del_user;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_del_user(
+	IN v_club_no INT,
+	IN v_user_id VARCHAR(20)
+)
+BEGIN
+	DELETE
+	  FROM user_clubt
+	 WHERE club_no=v_club_no
+	   AND user_id=v_user_id;
+END$$
+DELIMITER ;
+######################p_club_del_user 프로시저 끝######################
+
+######################p_club_del_club 프로시저######################
+DROP PROCEDURE IF EXISTS p_club_del_club;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_del_club(
+	IN v_club_no INT
+)
+BEGIN
+
+	DELETE
+	  FROM user_clubt
+	 WHERE club_no=v_club_no;
+	DELETE
+	  FROM clubt
+	 WHERE club_no=v_club_no;
+
+END$$
+DELIMITER ;
+######################p_club_del_club 프로시저 끝######################
+
+######################p_club_user_release 프로시저######################
+DROP PROCEDURE IF EXISTS p_club_user_release;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_user_release(
+	IN v_club_no INT,
+	IN v_user_id VARCHAR(20),
+	IN v_content TEXT
+)
+BEGIN
+	DECLARE c_user_id VARCHAR(20);
+
+	SELECT user_id INTO c_user_id FROM clubt WHERE club_no=v_club_no;
+	
+	
+	INSERT INTO messaget VALUES(default,c_user_id,v_user_id,v_content,now(),0);	
+	
+	DELETE
+	  FROM user_clubt
+	 WHERE club_no=v_club_no
+	   AND user_id=v_user_id;
+
+END$$
+DELIMITER ;
+######################p_club_user_release 프로시저 끝######################
+
+######################p_find_best_club 프로시저######################
+DROP PROCEDURE IF EXISTS p_find_best_club;
+DELIMITER $$
+
+CREATE PROCEDURE p_find_best_club()
+BEGIN
+	DROP TEMPORARY TABLE IF EXISTS temp;
+    CREATE TEMPORARY TABLE IF NOT EXISTS temp
+		SELECT count(*) as count,c.club_no
+		  FROM clubt AS c, user_clubt AS u
+		 WHERE c.club_no=u.club_no
+		 group by c.club_no
+		 order by count desc limit 0,3;
+   
+   SELECT c.club_no, c.club_name, c.club_title, t.count, c.club_thumb_img
+     FROM clubt AS c, temp AS t 
+    WHERE c.club_no=t.club_no;		
+END$$
+DELIMITER ;
+######################p_find_best_club 프로시저 끝######################

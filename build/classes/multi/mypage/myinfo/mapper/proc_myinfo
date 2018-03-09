@@ -1,0 +1,88 @@
+#proc_myinfo
+
+DROP PROCEDURE IF EXISTS p_mypage_ckpass;
+DELIMITER $$
+
+CREATE PROCEDURE p_mypage_ckpass(
+    IN v_user_id VARCHAR(20),
+    IN v_passwd VARCHAR(20)
+)
+BEGIN
+    SELECT COUNT(*) FROM userT where user_id = v_user_id and passwd = v_passwd;
+END$$
+
+DELIMITER ;
+
+####################################
+DROP PROCEDURE IF EXISTS p_mypage_find_user;
+DELIMITER $$
+
+CREATE PROCEDURE p_mypage_find_user(
+    IN v_user_id VARCHAR(20)
+   
+)
+BEGIN
+    SELECT * FROM userT where user_id = v_user_id;
+END$$
+
+DELIMITER ;
+
+
+########################################
+DROP PROCEDURE IF EXISTS p_mypage_mod_user;
+DELIMITER $$
+
+CREATE PROCEDURE p_mypage_mod_user(
+    IN v_user_id VARCHAR(20),
+    IN v_passwd VARCHAR(20),
+    IN v_nickname VARCHAR(20),
+    IN v_phone VARCHAR(11),
+    IN v_email VARCHAR(50),
+    IN v_zipcode VARCHAR(20),
+    IN v_zipdetail VARCHAR(20)
+)
+BEGIN
+    UPDATE usert
+    SET
+        passwd = v_passwd,
+        nickname = v_nickname,
+        phone = v_phone,
+        email = v_email,
+        zipcode = v_zipcode,
+        zipdetail = v_zipdetail
+    WHERE
+        user_id = v_user_id;
+END$$
+
+DELIMITER ;
+
+######################################
+DROP PROCEDURE IF EXISTS p_mypage_del_user;
+DELIMITER $$
+
+CREATE PROCEDURE p_mypage_del_user(
+    IN v_user_id VARCHAR(20)
+)
+BEGIN
+    DELETE FROM userT WHERE user_id = v_user_id;
+    
+END$$
+
+DELIMITER ;
+
+
+##########################################
+
+DROP PROCEDURE IF EXISTS p_user_zipcode_find;
+DELIMITER $$
+
+CREATE PROCEDURE p_user_zipcode_find(
+    IN v_zipcode VARCHAR(20)
+)
+BEGIN
+    SELECT sido,gugun,dong,bunji FROM zipcodeT where zipcode = v_zipcode;
+END$$
+
+DELIMITER ;
+
+

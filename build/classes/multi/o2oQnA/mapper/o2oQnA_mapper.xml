@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="o2oQnA">
+
+	<select id="sysdate" resultType="java.lang.String">
+		SELECT NOW()
+	</select>
+
+<!-- 
+
+CREATE TABLE O2OQnAT
+(
+    `o2o_no`          INT            NOT NULL    AUTO_INCREMENT, 
+    `o2o_title`       VARCHAR(45)    NULL, 
+    `o2o_content`     TEXT           NULL, 
+    `o2o_email`       VARCHAR(50)    NOT NULL, 
+    `o2o_type`        VARCHAR(45)    NULL, 
+    `o2o_phone`       VARCHAR(11)    NULL, 
+    `the_time`        DATETIME       NULL, 
+    `re_o2o_content`  TEXT           NULL, 
+    PRIMARY KEY (o2o_no)
+);
+
+
+프로시져 김소영
+DROP PROCEDURE IF EXISTS p_o2oQnA_addo2oQnA;
+	DELIMITER $$
+	CREATE PROCEDURE p_o2oQnA_addo2oQnA(
+		IN v_o2o_no INT(11),
+		IN v_o2o_title VARCHAR(45),
+		IN v_o2o_content VARCHAR(200),
+		IN v_o2o_email VARCHAR(50),
+		IN v_o2o_type  VARCHAR(45),
+		IN v_o2o_phone VARCHAR(11),
+		IN v_re_o2o_content VARCHAR(200)
+
+	)
+	BEGIN
+		INSERT INTO O2OQnAT VALUES(default,
+			v_o2o_title,v_o2o_content,v_o2o_email,v_o2o_type,v_o2o_phone,NOW(),v_re_o2o_content);
+	END$$
+	DELIMITER ;
+	
+-->
+
+ 	<parameterMap id="PM_p_o2oQnA_addo2oQnA" type="main.vo.O2OQnAVO">
+		<parameter property="o2o_no"   mode="IN" jdbcType="INTEGER"/>
+		<parameter property="o2o_title" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="o2o_content" mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="o2o_email"  mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="o2o_type"  mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="o2o_phone"  mode="IN" jdbcType="VARCHAR"/>
+		<parameter property="re_o2o_content"  mode="IN" jdbcType="VARCHAR"/>
+	</parameterMap>
+	
+	<insert id="p_o2oQnA_addo2oQnA" statementType="CALLABLE" 
+		parameterMap="PM_p_o2oQnA_addo2oQnA">
+		{call p_o2oQnA_addo2oQnA(?,?,?,?,?,?,?)}
+	</insert>
+     
+
+
+
+
+
+
+</mapper>
+

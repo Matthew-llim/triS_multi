@@ -1,0 +1,18 @@
+	DROP PROCEDURE IF EXISTS p_notice_FindAllTexts;
+	DELIMITER $$
+	CREATE PROCEDURE p_notice_FindAllTexts()
+	BEGIN
+		SELECT * FROM noticet ORDER BY notice_no DESC;
+	END$$
+	DELIMITER ;
+	
+	
+	DROP PROCEDURE IF EXISTS p_notice_FindText;
+	DELIMITER $$
+	CREATE PROCEDURE p_notice_FindText(
+		IN v_notice_no INT
+	)
+	BEGIN
+		SELECT * FROM noticet WHERE notice_no = v_notice_no;
+	END$$
+	DELIMITER ;

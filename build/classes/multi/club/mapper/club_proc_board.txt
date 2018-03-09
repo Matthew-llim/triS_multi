@@ -1,0 +1,153 @@
+######################프로시저######################
+
+
+######################p_club_findAll_board 프로시저 시작######################
+DROP PROCEDURE IF EXISTS p_club_findAll_board;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_findAll_board(
+	IN v_club_no INT
+)
+BEGIN
+	SELECT c.c_board_no, c.c_board_title, c.c_board_content, c.c_board_subject, c.the_time, c.club_no
+	       ,c.user_id, c.view_count, u.user_name
+	  FROM club_boardt AS c,usert AS u
+ 	 WHERE c.club_no=v_club_no
+ 	   AND c.user_id=u.user_id
+ 	 ORDER BY c.c_board_no DESC;
+END$$
+DELIMITER ;
+######################p_club_findAll_board 프로시저 끝######################
+
+######################p_club_find_board 프로시저 시작######################
+DROP PROCEDURE IF EXISTS p_club_find_board;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_find_board(
+	IN v_c_board_no INT
+)
+BEGIN
+	UPDATE club_boardt
+	   SET view_count = view_count+1
+	 WHERE c_board_no = v_c_board_no;
+	  
+	SELECT *
+	  FROM club_boardt
+ 	 WHERE c_board_no = v_c_board_no;
+END$$
+DELIMITER ;
+######################p_club_find_board 프로시저 끝######################
+
+######################p_club_mod_board_detail 프로시저 시작######################
+DROP PROCEDURE IF EXISTS p_club_mod_board_detail;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_mod_board_detail(
+	IN v_c_board_no INT,
+	IN v_c_board_title VARCHAR(200),
+	IN v_c_board_content TEXT,
+	IN v_c_board_subject VARCHAR(15)
+)
+BEGIN
+	UPDATE club_boardt
+	   SET c_board_title = v_c_board_title,
+	       c_board_content = v_c_board_content,
+	       c_board_subject = v_c_board_subject
+	 WHERE c_board_no = v_c_board_no;
+END$$
+DELIMITER ;
+######################p_club_mod_board_detail 프로시저 끝######################
+
+######################p_club_del_board_detail 프로시저 시작######################
+DROP PROCEDURE IF EXISTS p_club_del_board_detail;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_del_board_detail(
+	IN v_c_board_no INT
+)
+BEGIN
+	DELETE 
+	  FROM club_boardt
+     WHERE c_board_no = v_c_board_no;
+END$$
+DELIMITER ;
+######################p_club_del_board_detail 프로시저 끝######################
+
+######################p_club_board_reple 프로시저 시작######################
+DROP PROCEDURE IF EXISTS p_club_board_reple;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_board_reple(
+	IN v_c_board_no INT
+)
+BEGIN
+	SELECT *
+	  FROM club_board_replet
+ 	 WHERE c_board_no = v_c_board_no
+ 	 ORDER BY c_board_reple_no DESC;
+END$$
+DELIMITER ;
+######################p_club_board_reple 프로시저 끝######################
+
+######################p_club_add_board_reple 프로시저 시작######################
+DROP PROCEDURE IF EXISTS p_club_add_board_reple;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_add_board_reple(
+	IN v_c_board_reple_content TEXT,
+	IN v_user_id VARCHAR(20),
+	IN v_c_board_no INT
+)
+BEGIN
+	INSERT INTO club_board_replet VALUES(default, v_user_id, v_c_board_no, v_c_board_reple_content, now());
+END$$
+DELIMITER ;
+######################p_club_add_board_reple 프로시저 끝######################
+
+######################p_club_del_board_reple 프로시저 시작######################
+DROP PROCEDURE IF EXISTS p_club_del_board_reple;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_del_board_reple(
+	IN v_c_board_reple_no INT
+)
+BEGIN
+	DELETE
+	  FROM club_board_replet
+	 WHERE c_board_reple_no=v_c_board_reple_no;
+END$$
+DELIMITER ;
+######################p_club_del_board_reple 프로시저 끝######################
+
+######################p_club_mod_board_reple 프로시저 시작######################
+DROP PROCEDURE IF EXISTS p_club_mod_board_reple;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_mod_board_reple(
+	IN v_c_board_reple_no INT,
+	IN v_c_board_reple_content TEXT
+)
+BEGIN
+	UPDATE club_board_replet
+	   SET c_board_reple_content = v_c_board_reple_content
+	 WHERE c_board_reple_no=v_c_board_reple_no;
+END$$
+DELIMITER ;
+######################p_club_mod_board_reple 프로시저 끝######################
+
+######################p_club_add_community_board 프로시저 시작######################
+DROP PROCEDURE IF EXISTS p_club_add_community_board;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_add_community_board(
+	IN v_c_board_title VARCHAR(200),
+	IN v_c_board_content TEXT,
+	IN v_c_board_subject VARCHAR(15),
+	IN v_club_no INT,
+	IN v_user_id VARCHAR(20)
+)
+BEGIN
+	INSERT INTO club_boardt VALUES(default, v_user_id, v_club_no, v_c_board_title,v_c_board_content,v_c_board_subject,now(),0);
+END$$
+DELIMITER ;
+######################p_club_add_community_board 프로시저 끝######################

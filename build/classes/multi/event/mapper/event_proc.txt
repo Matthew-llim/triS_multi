@@ -1,0 +1,60 @@
+DROP PROCEDURE IF EXISTS p_event_add;
+     DELIMITER $$
+     CREATE PROCEDURE p_event_add(
+           IN v_eve_title VARCHAR(45),
+           IN v_eve_content TEXT,
+           IN v_eve_thumb_img VARCHAR(45)
+     )
+     
+     BEGIN
+           INSERT INTO eventt VALUES (default, v_eve_title,v_eve_content,NOW(),v_eve_thumb_img);
+     END$$
+    DELIMITER ;
+    
+    
+  DROP PROCEDURE IF EXISTS p_event_findAll;
+  DELIMITER $$
+  CREATE PROCEDURE p_event_findAll()
+  BEGIN
+	SELECT * FROM eventt ORDER BY eve_no DESC;
+  END$$
+  DELIMITER ;
+  
+  
+   		DROP PROCEDURE IF EXISTS p_event_getByPK;
+  		DELIMITER $$
+  		CREATE PROCEDURE p_event_getByPK(
+			IN v_eve_no INT )
+  		BEGIN
+		SELECT * FROM eventt WHERE eve_no = v_eve_no;
+  		END$$
+  		DELIMITER ;
+  		
+  		
+  		DROP PROCEDURE IF EXISTS p_event_mod;
+	DELIMITER $$
+	CREATE PROCEDURE p_event_mod(
+		IN v_eve_no INT,
+		IN v_eve_title TEXT(45),
+		IN v_eve_content TEXT,
+		IN v_eve_thumb_img VARCHAR(45)
+	)
+	BEGIN
+		UPDATE eventt set eve_title=v_eve_title, eve_content=v_eve_content, eve_thumb_img= v_eve_thumb_img
+			WHERE eve_no = v_eve_no;
+	END$$
+	DELIMITER ;
+	
+	
+	DROP PROCEDURE IF EXISTS p_event_delByPK;
+	DELIMITER $$
+	CREATE PROCEDURE p_event_delByPK(
+		IN v_eve_no INT
+	)
+	BEGIN
+		DELETE FROM eventt WHERE eve_no = v_eve_no;
+	END$$
+	DELIMITER ;
+	
+	
+	

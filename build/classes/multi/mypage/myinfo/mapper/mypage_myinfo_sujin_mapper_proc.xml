@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mypage_myinfo_sujin_proc">
+
+
+<!-- **************** multi.mypage.myinfo **************** -->
+
+   <resultMap id="RM_myinfo" type="main.vo.UserVO">
+      <result property="user_id" column="user_id" jdbcType="VARCHAR"/>
+      <result property="ssn1" column="ssn1" jdbcType="VARCHAR"/>
+      <result property="ssn2" column="ssn2" jdbcType="VARCHAR"/>     
+      <result property="passwd" column="passwd" jdbcType="VARCHAR"/>
+      <result property="user_name" column="user_name" jdbcType="VARCHAR"/>
+      <result property="gender" column="gender" jdbcType="VARCHAR"/>      
+      <result property="phone" column="phone" jdbcType="VARCHAR"/>      
+      <result property="nickname" column="nickname" jdbcType="VARCHAR"/>      
+      <result property="zipcode" column="zipcode" jdbcType="VARCHAR"/>            
+      <result property="email" column="email" jdbcType="VARCHAR"/>     
+      <result property="grade" column="grade" jdbcType="INTEGER"/>          
+   </resultMap>
+
+   
+   <select id="mypage_myinfoFindUserInfo" resultMap="RM_myinfo">
+		{CALL p_mypage_myinfo_find_user(#{user_id})}
+	</select>
+	
+	
+
+   
+</mapper>
+<!--
+
+-->

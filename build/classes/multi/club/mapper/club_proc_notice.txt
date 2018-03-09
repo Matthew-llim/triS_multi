@@ -1,0 +1,152 @@
+######################프로시저######################
+
+
+
+######################p_club_findAll_notice 프로시저 시작######################
+DROP PROCEDURE IF EXISTS p_club_findAll_notice;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_findAll_notice(
+	IN v_club_no INT
+)
+BEGIN
+	SELECT c.c_notice_no, c.c_notice_title, c.c_notice_content, c.the_time, c.user_id,
+	       c.club_no, c.view_count, u.user_name
+	  FROM club_noticet AS c, usert AS u
+ 	 WHERE c.club_no=v_club_no
+ 	   AND c.user_id=u.user_id
+ 	 ORDER BY c.c_notice_no DESC;
+END$$
+DELIMITER ;
+######################p_club_findAll_notice 프로시저 끝######################
+
+######################p_club_add_community_notice_submit 프로시저 시작######################
+DROP PROCEDURE IF EXISTS p_club_add_community_notice_submit;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_add_community_notice_submit(
+	IN v_c_notice_title VARCHAR(45),
+	IN v_c_notice_content TEXT,
+	IN v_user_id VARCHAR(20),
+	IN v_club_no INT
+)
+BEGIN
+	INSERT INTO club_noticet VALUES(default, v_club_no, v_user_id, v_c_notice_title, v_c_notice_content, now(),0);
+END$$
+DELIMITER ;
+######################p_club_add_community_notice_submit 프로시저 끝######################
+
+######################p_club_find_notice_detail 프로시저 시작######################
+DROP PROCEDURE IF EXISTS p_club_find_notice_detail;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_find_notice_detail(
+	IN v_c_notice_no INT
+)
+BEGIN
+	UPDATE club_noticet
+	   SET view_count = view_count+1
+	 WHERE c_notice_no = v_c_notice_no;
+	 
+	SELECT *
+	  FROM club_noticet
+ 	 WHERE c_notice_no=v_c_notice_no;
+END$$
+DELIMITER ;
+######################p_club_find_notice_detail 프로시저 끝######################
+
+######################p_club_mod_notice_detail 프로시저 시작######################
+DROP PROCEDURE IF EXISTS p_club_mod_notice_detail;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_mod_notice_detail(
+	IN v_c_notice_no INT,
+	IN v_c_notice_title VARCHAR(45),
+	IN v_c_notice_content TEXT
+)
+BEGIN
+	UPDATE club_noticet
+	   SET c_notice_title = v_c_notice_title,
+	       c_notice_content = v_c_notice_content
+	 WHERE c_notice_no = v_c_notice_no;
+END$$
+DELIMITER ;
+######################p_club_mod_notice_detail 프로시저 끝######################
+
+######################p_club_del_notice_detail 프로시저 시작######################
+DROP PROCEDURE IF EXISTS p_club_del_notice_detail;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_del_notice_detail(
+	IN v_c_notice_no INT
+)
+BEGIN
+	DELETE 
+	  FROM club_noticet
+	 WHERE c_notice_no = v_c_notice_no;
+END$$
+DELIMITER ;
+######################p_club_del_notice_detail 프로시저 끝######################
+
+######################p_club_find_notice_reple 프로시저 시작######################
+DROP PROCEDURE IF EXISTS p_club_find_notice_reple;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_find_notice_reple(
+	IN v_c_notice_no INT
+)
+BEGIN
+	SELECT *
+	  FROM club_notice_replet
+ 	 WHERE c_notice_no = v_c_notice_no
+ 	 ORDER BY c_notice_reple_no DESC;
+END$$
+DELIMITER ;
+######################p_club_find_notice_reple 프로시저 끝######################
+
+######################p_club_add_notice_reple 프로시저 시작######################
+DROP PROCEDURE IF EXISTS p_club_add_notice_reple;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_add_notice_reple(
+	IN v_user_id VARCHAR(20),
+	IN v_c_notice_no INT,
+	IN v_c_notice_reple_content TEXT
+	
+)
+BEGIN
+	INSERT INTO club_notice_replet VALUES(default,v_user_id, v_c_notice_no, v_c_notice_reple_content, now());
+END$$
+DELIMITER ;
+######################p_club_add_notice_reple 프로시저 끝######################
+
+######################p_club_del_notice_reple 프로시저 시작######################
+DROP PROCEDURE IF EXISTS p_club_del_notice_reple;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_del_notice_reple(
+	IN v_c_notice_reple_no INT
+)
+BEGIN
+	DELETE 
+	  FROM club_notice_replet
+	 WHERE c_notice_reple_no = v_c_notice_reple_no;
+END$$
+DELIMITER ;
+######################p_club_del_notice_reple 프로시저 끝######################
+
+######################p_club_mod_notice_reple 프로시저 시작######################
+DROP PROCEDURE IF EXISTS p_club_mod_notice_reple;
+DELIMITER $$
+
+CREATE PROCEDURE p_club_mod_notice_reple(
+	IN v_c_notice_reple_no INT,
+	IN v_c_notice_reple_content TEXT
+)
+BEGIN
+	UPDATE club_notice_replet
+	   SET c_notice_reple_content = v_c_notice_reple_content
+	 WHERE c_notice_reple_no = v_c_notice_reple_no;
+END$$
+DELIMITER ;
+######################p_club_mod_notice_reple 프로시저 끝######################
