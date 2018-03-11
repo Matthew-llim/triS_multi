@@ -143,7 +143,7 @@ $(document).ready(function(){
 								<td><a href="admin_club_detail.do?club_no=${vo.club_no}">${vo.club_name}</a></td>
 								<td>${vo.user_id}</td>
 								<td><img src="club_img/${vo.club_thumb_img}"
-									style="width: 128px; height: 128px;" /></td>
+									style="width: 128px; height: 128px;" onerror="this.src='img/no_img.jpg'"/></td>
 								<td>${vo.max_member}</td>
 								<td>${vo.create_time}</td>
 						

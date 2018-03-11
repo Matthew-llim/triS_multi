@@ -115,7 +115,7 @@ text-align: center;
 						<jl:forEach var="vo" items="${rl}">
 							<tr>
 								<td>${vo.eve_no}</td>
-								<td><a href="admin_event_read.do?eve_no=${vo.eve_no}"><img src="thumbnail/${vo.eve_thumb_img}" height="100" width="100"/></a></td>
+								<td><a href="admin_event_read.do?eve_no=${vo.eve_no}"><img src="thumbnail/${vo.eve_thumb_img}" height="100" width="100" onerror="this.src='img/no_img.jpg'"/></a></td>
 								<td>
 									<a href="admin_event_read.do?eve_no=${vo.eve_no}">${vo.eve_title}</a>
 								</td>

@@ -43,9 +43,6 @@
 				<img src="club_img/${rl.club_thumb_img}" width="80px" height="100px" class="thumb_img" abc="${rl.club_no}" onerror="this.src='img/no_img.jpg'"/></a></td>
 				<td>${rl.max_member}${rl.club_thumb_img}</td>
 			</tr>
-			
-			
-			
 		</jl:forEach>
 	</table>
 	</form>

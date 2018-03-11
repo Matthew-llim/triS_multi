@@ -77,11 +77,11 @@ $(document).ready(function(){
 		<input type="hidden" name="eve_no" value="${text.eve_no}" />
 		
 		<label>이벤트 썸네일</label><br/><br/>
-		<img src="thumbnail/${text.eve_thumb_img}" height="100" width="100"/><br/>
-		<input type="submit" value="수정 하기" /> &nbsp;&nbsp;
+		<img src="thumbnail/${text.eve_thumb_img}" height="100" width="100" onerror="this.src='img/no_img.jpg'"/><br/>
+		<input type="submit" value="수정 하기"  class='btn btn-primary'/> &nbsp;&nbsp;
 		<%-- <a href="admin_event_del2.do?eve_no=${text.eve_no}">삭제</a> --%>
-		<input type="button" id="remove_eve" eve_no="${text.eve_no}" value="삭제하기" />&nbsp;&nbsp;
-		<input type="button" value="취소 하기" onclick= "window.location.href='admin_event_list.do'">
+		<input type="button" id="remove_eve"  class='btn btn-primary'eve_no="${text.eve_no}" value="삭제하기" />&nbsp;&nbsp;
+		<input type="button" value="취소 하기"  class='btn btn-primary' onclick= "window.location.href='admin_event_list.do'">
 	</form>
 		
 <!-- 이벤트 삭제시 모달 -->

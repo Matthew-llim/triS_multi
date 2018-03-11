@@ -41,6 +41,7 @@ public class CtrlMypageBookmark {
 	public String delBookmark(HttpServletRequest request) {
 		String[] r = request.getParameterValues("check");
 		Integer m = 0;
+	
 		if (r != null) {
 			for (String ab : r) {
 				m = Integer.parseInt(ab);

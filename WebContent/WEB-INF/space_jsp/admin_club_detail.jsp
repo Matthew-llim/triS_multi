@@ -89,7 +89,7 @@
 							<td>${vo.club_title}</td>
 							<td>${vo.club_content}</td>
 							<td><img src="club_img/${vo.club_thumb_img}"
-								style="width: 128px; height: 128px;" /></td>
+								style="width: 128px; height: 128px;" onerror="this.src='img/no_img.jpg'"/></td>
 							<td>${vo.max_member}</td>
 							<td>${vo.create_time}</td>
 							<jl:choose>

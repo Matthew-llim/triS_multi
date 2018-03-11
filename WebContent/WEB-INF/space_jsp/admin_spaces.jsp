@@ -178,7 +178,7 @@ $(document).ready(function(){
 							<td>${vo.space_content}</td>
 							<td><a href="space_detail.do?space_no=${vo.space_no}"><img
 									src="space_img/${vo.space_thumb_img}"
-									style="width: 128px; height: 128px;"></img></a></td>
+									style="width: 128px; height: 128px;" onerror="this.src='img/no_img.jpg'"></img></a></td>
 							<td>${vo.open_time}</td>
 							<td>${vo.close_time}</td>
 							<td>${vo.price}</td>
