@@ -242,33 +242,33 @@
 					<jl:if test="${fn:length(image.image_one) > 3}">
 						<div>
 							<img src="space_img/${image.image_one }" width="100%" height="500px"
-								id="main_img">
+								id="main_img" onerror="this.src='defualt/defualt.jpg'">
 						</div>
 					</jl:if>
 					<div class="row">
 						<jl:if test="${fn:length(image.image_one) > 3}">
 							<img src="space_img/${image.image_one }"
-								class="sub_img" />
+								class="sub_img" onerror="this.src='defualt/defualt.jpg'"/>
 						</jl:if>
 						<jl:if test="${fn:length(image.image_two) > 3}">
 							<img src="space_img/${image.image_two }" 
-								class="sub_img" />
+								class="sub_img" onerror="this.src='defualt/defualt.jpg'"/>
 						</jl:if>
 						<jl:if test="${fn:length(image.image_three) > 3}">
-							<img src="space_img/${image.image_three }"  class="sub_img" />
+							<img src="space_img/${image.image_three }"  class="sub_img" onerror="this.src='defualt/defualt.jpg'"/>
 						</jl:if>
 						<jl:if test="${fn:length(image.image_four) > 3}">
-							<img src="space_img/${image.image_four }" class="sub_img" />
+							<img src="space_img/${image.image_four }" class="sub_img" onerror="this.src='defualt/defualt.jpg'"/>
 						</jl:if>
 						<jl:if test="${fn:length(image.image_five) > 3}">
-							<img src="space_img/${image.image_five }" class="sub_img" />
+							<img src="space_img/${image.image_five }" class="sub_img" onerror="this.src='defualt/defualt.jpg'"/>
 						</jl:if>
 						<jl:if test="${fn:length(image.image_six) > 3}">
 							<img src="space_img/${image.image_six }" 
-								class="sub_img" />
+								class="sub_img" onerror="this.src='defualt/defualt.jpg'"/>
 						</jl:if>
 						<jl:if test="${fn:length(image.image_seven) > 3}">
-							<img src="space_img/${image.image_seven }" class="sub_img" />
+							<img src="space_img/${image.image_seven }" class="sub_img" onerror="this.src='defualt/defualt.jpg'"/>
 						</jl:if>
 					</div>
 				</div>
